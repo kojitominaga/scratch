@@ -44,8 +44,25 @@ for (fi in 1:length(folders)) {
                 'percent done\n'))
     }
     day <- dayseq[dayi]
-    iatmin[1:m + (dayi - 1) * m] <-
-      FractionalRadiation(day, thislat, thislon, m) * rsds[dayi] * m
+    frac <-
+      tryCatch({
+        FractionalRadiation(day, thislat, thislon, m) * rsds[dayi] * m
+      }, error = function(msg) {
+        f <- file('errors', open = 'a')
+        cat(c(folder, ':', dayi, print(day), '\n', str(msg), '--\n'),
+            file = f)
+        cat('unelegant repeat of global radiation\n--\n', file = f)
+        close(f)
+        frac <- rep(rsds[dayi], times = m)
+        return(frac)
+      }, warning = function(msg) {
+        f <- file('warnings', open = 'a')
+        cat(c(folder, ':', dayi, print(day), '\n', str(msg), '--\n'),
+            file = f)
+        close(f)
+        return(frac)
+      })
+    iatmin[1:m + (dayi - 1) * m] <- frac
   }
   ## air temperature 24-hourzize
   tain <- numeric()
@@ -58,9 +75,31 @@ for (fi in 1:length(folders)) {
     }
     day <- dayseq[dayi]
     if (dayi == length(dayseq)) dayi2 <- dayi - 1 else dayi2 <- dayi
-    temp <- HourlyAirTemperature(day, thislat, thislon, previousT,
-                                 tasmin[dayi2], tasmax[dayi2], tas[dayi2],
-                                 tasmin[dayi2 + 1], tasmax[dayi2 + 1], m)
+    temp <-
+      tryCatch({
+        HourlyAirTemperature(day, thislat, thislon, previousT,
+                             tasmin[dayi2], tasmax[dayi2], tas[dayi2],
+                             tasmin[dayi2 + 1], tasmax[dayi2 + 1], m)
+      }, error = function(msg) {
+        f <- file('errors', open = 'a')
+        print(str(msg))
+        cat(c(folder, ':', dayi, print(day), '\n',
+              tasmin[dayi2], tasmax[dayi2], tas[dayi2],
+              '\n', str(msg), '--\n'),
+            file = f)
+        cat('unelegant repeat of daily air temperature\n--\n', file = f)
+        close(f)
+        temp <- rep(tas[dayi2], times = m)
+        return(temp)
+      }, warning = function(msg) {
+        f <- file('warnings', open = 'a')
+        cat(c(folder, ':', dayi, print(day), '\n',
+              tasmin[dayi2], tasmax[dayi2], tas[dayi2],
+              '\n', str(msg), '--\n'),
+            file = f)
+        close(f)
+        return(temp)
+      })
     tain[1:m + (dayi - 1) * m] <- temp
     previousT <- temp[24]
   }
