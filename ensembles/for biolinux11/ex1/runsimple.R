@@ -69,8 +69,30 @@ runsimple <- function(dirname) {
   bthA <- (1000 * (parameters[['depth_w']] - depths) /
            parameters[['depth_w']]) ^ 2 * pi
   cat('Calculating Lake Analyzer indicators\n')
-  result <- data.frame(result0,
-                       LAIndices(result0, parameters, bthA, depths))
+  thislai <-
+    tryCatch({
+      LAIndices(result0, parameters, bthA, depths)
+      }, error = function(msg) {
+        f <- file('errors', open = 'a')
+        cat(c(folder, ':', '\n', str(msg), '--\n'),
+            file = f)
+        cat('failed to calculate Lake Analyzer Indices\n--\n', file = f)
+        close(f)
+        thislai <- data.frame(ThermoclineDepth = rep(NA, times = nrow(result0)),
+                              MixedLayerDepth = rep(NA, times = nrow(result0)),
+                              SchmidtStability = rep(NA, times = nrow(result0)),
+                              WedderburnNumber = rep(NA, times = nrow(result0)),
+                              LakeNumber = rep(NA, times = nrow(result0))
+                              )
+        return(thislai)
+      }, warning = function(msg) {
+        f <- file('warnings', open = 'a')
+        cat(c(folder, ':', dayi, print(day), '\n', str(msg), '--\n'),
+            file = f)
+        close(f)
+        return(thislai)
+      })
+  result <- data.frame(result0, thislai)
   fullnames2 <- c(fullnames,
                   c('Thermocline depth',
                     'Mixed layer depth',
@@ -107,32 +129,32 @@ runsimple <- function(dirname) {
             file = c)
   close(c)
   
-  shortnames <- names(result)
-  if (!file.exists(paste0(dirname, '/pdf'))) dir.create(paste0(dirname, '/pdf'))
-  pdf(paste0(dirname, '/pdf/allvariables_dm_', fnameaffix, '.pdf'), 
-      height = 7.5, width = 11.5)
-  par(mfcol = c(3, 3))
-  par(mar = c(2, 3, 3, 1))
-  for (vi in 1:ncol(typicalyear)) {
-    plot(seq(from = as.Date('1999-01-01'),
-             to = as.Date('1999-12-31'),
-             by = 'day'),
-         typicalyear[1:365, vi],
-         type = 'l',
-         xlab = 'month',
-         ylab = '',
-         main = fullnames2[vi],
-         cex.main = 1,
-         xaxt = 'n')
-    axis.Date(1,
-              at = seq(from = as.Date('1999-01-01'),
-                to = as.Date('1999-12-01'),
-                by = 'month'),
-              labels = c('J', 'F', 'M', 'A', 'M', 'J',
-                'J', 'A', 'S', 'O', 'N', 'D')
-              )
-  }
-  dev.off()
+  ## shortnames <- names(result)
+  ## if (!file.exists(paste0(dirname, '/pdf'))) dir.create(paste0(dirname, '/pdf'))
+  ## pdf(paste0(dirname, '/pdf/allvariables_dm_', fnameaffix, '.pdf'), 
+  ##     height = 7.5, width = 11.5)
+  ## par(mfcol = c(3, 3))
+  ## par(mar = c(2, 3, 3, 1))
+  ## for (vi in 1:ncol(typicalyear)) {
+  ##   plot(seq(from = as.Date('1999-01-01'),
+  ##            to = as.Date('1999-12-31'),
+  ##            by = 'day'),
+  ##        typicalyear[1:365, vi],
+  ##        type = 'l',
+  ##        xlab = 'month',
+  ##        ylab = '',
+  ##        main = fullnames2[vi],
+  ##        cex.main = 1,
+  ##        xaxt = 'n')
+  ##   axis.Date(1,
+  ##             at = seq(from = as.Date('1999-01-01'),
+  ##               to = as.Date('1999-12-01'),
+  ##               by = 'month'),
+  ##             labels = c('J', 'F', 'M', 'A', 'M', 'J',
+  ##               'J', 'A', 'S', 'O', 'N', 'D')
+  ##             )
+  ## }
+  ## dev.off()
 }  
 
 ## main loops

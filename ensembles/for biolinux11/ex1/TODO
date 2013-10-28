@@ -1,0 +1,5 @@
+not sure if the logical evaluation when drho_dz is NA
+
+in rLakeAnalyzer::meta.depths
+
+reported an issue at GLEON/rLakeAnalyzer
