@@ -105,10 +105,12 @@ for (fi in 1:length(folders)) {
   }
   cat('writing files...\n')
   rsds24f <- gzfile(paste0(rootpath, '/', 'rsds24.csv.gz'), open = 'wb')
-  cat(signif(iatmin, digits = 4), file = rsds24f, sep = '\n')
+  cat(ifelse(is.na(iatmin), NA, signif(iatmin, digits = 4)),
+      file = rsds24f, sep = '\n')
   close(rsds24f)
   tas24f <- gzfile(paste0(rootpath, '/', 'tas24.csv.gz'), open = 'wb')
-  cat(signif(tain, digits = 4), file = tas24f, sep = '\n')
+  cat(ifelse(is.na(tain), NA, signif(tain, digits = 4)),
+      file = tas24f, sep = '\n')
   close(tas24f)
 }
 

@@ -1,5 +1,3 @@
-not sure if the logical evaluation when drho_dz is NA
+done reporting at rLakeAnalyzer and the question got fixed! 
 
-in rLakeAnalyzer::meta.depths
-
-reported an issue at GLEON/rLakeAnalyzer
+Getting some problems with the vertices south of Lofoten. We surely not interested in 'lakes' in the sea so I would probably just go ahead ignore errors at all vertices and see where I get errors. Make maps. 
