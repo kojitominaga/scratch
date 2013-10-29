@@ -75,7 +75,7 @@ for (fi in 1:length(folders)) {
     }
     day <- dayseq[dayi]
     if (dayi == length(dayseq)) dayi2 <- dayi - 1 else dayi2 <- dayi
-    temp <-
+    ta <-
       tryCatch({
         HourlyAirTemperature(day, thislat, thislon, previousT,
                              tasmin[dayi2], tasmax[dayi2], tas[dayi2],
@@ -89,8 +89,8 @@ for (fi in 1:length(folders)) {
             file = f)
         cat('unelegant repeat of daily air temperature\n--\n', file = f)
         close(f)
-        temp <- rep(tas[dayi2], times = m)
-        return(temp)
+        ta <- rep(tas[dayi2], times = m)
+        return(ta)
       }, warning = function(msg) {
         f <- file('warnings', open = 'a')
         cat(c(folder, ':', dayi, print(day), '\n',
@@ -98,9 +98,9 @@ for (fi in 1:length(folders)) {
               '\n', str(msg), '--\n'),
             file = f)
         close(f)
-        return(temp)
+        return(ta)
       })
-    tain[1:m + (dayi - 1) * m] <- temp
+    tain[1:m + (dayi - 1) * m] <- ta
     previousT <- temp[24]
   }
   cat('writing files...\n')
