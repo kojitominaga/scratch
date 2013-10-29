@@ -101,7 +101,7 @@ for (fi in 1:length(folders)) {
         return(ta)
       })
     tain[1:m + (dayi - 1) * m] <- ta
-    previousT <- temp[24]
+    previousT <- ta[24]
   }
   cat('writing files...\n')
   rsds24f <- gzfile(paste0(rootpath, '/', 'rsds24.csv.gz'), open = 'wb')
