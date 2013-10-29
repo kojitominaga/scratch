@@ -105,12 +105,27 @@ for (fi in 1:length(folders)) {
   }
   cat('writing files...\n')
   rsds24f <- gzfile(paste0(rootpath, '/', 'rsds24.csv.gz'), open = 'wb')
-  cat(ifelse(is.na(iatmin), NA, signif(iatmin, digits = 4)),
-      file = rsds24f, sep = '\n')
+  
+  ## following 3 convoluted expressions
+  ## due to error: signif(NA)
+  ## ifelse() doesn't work because it still evaluates the "else" part
+  ## causing the above problem
+  out <- rep(NA, times = length(iatmin))
+  test <- is.na(iatmin)
+  out[!test] <- signif(iatmin[!test], digits = 4)
+  
+  cat(out, file = rsds24f, sep = '\n')
   close(rsds24f)
+
   tas24f <- gzfile(paste0(rootpath, '/', 'tas24.csv.gz'), open = 'wb')
-  cat(ifelse(is.na(tain), NA, signif(tain, digits = 4)),
-      file = tas24f, sep = '\n')
+
+
+  ## see above for the iatmin and problem of signif(NA) and ifelse()
+  out <- rep(NA, times = length(tain))
+  test <- is.na(tain)
+  out[!test] <- signif(tain[!test], digits = 4)
+
+  cat(out, file = tas24f, sep = '\n')
   close(tas24f)
 }
 
