@@ -42,6 +42,14 @@ runsimple <- function(dirname) {
                           q_a_in = rep(huss, each = m),
                           P_a_in = rep(ps, each = m)
                           )
+  if(any(is.na(as.matrix(ts.input0)))) {
+    skippedf <- file("skipped", open = 'a')
+    cat(c("skipped:", dirname, '\n'), file = skippedf)
+    close(skippedf)
+    next
+    ## this is necessary when something went wrong with the input
+    ## meteorological data. Just skip it. 
+  }
   ts.input <- ts.input0[c(rep(1:(m * 365), times = initialrepeat), 1:(n * m)), ]
   initiali <- 1:(m * 365 * initialrepeat)
   
@@ -158,6 +166,7 @@ runsimple <- function(dirname) {
   ##             )
   ## }
   ## dev.off()
+  return(NULL)
 }  
 
 ## main loops
@@ -179,7 +188,19 @@ for (fi in 1:length(folders)) {
   cat('-- Running the folder ')
   cat(folder)
   cat(' --\n')
-  runsimple(folder)
+  tryCatch({
+    runsimple(folder)
+  }, error = function(msg) {
+    f <- file('errors_main_loop', open = 'a')
+    cat(c(folder, ':', '\n', str(msg), '--\n'), file = f)
+    close(f)
+    return(NULL)
+  }, warning = function(msg) {
+    f <- file('warnings_main_loop', open = 'a')
+    cat(c(folder, ':', '\n', str(msg), '--\n'), file = f)
+    close(f)
+    return(NULL)
+  })
 }
   
   
