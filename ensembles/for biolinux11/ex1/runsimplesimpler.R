@@ -185,11 +185,12 @@ for (fi in 1:length(folders)) {
     cat('\n-------------------------\n')
     next
   }
-  if (file.exists(paste0(folder, '/csv/typicalyear_simple.csv'))) {
+  if (file.exists(paste0(folder, '/csv/dm_simple.csv.xz'))) {
     cat('-------------------------\n')
     cat('skipping the folder ')
     cat(folder)
     cat('because it is already finished\n-------------------------\n')
+    next
   }
   cat('-- Running the folder ')
   cat(folder)
