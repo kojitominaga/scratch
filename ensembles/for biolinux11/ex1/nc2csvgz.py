@@ -4,8 +4,8 @@ import os
 import gzip
 
 # limiting geography -- arbitrarily decided
-x = range(55, 95) # direction north
-y = range(30, 85) # direction east
+x = range(58, 94) # direction north
+y = range(35, 65) # direction east
 
 x2 = x * len(y)
 y2 = [elem for elem in y for _ in range(len(x))]
