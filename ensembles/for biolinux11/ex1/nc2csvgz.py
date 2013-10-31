@@ -39,7 +39,7 @@ for di in range(len(dnames)):
         f.close()
         r.close()
 
-    
+## uses http://kmltools.nobletech.com/csv2kml
 
 
 
