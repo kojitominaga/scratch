@@ -60,8 +60,8 @@ for (di in 1:length(dnames)) {
   thislais[['LakeNumber']] <-
     signif(thislais[['LakeNumber']], digits = 4)
   
-  laisfname <- paste0(dname, '/csv/dm_simple_lais.csv.xz')
-  laisf <- xzfile(laisfname, open = 'wb')
+  laisfname <- paste0(dname, '/csv/dm_simple_lais.csv.bz2')
+  laisf <- bzfile(laisfname, open = 'wb')
   write.csv(thislais, file = laisf)
   close(laisf)
 }
