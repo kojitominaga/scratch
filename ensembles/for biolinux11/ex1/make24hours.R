@@ -12,17 +12,24 @@ for (fi in 1:length(folders)) {
   cat('\n')
   cat(folder)
   cat('\n')
+  rootpath <- folders[fi]
   temp2 <- strsplit(folder, '-')[[1]]
   x <- as.integer(temp2[1])
   y <- as.integer(temp2[2])
+  
   if (is.na(x)) {
     ## if 'x' is not number, e.g., './' -- it is not a folder like '093-082'
     next
   }
+  
+  cond1 <- file.exists(paste0(rootpath, '/', 'tas24.csv.gz'))
+  cond2 <- file.exists(paste0(rootpath, '/', 'rsds24.csv.gz'))
+  if (cond1 & cond2) next
+  ## skip already made input
+  
   thislat <- lat[x + 1, y + 1]
   thislon <- lon[x + 1, y + 1]
   
-  rootpath <- folders[fi]
   firstday <- as.Date('1991-01-01')
   lastday <- as.Date('2000-12-31')
   dayseq <- seq(from = firstday, to = lastday, by = 'day')
@@ -98,6 +105,7 @@ for (fi in 1:length(folders)) {
               '\n', str(msg), '--\n'),
             file = f)
         close(f)
+        ta <- rep(tas[dayi2], times = m)        
         return(ta)
       })
     tain[1:m + (dayi - 1) * m] <- ta
