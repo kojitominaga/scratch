@@ -8,8 +8,8 @@ lon2 = lon.reshape((95 * 85, ))
 x = range(95) # direction north
 y = range(85) # direction east
 
-x2 = x * len(y)
-y2 = [elem for elem in y for _ in range(len(x))]
+y2 = y * len(x)
+x2 = [elem for elem in x for _ in range(len(y))]
 
 names = ['%03d-%03d' % (x2[i], y2[i]) for i in range(len(x2))]
 
