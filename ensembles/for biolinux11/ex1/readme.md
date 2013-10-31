@@ -7,11 +7,15 @@ computation time
 ----------------
 
 extracting .csv.gz from .nc: a few seconds each vertex
+
 making 24 hours for rsds and tas: ca 30 seconds per vertex
+
 running flake and writing to csv/*.csv.xz: ca. 33 seconds per vetex
 
 Fennoscandia rectangle: 058-035 to 093-064 (whole range is 000-000 to 094-085)
+
 x-y (north-east)
+
 36 times 30 = 1080 vertices
 
 scripts to run in order
