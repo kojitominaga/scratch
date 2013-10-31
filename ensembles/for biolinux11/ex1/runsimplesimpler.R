@@ -122,7 +122,7 @@ runsimple <- function(dirname) {
   
   if (!file.exists(paste0(dirname, '/csv'))) dir.create(paste0(dirname, '/csv'))
   
-  c <- xzfile(paste0(dirname, '/csv/dm_', fnameaffix, '.csv.xz'),
+  c <- bzfile(paste0(dirname, '/csv/dm_', fnameaffix, '.csv.bz2'),
               open = 'wb')
   write.csv(data.frame(date = dayseq, signif(dm, digits = 4)), file = c)
   close(c)
@@ -130,7 +130,7 @@ runsimple <- function(dirname) {
   typicalyear <- apply(dm, 2, tapply, dayseqP$yday, mean)[1:365, ]
   ## 1:365 makes it ignore 31 Dec in leap years
 
-  c <- xzfile(paste0(dirname, '/csv/typicalyear_', fnameaffix, '.csv.xz'),
+  c <- bzfile(paste0(dirname, '/csv/typicalyear_', fnameaffix, '.csv.bz2'),
               open = 'wb')
   write.csv(data.frame(MonthDay = format(seq(from = as.Date('1999-01-01'),
                          to = as.Date('1999-12-31'),
