@@ -3,7 +3,7 @@ require(flakeutil)
 ensemblename <- './'
 
 folders <- list.dirs()
-lat <- read.table('lat.txt') # x (north) by y (east)
+lat <- read.table('lat.txt') # y (NS) by x (EW) !!!
 lon <- read.table('lon.txt')
 
 for (fi in 1:length(folders)) {
@@ -27,8 +27,8 @@ for (fi in 1:length(folders)) {
   if (cond1 & cond2) next
   ## skip already made input
   
-  thislat <- lat[x + 1, y + 1]
-  thislon <- lon[x + 1, y + 1]
+  thislon <- lon[y + 1, x + 1]
+  thislat <- lat[y + 1, x + 1]
   
   firstday <- as.Date('1991-01-01')
   lastday <- as.Date('2000-12-31')
