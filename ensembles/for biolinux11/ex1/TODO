@@ -1,3 +1,7 @@
 done reporting at rLakeAnalyzer and the question got fixed! 
 
 Getting some problems with the vertices south of Lofoten. We surely not interested in 'lakes' in the sea so I would probably just go ahead ignore errors at all vertices and see where I get errors. Make maps. 
+
+Now decided to make netCDF files so that they can be opened using Manoply. 
+
+Realised that longitude is the x dimension, and latitude is y. Changing the scripts accordingly now. 
