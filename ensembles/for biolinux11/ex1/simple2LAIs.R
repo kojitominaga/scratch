@@ -5,9 +5,9 @@ for (di in 1:length(dnames)) {
   dname <- dnames[di]
   cat('--\n')
   cat(paste(di, 'of', length(dnames), ':', dname, '\n'))
-  dmfname <- paste0(dname, '/csv/dm_simple.csv.xz')
+  dmfname <- paste0(dname, '/csv/dm_simple.csv.bz2')
   if (!file.exists(dmfname)) {
-    cat('FLake result file dm_simple.csv.xz does not exist\n')
+    cat('FLake result file dm_simple.csv.bz2 does not exist\n')
     next
   }
   dm <- read.csv(dmfname)
