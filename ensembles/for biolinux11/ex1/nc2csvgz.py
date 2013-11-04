@@ -34,7 +34,8 @@ for di in range(len(dnames)):
         # # :cell_methods = "time: mean";
         # # :coordinates = "lon lat";
         # # :grid_mapping = "rotated_pole";
-        # # :_FillValue = 1.0E30f; // float        if nd == 3:
+        # # :_FillValue = 1.0E30f; // float        
+        if nd == 3:
             numlist = r.variables[vname][:, thisy, thisx].tolist()
         elif nd == 4:
             numlist = r.variables[vname][:, 0, thisy, thisx].tolist()
