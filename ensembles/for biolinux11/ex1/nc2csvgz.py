@@ -48,15 +48,3 @@ for di in range(len(dnames)):
         f.close()
         r.close()
 
-        # float tas(time=3653, height=1, rlat=95, rlon=85);
-        # # :standard_name = "air_temperature";
-        # # :long_name = "2-meter temperature";
-        # # :units = "K";
-        # # :cell_methods = "time: mean";
-        # # :coordinates = "lon lat";
-        # # :grid_mapping = "rotated_pole";
-        # # :_FillValue = 1.0E30f; // float
-
-
-
-
