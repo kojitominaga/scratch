@@ -203,9 +203,9 @@ for xi in range(len(x)):
     for yi in range(len(y)):
 
         ## could have loops for depth, fetch, and attenuation
-        depthi = depthlevels[0]
-        fetchi = fetchlevels[0]
-        attenuationi = attenuationlevels[0]
+        depthi = range(len(depthlevels))[0]
+        fetchi = range(len(fetchlevels))[0]
+        attenuationi = range(len(attenuationlevels))[0]
 
         dname = '%03d-%03d' % (x[xi], y[yi])
         print(dname)
@@ -235,9 +235,6 @@ for xi in range(len(x)):
         r.groups['flakelakeanalyzer'].variables['ss'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 2]
         r.groups['flakelakeanalyzer'].variables['wn'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 3]
         r.groups['flakelakeanalyzer'].variables['ln'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 4]
-
-        flakeout.close()
-        lakeanalyzer.close()
 
 r.close()
 
