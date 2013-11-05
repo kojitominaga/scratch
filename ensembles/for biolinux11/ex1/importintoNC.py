@@ -22,6 +22,13 @@ r.createGroup('flakeout')
 r.createGroup('flakelakeanalyzer')
 
 for g in r.groups:
+    r.groups[g].createDimension('rlon', len(x))
+    r.groups[g].createDimension('rlat', len(y))
+    r.groups[g].createDimension('depth', len(depthlevels))
+    r.groups[g].createDimension('fetch', len(fetchlevels))
+    r.groups[g].createDimension('attenuation', len(attenuationlevels))
+    r.groups[g].createDimension('time', None) ## unlimited
+    r.groups[g].createDimension('bnds', 2) 
     r.groups[g].createVariable('rlon', 'f8', ('rlon', ))
     r.groups[g].createVariable('rlat', 'f8', ('rlat', ))
     r.groups[g].createVariable('lon', 'f8', ('rlon', 'rlat'))
