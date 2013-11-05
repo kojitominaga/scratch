@@ -50,7 +50,6 @@ r.groups['flakeout'].createVariable('hsnow', 'f4', fulldimensions, zlib = True, 
 r.groups['flakeout'].createVariable('hice', 'f4', fulldimensions, zlib = True, least_significant_digit = 3)
 r.groups['flakeout'].createVariable('hml', 'f4', fulldimensions, zlib = True, least_significant_digit = 3)
 r.groups['flakeout'].createVariable('hb1', 'f4', fulldimensions, zlib = True, least_significant_digit = 3)
-
 r.groups['flakelakeanalyzer'].createVariable('td', 'f4',  fulldimensions, zlib = True, least_significant_digit = 3)
 r.groups['flakelakeanalyzer'].createVariable('mld', 'f4',  fulldimensions, zlib = True, least_significant_digit = 3)
 r.groups['flakelakeanalyzer'].createVariable('ss', 'f4',  fulldimensions, zlib = True)
