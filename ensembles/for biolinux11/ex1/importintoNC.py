@@ -69,13 +69,11 @@ lonybyx = np.loadtxt('lon.txt')
 latybyx = np.loadtxt('lat.txt')
 lonxbyy = lonybyx.transpose()
 latxbyy = latybyx.transpose()
-xi = r.groups['flake'].variables['rloni'][:]
-yi = r.groups['flake'].variables['rlati'][:]
 
 for g in r.groups:
 
-    r.groups[g].variables['lon'][:, :] = lonxbyy[xi.min():(xi.max() + 1), yi.min():(yi.max() + 1)]
-    r.groups[g].variables['lat'][:, :] = latxbyy[xi.min():(xi.max() + 1), yi.min():(yi.max() + 1)]
+    r.groups[g].variables['lon'][:, :] = lonxbyy[x.min():(x.max() + 1), y.min():(y.max() + 1)]
+    r.groups[g].variables['lat'][:, :] = latxbyy[x.min():(x.max() + 1), y.min():(y.max() + 1)]
     r.groups[g].variables['time'][:] = times
     r.groups[g].variables['time_bnds'][:, :] = time_bnds
 
@@ -186,8 +184,6 @@ r.groups['flakelakeanalyzer'].variables['ln'].setncattr('standard_name', 'ln')
 depthi = [0]
 fetchi = [0]
 attenuationi = [0]
-x = r.groups['flake'].variables['rloni'][:]
-y = r.groups['flake'].variables['rlati'][:]
 
 converters0 = {0: lambda s: s.strip('"'), 
                1: lambda s: '0'}  
@@ -227,8 +223,6 @@ for xi in range(len(x)):
         r.groups['flakelakeanalyzer'].variables['ss'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 2]
         r.groups['flakelakeanalyzer'].variables['wn'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 3]
         r.groups['flakelakeanalyzer'].variables['ln'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 4]
-
-
 
 r.close()
 
