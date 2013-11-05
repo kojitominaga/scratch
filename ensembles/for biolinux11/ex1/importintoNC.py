@@ -36,12 +36,12 @@ for g in r.groups:
     r.groups[g].createVariable('time', 'f4', ('time', ))
     r.groups[g].createVariable('time_bnds', 'f4', ('time', 'bnds'))
     r.groups[g].createVariable('rotated_pole', 'S1')
+    r.groups[g].createVariable('depth', 'f4', ('depth', ))
+    r.groups[g].createVariable('fetch', 'f4', ('fetch', ))
+    r.groups[g].createVariable('attenuation', 'f4', ('attenuation', ))
 
 r.groups['flake'].createVariable('rloni', 'i4', ('rlon', ))
 r.groups['flake'].createVariable('rlati', 'i4', ('rlat', ))
-r.groups['flake'].createVariable('depth', 'f4', ('depth', ))
-r.groups['flake'].createVariable('fetch', 'f4', ('fetch', ))
-r.groups['flake'].createVariable('attenuation', 'f4', ('attenuation', ))
 
 fulldimensions = ('time', 'rlon', 'rlat', 'depth', 'fetch', 'attenuation')
 
@@ -204,8 +204,8 @@ for xi in range(len(x)):
 
         ## could have loops for depth, fetch, and attenuation
         depthi = range(len(depthlevels))[0]
-        fetchi = range(len(fetchlevels))[0]
-        attenuationi = range(len(attenuationlevels))[0]
+        fetchi = range((fetchlevels))[0]
+        attenuationi = range((attenuationlevels))[0]
 
         dname = '%03d-%03d' % (x[xi], y[yi])
         print(dname)
