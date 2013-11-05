@@ -65,9 +65,6 @@ r.groups['flakelakeanalyzer'].createVariable('ln', 'f4',  fulldimensions, zlib =
 
 r.groups['flake'].variables['rloni'][:] = x
 r.groups['flake'].variables['rlati'][:] = y
-r.groups['flake'].variables['depth'][:] = depthlevels
-r.groups['flake'].variables['fetch'][:] = fetchlevels
-r.groups['flake'].variables['attenuation'][:] = attenuationlevels
 
 times = np.loadtxt('time.txt')
 time_bnds = np.loadtxt('time_bnds.txt')
@@ -80,6 +77,10 @@ for g in r.groups:
 
     r.groups[g].variables['lon'][:, :] = lonxbyy[x.min():(x.max() + 1), y.min():(y.max() + 1)]
     r.groups[g].variables['lat'][:, :] = latxbyy[x.min():(x.max() + 1), y.min():(y.max() + 1)]
+    r.groups[g].variables['depth'][:] = depthlevels
+    r.groups[g].variables['fetch'][:] = fetchlevels
+    r.groups[g].variables['attenuation'][:] = attenuationlevels
+
     r.groups[g].variables['time'][:] = times
     r.groups[g].variables['time_bnds'][:, :] = time_bnds
 
