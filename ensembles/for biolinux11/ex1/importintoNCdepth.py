@@ -4,7 +4,7 @@ import numpy as np
 ncfname = 'test.nc'
 x = np.arange(35, 65) ## EW
 y = np.arange(58, 94) ## NS
-depthlevels = np.array([10])
+depthlevels = np.array([2, 5, 10, 20, 30, 40])
 fetchlevels = np.array([1000])
 attenuationlevels = np.array([2])
 
