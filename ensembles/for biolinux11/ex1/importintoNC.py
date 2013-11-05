@@ -181,10 +181,6 @@ r.groups['flakelakeanalyzer'].variables['ss'].setncattr('standard_name', 'ss')
 r.groups['flakelakeanalyzer'].variables['wn'].setncattr('standard_name', 'wn')
 r.groups['flakelakeanalyzer'].variables['ln'].setncattr('standard_name', 'ln')
     
-depthi = [0]
-fetchi = [0]
-attenuationi = [0]
-
 converters0 = {0: lambda s: s.strip('"'), 
                1: lambda s: '0'}  
 ## 1: is the date column. Guess we don't need it
@@ -195,9 +191,15 @@ converters1 = {0: lambda s: s.strip('"'),
 
 for xi in range(len(x)):
     for yi in range(len(y)):
+
         ## could have loops for depth, fetch, and attenuation
+        depthi = depthlevels[0]
+        fetchi = fetchlevels[0]
+        attenuationi = attenuationlevels[0]
+
         dname = '%03d-%03d' % (x[xi], y[yi])
         print(dname)
+
         flakeout = \
           np.loadtxt(''.join([dname, '/csv/dm_simple.csv.bz2']), 
                      skiprows = 1, delimiter = ',', converters = converters0,
