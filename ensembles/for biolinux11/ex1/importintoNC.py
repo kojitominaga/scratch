@@ -123,6 +123,7 @@ r.groups['flakeout'].variables['tsfc'].setncatts(attributes)
 r.groups['flakeout'].variables['tsnow'].setncatts(attributes)
 r.groups['flakeout'].variables['tice'].setncatts(attributes)
 r.groups['flakeout'].variables['tmnw'].setncatts(attributes)
+r.groups['flakeout'].variables['twml'].setncatts(attributes)
 r.groups['flakeout'].variables['tbot'].setncatts(attributes)
 r.groups['flakeout'].variables['tb1'].setncatts(attributes)
 r.groups['flakeout'].variables['ct'].setncatts(attributes)
@@ -140,6 +141,7 @@ r.groups['flakeout'].variables['tsfc'].setncattr('long_name', 'surface temperatu
 r.groups['flakeout'].variables['tsnow'].setncattr('long_name', 'snow surface temperature')
 r.groups['flakeout'].variables['tice'].setncattr('long_name', 'ice surface temperature')
 r.groups['flakeout'].variables['tmnw'].setncattr('long_name', 'mean water temperature')
+r.groups['flakeout'].variables['twml'].setncattr('long_name', 'mixing layer temperature')
 r.groups['flakeout'].variables['tbot'].setncattr('long_name', 'lake bottom temperature')
 r.groups['flakeout'].variables['tb1'].setncattr('long_name', 'temperature bottom of upper sediment')
 r.groups['flakeout'].variables['ct'].setncattr('long_name', 'shape factor')
@@ -157,6 +159,7 @@ r.groups['flakeout'].variables['tsfc'].setncattr('units', 'K')
 r.groups['flakeout'].variables['tsnow'].setncattr('units', 'K')
 r.groups['flakeout'].variables['tice'].setncattr('units', 'K')
 r.groups['flakeout'].variables['tmnw'].setncattr('units', 'K')
+r.groups['flakeout'].variables['twml'].setncattr('units', 'K')
 r.groups['flakeout'].variables['tbot'].setncattr('units', 'K')
 r.groups['flakeout'].variables['tb1'].setncattr('units', 'K')
 r.groups['flakeout'].variables['ct'].setncattr('units', '(unit)')
@@ -174,6 +177,7 @@ r.groups['flakeout'].variables['tsfc'].setncattr('standard_name', 'tsfc')
 r.groups['flakeout'].variables['tsnow'].setncattr('standard_name', 'tsnow')
 r.groups['flakeout'].variables['tice'].setncattr('standard_name', 'tice')
 r.groups['flakeout'].variables['tmnw'].setncattr('standard_name', 'tmnw')
+r.groups['flakeout'].variables['twml'].setncattr('standard_name', 'tbot')
 r.groups['flakeout'].variables['tbot'].setncattr('standard_name', 'tbot')
 r.groups['flakeout'].variables['tb1'].setncattr('standard_name', 'tb1')
 r.groups['flakeout'].variables['ct'].setncattr('standard_name', 'ct')
@@ -231,6 +235,9 @@ for xi in range(len(x)):
         r.groups['flakelakeanalyzer'].variables['ss'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 2]
         r.groups['flakelakeanalyzer'].variables['wn'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 3]
         r.groups['flakelakeanalyzer'].variables['ln'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 4]
+
+        flakeout.close()
+        lakeanalyzer.close()
 
 r.close()
 
