@@ -214,10 +214,10 @@ for xi in range(len(x)):
           np.loadtxt(''.join([dname, '/csv/dm_simple.csv.bz2']), 
                      skiprows = 1, delimiter = ',', converters = converters0,
                      usecols = (22, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21))
-        lakeanalyzer = \
-          np.loadtxt(''.join([dname, '/csv/dm_simple_lais.csv.bz2']), 
-                     skiprows = 1, delimiter = ',', converters = converters1,
-                     usecols = (1, 2, 3, 4, 5))
+        # lakeanalyzer = \
+        #   np.loadtxt(''.join([dname, '/csv/dm_simple_lais.csv.bz2']), 
+        #              skiprows = 1, delimiter = ',', converters = converters1,
+        #              usecols = (1, 2, 3, 4, 5))
         r.groups['flakeout'].variables['tsfc'][:, xi, yi, depthi, fetchi, attenuationi] = flakeout[:, 0]
         r.groups['flakeout'].variables['tsnow'][:, xi, yi, depthi, fetchi, attenuationi] = flakeout[:, 1]
         r.groups['flakeout'].variables['tice'][:, xi, yi, depthi, fetchi, attenuationi] = flakeout[:, 2]
@@ -230,11 +230,11 @@ for xi in range(len(x)):
         r.groups['flakeout'].variables['hice'][:, xi, yi, depthi, fetchi, attenuationi] = flakeout[:, 9]
         r.groups['flakeout'].variables['hml'][:, xi, yi, depthi, fetchi, attenuationi] = flakeout[:, 10]
         r.groups['flakeout'].variables['hb1'][:, xi, yi, depthi, fetchi, attenuationi] = flakeout[:, 11]
-        r.groups['flakelakeanalyzer'].variables['td'] [:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 0]
-        r.groups['flakelakeanalyzer'].variables['mld'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 1]
-        r.groups['flakelakeanalyzer'].variables['ss'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 2]
-        r.groups['flakelakeanalyzer'].variables['wn'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 3]
-        r.groups['flakelakeanalyzer'].variables['ln'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 4]
+        # r.groups['flakelakeanalyzer'].variables['td'] [:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 0]
+        # r.groups['flakelakeanalyzer'].variables['mld'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 1]
+        # r.groups['flakelakeanalyzer'].variables['ss'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 2]
+        # r.groups['flakelakeanalyzer'].variables['wn'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 3]
+        # r.groups['flakelakeanalyzer'].variables['ln'][:, xi, yi, depthi, fetchi, attenuationi] = lakeanalyzer[:, 4]
 
 r.close()
 
