@@ -1,0 +1,16 @@
+Thoughts from the meeting 7-8 November 2013
+
+The variables to explain the BV diffusion: 
+- oceanity-continentality gradient and/or wind speed, other geopgraphical/climatorological variations
+- area (this may be corrected for the wind/fetch (wind direction, topography)
+  - possibly consider the depth function (hypsography)
+- shading (volley lakes) -- maybe take care of it at the input data level?
+
+Not very sure about the best statistical approach for this -- need to check with Tom
+
+Mainly interested in deeper lakes
+
+Explains the difference between the Minnesota lakes and the Nordic (or Norwegian) lakes
+- this should mean that we should do two ways (i) similar statistical methods to the MN folks (ii) the best statistical methods incorporating all variables of our choices
+
+Temperature at depths (if Tom's brother's equipment works) spring to summer --> should be perfect for calibrating the model
