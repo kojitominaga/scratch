@@ -1,4 +1,3 @@
-"""fetch from ENSEMBLES RT3"""
 import urllib
 
 ## testing with the ERA40 simulation
