@@ -42,3 +42,4 @@ for g in fnames:
                 temp = r.variables[v][:, :, :, :].\
                   reshape(np.product(r.variables[v].shape), )
             f2.write('%s,%s,%f,%f\n' % (g, v, temp.min(), temp.max()))
+        r.close()
