@@ -1,7 +1,7 @@
 import netCDF4
 import numpy as np
 
-ncfname = 'test.nc'
+ncfname = 'testsimple.nc'
 x = np.arange(35, 65) ## EW
 y = np.arange(58, 94) ## NS
 depthlevels = np.array([10])
