@@ -11,6 +11,10 @@ ncf = sys.argv[1]
 r = netCDF4.Dataset(ncf)
 print(r)
 
+print("""============
+Check that the above correspond to the correct coordinates
+============""")
+
 lon = r.variables['lon'][:, :] # y * x
 lat = r.variables['lat'][:, :] # y * x
 nx = r.variables['rlon'].size  # x
