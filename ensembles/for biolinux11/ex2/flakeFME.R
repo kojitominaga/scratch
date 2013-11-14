@@ -98,3 +98,4 @@ pars.gs.range <- data.frame(
 
 sR <- sensRange(func = flakeFMEready, parRange = pars.gs.range,
                 map = NULL, num = 100)
+sF <- sensFun(flakeFMEready, parms = pars, map = NULL)
