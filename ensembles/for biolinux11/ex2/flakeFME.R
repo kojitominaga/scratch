@@ -87,7 +87,7 @@ flakeFMEready <- function(pars) {
   surfaceT <- tapply(result[['T_wML']],
                      rep(1:n0, each = m, length.out = nrow(result)),
                      mean)
-  return(matrix(surfaceT, ncol = 1))
+  return(matrix(surfaceT, ncol = 1, dimnames = list(NULL, 'twml')))
 }
 
 pars.gs.range <- data.frame(
@@ -99,3 +99,36 @@ pars.gs.range <- data.frame(
 sR <- sensRange(func = flakeFMEready, parRange = pars.gs.range,
                 map = NULL, num = 100)
 sF <- sensFun(flakeFMEready, parms = pars, map = NULL)
+
+flakeFMEreadyday240 <- function(pars){
+  flakeFMEready(pars)[240, ]
+}
+
+## mc <- modCRL(flakeFMEreadyday240, parRange = pars.gs.range)
+
+## make observation data for MCMC
+## here assume the default parameters and we try to let MCMC find the values
+
+## in the case where we have all the daily values
+
+default <- flakeFMEready(pars)
+
+## make this the __observations__
+observations <- data.frame(name = rep('twml', times = nrow(default)),
+                           time = 1:nrow(default),
+                           val = as.vector(default),
+                           err = rep(0.5, times = nrow(default))
+                           )
+## objective function
+objective <- function(x, parset = names(x)) {
+  pars[parset] <- x
+  out <- flakeFMEready(pars)
+  mod <- data.frame(time = 1:nrow(default),
+                    twml = as.vector(out))
+  return(modCost(obs = observations, model = mod, y = 'val', err = 'err'))
+}
+
+Coll <- collin(sF <- sensFun(func = objective, parms = pars, map = NULL))
+
+
+
