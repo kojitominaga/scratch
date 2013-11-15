@@ -130,5 +130,7 @@ objective <- function(x, parset = names(x)) {
 
 Coll <- collin(sF <- sensFun(func = objective, parms = pars, map = NULL))
 
+## modFit next
+
 
 
