@@ -96,9 +96,9 @@ pars.gs.range <- data.frame(
   max = c(30, 10000, 20)
   )
 
-sR <- sensRange(func = flakeFMEready, parRange = pars.gs.range,
-                map = NULL, num = 100)
-sF <- sensFun(flakeFMEready, parms = pars, map = NULL)
+## sR <- sensRange(func = flakeFMEready, parRange = pars.gs.range,
+##                 map = NULL, num = 100)
+## sF <- sensFun(flakeFMEready, parms = pars, map = NULL)
 
 flakeFMEreadyday240 <- function(pars){
   flakeFMEready(pars)[240, ]
@@ -131,6 +131,27 @@ objective <- function(x, parset = names(x)) {
 Coll <- collin(sF <- sensFun(func = objective, parms = pars, map = NULL))
 
 ## modFit next
-
+## the following is easy: starting from the answer
+Fit1 <- modFit(objective, c(pars, recursive = TRUE),
+               lower = pars.gs.range[['min']],
+               upper = pars.gs.range[['max']]
+               )
+## starting a bit off, takes more iterations
+Fit2 <-  modFit(objective, c(pars, recursive = TRUE) / 2,
+               lower = pars.gs.range[['min']],
+               upper = pars.gs.range[['max']]
+               )
+## recording
+if (!file.exists('modFit/')) dir.create('modFit')
+print(summary(Fit1))
+save(Fit1, file = 'modFit/Fit1.RData')
+pdf('modFit/Fit1.pdf')
+plot(Fit1)
+dev.off()
+print(summary(Fit2))
+save(Fit2, file = 'modFit/Fit2.RData')
+pdf('modFit/Fit2.pdf')
+plot(Fit2)
+dev.off()
 
 

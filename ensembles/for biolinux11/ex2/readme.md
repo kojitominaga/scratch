@@ -41,3 +41,54 @@ is made smallest, p^hat actually is closer to p1 = 2 and p2 = 1000.
 The suggested present study is still a worthy test even using the same model and known parameters. At the end of the day it's about the extent of self-explanability FLake's parameter space has. 
 
 If the above could be the Part 1, then Part 2 will be about either using multiple models, or using real observation, or on the regional context (we want fetch or BV parameters as a function of geography/climate, hypsographic curve, and surface area, for example p(geo, hyp, area)). Part 2 will then not assume any more that the model is perfect representation of reality. 
+
+
+FME::modFit exercise
+====================
+
+    ## the following is easy: starting from the answer
+    > Fit1 <- modFit(objective, c(pars, recursive = TRUE),
+                   lower = pars.gs.range[['min']],
+                   upper = pars.gs.range[['max']]
+                   )
+    > print(summary(Fit1))
+    
+    Parameters:
+           Estimate Std. Error   t value Pr(>|t|)    
+    depth 2.000e+01  5.230e-15 3.824e+15   <2e-16 ***
+    fetch 1.000e+03  6.123e-12 1.633e+14   <2e-16 ***
+    atten 2.000e+00  1.874e-15 1.067e+15   <2e-16 ***
+    ---
+    Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+    
+    Residual standard error: 1.464e-14 on 362 degrees of freedom
+    
+    Parameter correlation:
+           depth  fetch  atten
+    depth 1.0000 0.1839 0.4971
+    fetch 0.1839 1.0000 0.1860
+    atten 0.4971 0.1860 1.0000
+    
+    ## starting a bit off, takes more iterations
+    > Fit2 <-  modFit(objective, c(pars, recursive = TRUE) / 2,
+                   lower = pars.gs.range[['min']],
+                   upper = pars.gs.range[['max']]
+                   )
+    > print(summary(Fit2))
+    
+    Parameters:
+           Estimate Std. Error   t value Pr(>|t|)    
+    depth 2.000e+01  1.684e-13 1.188e+14   <2e-16 ***
+    fetch 1.000e+03  1.971e-10 5.073e+12   <2e-16 ***
+    atten 2.000e+00  6.034e-14 3.314e+13   <2e-16 ***
+    ---
+    Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+    
+    Residual standard error: 4.712e-13 on 362 degrees of freedom
+    
+    Parameter correlation:
+           depth  fetch  atten
+    depth 1.0000 0.1838 0.4971
+    fetch 0.1838 1.0000 0.1860
+    atten 0.4971 0.1860 1.0000
+
