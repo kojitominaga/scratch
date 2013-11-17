@@ -46,6 +46,9 @@ If the above could be the Part 1, then Part 2 will be about either using multipl
 FME::modFit exercise
 ====================
 
+PDF files available under directory modFit
+
+
     ## the following is easy: starting from the answer
     > Fit1 <- modFit(objective, c(pars, recursive = TRUE),
                    lower = pars.gs.range[['min']],
@@ -91,4 +94,30 @@ FME::modFit exercise
     depth 1.0000 0.1838 0.4971
     fetch 0.1838 1.0000 0.1860
     atten 0.4971 0.1860 1.0000
+
+FME::modMCMC
+============
+
+Continuing from the previous case. 1-year daily water surface temperature
+
+the answer:
+
+    depth: 20
+    fetch: 1000
+    atten: 2
+
+starting values:
+
+    depth: 10
+    fetch: 500
+    atten: 1
+
+Note:
+
+- Depth and atten converged quickly but fetch didn't converge after 500th iteration.
+- SSR got reduced to minimum (optimum at 50th iteration, but at this stage fetch was not converged)
+
+See modMCMC/mcmc3.RData and modMCMC/mcmc.pdf
+
+
 

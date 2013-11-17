@@ -128,7 +128,7 @@ objective <- function(x, parset = names(x)) {
   return(modCost(obs = observations, model = mod, y = 'val', err = 'err'))
 }
 
-Coll <- collin(sF <- sensFun(func = objective, parms = pars, map = NULL))
+## Coll <- collin(sF <- sensFun(func = objective, parms = pars, map = NULL))
 
 ## modFit next
 ## the following is easy: starting from the answer
@@ -154,4 +154,25 @@ pdf('modFit/Fit2.pdf')
 plot(Fit2)
 dev.off()
 
+## MCMC
+if (!file.exists('modMCMC/')) dir.create('modMCMC')
+
+## ## the following chunk didn't work
+
+## ## SF <- summary(Fit2)
+## ## Var0 <- SF[['modVariance']]
+## ## covIni <- SF[['cov.scaled']] * 2.4 ^ 2 / 2
+## ## mcmc <- modMCMC(objective, c(pars, recursive = TRUE), 
+## ##                 jump = covIni, var0 = Var0, wvar0 = 1)
+## ## save(mcmc, file = 'modMCMC/mcmc.RData')
+
+mcmc3 <- modMCMC(objective, c(pars, recursive = TRUE) / 2, niter = 500,
+                 upper = pars.gs.range[['max']],
+                 lower = pars.gs.range[['min']])
+save(mcmc3, file = 'modMCMC/mcmc3.RData')
+mc3 <- as.mcmc(mcmc3[['pars']])
+pdf('modMCMC/mcmc3.pdf')
+plot(mcmc3, Full = TRUE)
+cumuplot(mc3)
+dev.off()
 
