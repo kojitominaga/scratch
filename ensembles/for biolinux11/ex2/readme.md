@@ -119,5 +119,10 @@ Note:
 
 See modMCMC/mcmc3.RData and modMCMC/mcmc.pdf
 
+dream::dream
+============
+
+contrast dream3 and dream4 -- dream4 is more precise faster. 
+
 
 

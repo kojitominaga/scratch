@@ -132,27 +132,29 @@ objective <- function(x, parset = names(x)) {
 
 ## modFit next
 ## the following is easy: starting from the answer
-Fit1 <- modFit(objective, c(pars, recursive = TRUE),
-               lower = pars.gs.range[['min']],
-               upper = pars.gs.range[['max']]
-               )
-## starting a bit off, takes more iterations
-Fit2 <-  modFit(objective, c(pars, recursive = TRUE) / 2,
-               lower = pars.gs.range[['min']],
-               upper = pars.gs.range[['max']]
-               )
+## Fit1 <- modFit(objective, c(pars, recursive = TRUE),
+##                lower = pars.gs.range[['min']],
+##                upper = pars.gs.range[['max']]
+##                )
+## ## starting a bit off, takes more iterations
+## Fit2 <-  modFit(objective, c(pars, recursive = TRUE) / 2,
+##                lower = pars.gs.range[['min']],
+##                upper = pars.gs.range[['max']]
+##                )
 ## recording
-if (!file.exists('modFit/')) dir.create('modFit')
-print(summary(Fit1))
-save(Fit1, file = 'modFit/Fit1.RData')
-pdf('modFit/Fit1.pdf')
-plot(Fit1)
-dev.off()
-print(summary(Fit2))
-save(Fit2, file = 'modFit/Fit2.RData')
-pdf('modFit/Fit2.pdf')
-plot(Fit2)
-dev.off()
+## if (!file.exists('modFit/')) dir.create('modFit')
+## print(summary(Fit1))
+## save(Fit1, file = 'modFit/Fit1.RData')
+## pdf('modFit/Fit1.pdf')
+## plot(Fit1)
+## dev.off()
+## print(summary(Fit2))
+## save(Fit2, file = 'modFit/Fit2.RData')
+## pdf('modFit/Fit2.pdf')
+## plot(Fit2)
+## dev.off()
+load('modFit/Fit1.RData')
+load('modFit/Fit2.RData')
 
 ## MCMC
 if (!file.exists('modMCMC/')) dir.create('modMCMC')
@@ -166,13 +168,13 @@ if (!file.exists('modMCMC/')) dir.create('modMCMC')
 ## ##                 jump = covIni, var0 = Var0, wvar0 = 1)
 ## ## save(mcmc, file = 'modMCMC/mcmc.RData')
 
-mcmc3 <- modMCMC(objective, c(pars, recursive = TRUE) / 2, niter = 500,
-                 upper = pars.gs.range[['max']],
-                 lower = pars.gs.range[['min']])
-save(mcmc3, file = 'modMCMC/mcmc3.RData')
-mc3 <- as.mcmc(mcmc3[['pars']])
-pdf('modMCMC/mcmc3.pdf')
-plot(mcmc3, Full = TRUE)
-cumuplot(mc3)
-dev.off()
-
+## mcmc3 <- modMCMC(objective, c(pars, recursive = TRUE) / 2, niter = 500,
+##                  upper = pars.gs.range[['max']],
+##                  lower = pars.gs.range[['min']])
+## save(mcmc3, file = 'modMCMC/mcmc3.RData')
+## mc3 <- as.mcmc(mcmc3[['pars']])
+## pdf('modMCMC/mcmc3.pdf')
+## plot(mcmc3, Full = TRUE)
+## cumuplot(mc3)
+## dev.off()
+load('modMCMC/mcmc3.RData')
