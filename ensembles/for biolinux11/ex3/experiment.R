@@ -36,7 +36,7 @@ load('meta/defaults.RData')
 
 control1 <- list(ndim = 1,
                  nseq = 4,
-                 maxtime = 60 * 5,  # seconds
+                 maxtime = 60 * 4,  # seconds
                  parallel = "multicore")
 
 if (!file.exists('dream/')) dir.create('dream')
@@ -51,8 +51,7 @@ flakedreamreadydepth <- function(pars, depths) {
 }
 parlistdepth <- parlist['fetch'] ## still a list with length 1
 
-## for (dci in 1:length(dcs)) {
-for (dci in 1:3) {
+for (dci in 1:length(dcs)) {
   dc <- dcs[[dci]]
   default <- defaults[[dci]]
   dcname <- names(dcs)[dci]
