@@ -36,7 +36,7 @@ load('meta/defaults.RData')
 
 control1 <- list(ndim = 1,
                  nseq = 4,
-                 maxtime = 60,  # seconds
+                 maxtime = 60 * 5,  # seconds
                  parallel = "multicore")
 
 if (!file.exists('dream/')) dir.create('dream')
