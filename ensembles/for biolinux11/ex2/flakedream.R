@@ -74,3 +74,17 @@ dev.off()
 dev.off()
 
 
+control5 <- list(ndim = 3,
+                 nseq = 4,
+                 maxtime = 60 * 20,
+                 NULL)
+                 parallel = "multicore")
+measurement1 <- list(data = c(default))
+dream5 <- dream(flakedreamready, "calc.rmse", parlist, control = control5,
+                measurement = measurement1)
+save(dream, file = 'dream/dream4.RData')
+pdf('dream/dream5.pdf')
+plot(dream5)
+dev.off()
+dev.off()
+
