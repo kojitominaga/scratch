@@ -2,24 +2,24 @@ source('flakedream2.R')
 
 if (!file.exists('meta/')) dir.create('meta')
 
-## wind:             bias and noise
-## temperature:      bias and noise
-## global radiation: noise
-## back radiation:   noise
-ts.input.noise <- ts.input
-ndays <- nrow(ts.input.noise) / m
-windnoise <- pmax(0, rnorm(ndays, m = 0.9, sd = 0.2))
-ts.input.noise[['U_a_in']] =
-  ts.input[['U_a_in']] * rep(windnoise, each = m)
-tnoise <- rnorm(ndays, m = 0.2, sd = 1)
-ts.input.noise[['T_a_in']] =
-  ts.input[['T_a_in']] + rep(tnoise, each = m)
-ccnoise <- rnorm(ndays, m = 1, sd = 0.1)
-ts.input.noise[['I_atm_in']] =
-  ts.input[['I_atm_in']] * rep(ccnoise, each = m)
-ts.input.noise[['Q_atm_lw_in']] =
-  ts.input[['Q_atm_lw_in']] * rep(ccnoise, each = m)
-save(ts.input.noise, file = 'meta/ts.input.noise.RData')
+## ## wind:             bias and noise
+## ## temperature:      bias and noise
+## ## global radiation: noise
+## ## back radiation:   noise
+## ts.input.noise <- ts.input
+## ndays <- nrow(ts.input.noise) / m
+## windnoise <- pmax(0, rnorm(ndays, m = 0.9, sd = 0.2))
+## ts.input.noise[['U_a_in']] =
+##   ts.input[['U_a_in']] * rep(windnoise, each = m)
+## tnoise <- rnorm(ndays, m = 0.2, sd = 1)
+## ts.input.noise[['T_a_in']] =
+##   ts.input[['T_a_in']] + rep(tnoise, each = m)
+## ccnoise <- rnorm(ndays, m = 1, sd = 0.1)
+## ts.input.noise[['I_atm_in']] =
+##   ts.input[['I_atm_in']] * rep(ccnoise, each = m)
+## ts.input.noise[['Q_atm_lw_in']] =
+##   ts.input[['Q_atm_lw_in']] * rep(ccnoise, each = m)
+## save(ts.input.noise, file = 'meta/ts.input.noise.RData')
 load('meta/ts.input.noise.RData')
 
 flakedreamreadyweathernoise <- function(pars, depths) {
@@ -37,12 +37,17 @@ flakedreamreadyweathernoise <- function(pars, depths) {
 
 load('meta/dcs.RData')
 load('meta/defaults.RData')
-dcsshort <- dcs[c(1:21, 22:71, 122:171)]
-savepathsshort <- sprintf('dreamweathernoise/%s.RData', names(dcsshort))
-defaultsshort <- defaults[c(1:21, 22:71, 122:171)]
-save(dcsshort, file = 'meta/dcsshort.RData')
-save(savepathsshort, file = 'meta/savepathsshort.RData')
-save(defaultsshort, file = 'meta/defaultsshort.RData')
+## dcsshort <- dcs[c(1:21, 22:71, 122:171)]
+## savepathsshort <- sprintf('dreamweathernoise/%s.RData', names(dcsshort))
+## defaultsshort <- defaults[c(1:21, 22:71, 122:171)]
+## save(dcsshort, file = 'meta/dcsshort.RData')
+## save(savepathsshort, file = 'meta/savepathsshort.RData')
+## save(defaultsshort, file = 'meta/defaultsshort.RData')
+load('meta/dcsshort.RData')
+load('meta/savepathsshort.RData')
+load('meta/defaultsshort.RData')
+
+
 
 control1 <- list(ndim = 1,
                  nseq = 4,
