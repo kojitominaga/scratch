@@ -43,7 +43,7 @@ for (dci in c(1, 3, 21, 22, 72)) {
   cat('\n\n')
   cat(c(dcname, dc))
   cat('\n\n')
-  measurement1 <- list(data = c(default) - 0.5)
+  measurement1 <- list(data = c(default) + 0.5)
   d <- dream(flakedreamreadydepth, "calc.rmse", parlistdepth,
              FUN.pars = list(depths = dc),
              control = control1,
