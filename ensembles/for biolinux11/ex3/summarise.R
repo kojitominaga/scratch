@@ -3,8 +3,7 @@ load('meta/dcs.RData')
 load('meta/defaults.RData')
 savepaths <- sprintf('dream/%s.RData', names(dcs))
 dd <- list()
-## for (di in 1:length(savepaths)) {
-for (di in 1:100) {
+for (di in 1:length(savepaths)) {
   savepath <- savepaths[di]
   cat(savepath)
   cat('\n')
@@ -21,8 +20,7 @@ write.table(t(as.matrix(data.frame(codastats))), file = 'test.txt',
 pdf(height = 11, width = 7)
 par(mfrow = c(7, 3))
 par(mar = c(2, 4, 1, 0))
-## for (di in 1:length(savepaths)) {
-for (di in 1:100) {
+for (di in 1:length(savepaths)) {
   hist(c(window(dd[[di]]), recursive = TRUE),
        breaks = c(0, seq(from = 995.5, to = 1004.5, by = 1), 10000),
        xlim = c(995.5, 1004.5),
