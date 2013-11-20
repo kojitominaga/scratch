@@ -51,7 +51,7 @@ if (!file.exists('dreamweathernoise/')) dir.create('dreamweathernoise')
 savepathsshort <- sprintf('dreamweathernoise/%s.RData', names(dcsshort))
 
 flakedreamreadyweathernoisedepth <- function(pars, depths) {
-  cat(pars)
+  cat(round(pars, digits = 1))
   cat('\n')
   thepars <- c(20, c(pars), 2)
   return(flakedreamreadyweathernoise(thepars, depths))
