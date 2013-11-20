@@ -46,7 +46,7 @@ control1 <- list(ndim = 1,
                  maxtime = 60 * 4,  # seconds
                  parallel = "multicore")
 
-if (!file.exists('dream/')) dir.create('dream')
+if (!file.exists('dreamweathernoise/')) dir.create('dreamweathernoise')
 
 savepathsshort <- sprintf('dreamweathernoise/%s.RData', names(dcsshort))
 
@@ -59,7 +59,7 @@ flakedreamreadyweathernoisedepth <- function(pars, depths) {
 parlistdepth <- parlist['fetch'] ## still a list with length 1
 
 ## for (dci in 1:length(dcsshort)) {
-for (dci in 1:2) {
+for (dci in c(1, 2, 21, 22, 72)) {
   dc <- dcsshort[[dci]]
   default <- defaults[[dci]]
   ## still targeting the defaults made with the original weather
