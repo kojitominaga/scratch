@@ -11,6 +11,8 @@ savepathsmeasurementnoiseshort <-
 ## save(dcsshort, file = 'meta/dcsshort.RData')
 ## save(savepathsshort, file = 'meta/savepathsshort.RData')
 ## save(defaultsshort, file = 'meta/defaultsshort.RData')
+save(savepathsmeasurementnoiseshort,
+     'meta/savepathsmeasurementnoiseshort.RData')
 load('meta/dcsshort.RData')
 load('meta/savepathsmeasurementnoiseshort.RData')
 load('meta/defaultsshort.RData')
@@ -34,7 +36,7 @@ control1 <- list(ndim = 1,
 parlistdepth <- parlist['fetch'] ## still a list with length 1
 
 ## for (dci in 1:length(dcsshort)) {
-for (dci in c(1, 3, 21, 22, 72)) {
+for (dci in c(73, 74)) {
   dc <- dcsshort[[dci]]
   default <- defaultsshort[[dci]]
   ## still targeting the defaults made with the original weather
@@ -43,7 +45,7 @@ for (dci in c(1, 3, 21, 22, 72)) {
   cat('\n\n')
   cat(c(dcname, dc))
   cat('\n\n')
-  measurement1 <- list(data = c(default) + 0.5)
+  measurement1 <- list(data = c(default) + 0.3)
   d <- dream(flakedreamreadydepth, "calc.rmse", parlistdepth,
              FUN.pars = list(depths = dc),
              control = control1,
