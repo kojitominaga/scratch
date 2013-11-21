@@ -5,6 +5,7 @@ if (!file.exists('meta/')) dir.create('meta')
 load('meta/dcs.RData')
 load('meta/defaults.RData')
 ## dcsshort <- dcs[c(1:21, 22:71, 122:171)]
+load('meta/dcsshort.RData')
 savepathsmeasurementnoiseshort <-
   sprintf('dreammeasurementnoise/%s.RData', names(dcsshort))
 ## defaultsshort <- defaults[c(1:21, 22:71, 122:171)]
@@ -12,8 +13,7 @@ savepathsmeasurementnoiseshort <-
 ## save(savepathsshort, file = 'meta/savepathsshort.RData')
 ## save(defaultsshort, file = 'meta/defaultsshort.RData')
 save(savepathsmeasurementnoiseshort,
-     'meta/savepathsmeasurementnoiseshort.RData')
-load('meta/dcsshort.RData')
+     file = 'meta/savepathsmeasurementnoiseshort.RData')
 load('meta/savepathsmeasurementnoiseshort.RData')
 load('meta/defaultsshort.RData')
 
@@ -35,8 +35,7 @@ control1 <- list(ndim = 1,
 
 parlistdepth <- parlist['fetch'] ## still a list with length 1
 
-## for (dci in 1:length(dcsshort)) {
-for (dci in c(73, 74)) {
+for (dci in 1:length(dcsshort)) {
   dc <- dcsshort[[dci]]
   default <- defaultsshort[[dci]]
   ## still targeting the defaults made with the original weather
