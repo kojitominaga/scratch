@@ -33,8 +33,6 @@ require(gstat)
 
 psln <- psl0000df[bb1, ]
 
-for (nmax in c(10, 30, 50, 100, 200, 500, 5000)) {
-
 ## 1: simple kriging (spatial only)
 v1 <- variogram(psl ~ 1, psln)
 vf1 <- fit.variogram(v1, vgm(500000, 'Exp', 500, 1))
@@ -84,7 +82,6 @@ for (i in 1:nrow(comsat)) {
 pdf(sprintf('comparison of interpolation methods %s.pdf', nmax))
 plot(data.frame(psl3, psl4, psl1, psl2), pch = 19, cex = 0.4)
 dev.off()
-  }
   
   
 
