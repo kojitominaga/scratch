@@ -8,6 +8,7 @@ import sys
 import os
 import netCDF4
 import numpy as np
+import bz2
 
 def writeout(ncfname, timei, fm, outdir):
     """write out the NORA10 results at the specified time index timei"""
@@ -18,8 +19,10 @@ def writeout(ncfname, timei, fm, outdir):
         out = v[timei, 0, :, :]
     elif v.ndim == 3:
         out = v[timei, :, :]
-    outfn = '%s/%s_%04i.txt' % (outdir, ncfname.split('.nc')[0], timei)
-    np.savetxt(outfn, out, fmt = fm)
+    outfn = '%s/%s_%04i.txt.bz2' % (outdir, ncfname.split('.nc')[0], timei)
+    b = bz2.BZ2File(outfn, 'w')
+    np.savetxt(b, out, fmt = fm)
+    b.close()
 
 def writeoutalldays(ncfname, fm, outdir):
     r = netCDF4.Dataset(ncfname)
@@ -31,15 +34,18 @@ def writeoutalldays(ncfname, fm, outdir):
             out = v[timei, 0, :, :]
         elif v.ndim == 3:
             out = v[timei, :, :]
-        outfn = '%s/%s_%04i.txt' % (outdir, ncfname.split('.nc')[0], timei)
-        np.savetxt(outfn, out, fmt = fm)
+        outfn = '%s/%s_%04i.txt.bz2' % (outdir, ncfname.split('.nc')[0], timei)
+        b = bz2.BZ2File(outfn, 'w')
+        np.savetxt(b, out, fmt = fm)
+        b.close()
 
 if __name__ == '__main__':
     ncfn = sys.argv[1]
     signifdigits = int(sys.argv[3])
     alldays = bool(sys.argv[4] == 'True')
     outdir = sys.argv[5]
-    os.makedirs(outdir)
+    if not os.path.exists(outdir):
+        os.makedirs(outdir)
     if alldays:
         writeoutalldays(ncfn, '%%.%sf' % signifdigits, outdir)
     else:

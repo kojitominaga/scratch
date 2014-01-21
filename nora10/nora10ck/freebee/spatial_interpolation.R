@@ -45,10 +45,13 @@ cat('reading .nc file...\n')
 cmd <- sprintf('python readNORA10.py %s na %s True temp/%s/%s',
                nora10nc, signifdigit, varname, year)
 cat(cmd)
+cat('\n')
 system(cmd)
 cat('\nfinished reading .nc file\n')
 
-ndays <- sum(grepl(nora10, list.files('temp'))) ## index starts with 0
+ndays <- sum(grepl(nora10,
+                   list.files(sprintf('temp/%s/%s/', varname, year)))
+             ) ## index starts with 0
 near3plane <- matrix(NA, nrow = ndays, ncol = nrow(comsat))
 cokriging <- matrix(NA, nrow = ndays, ncol = nrow(comsat))
 
@@ -59,7 +62,7 @@ nmax <- 10
 cat('now interpolating...\n')
 for (ni in 1:ndays) {
   if (ni %% 100 == 0) cat(sprintf('done %s times\n', ni))
-  n10raw <- scan(sprintf('temp/%s/%s/%s_%04i.txt',
+  n10raw <- scan(sprintf('temp/%s/%s/%s_%04i.txt.bz2',
                          varname, year, nora10, ni - 1),
                  quiet = TRUE)
   n10df <- data.frame(lat, lon, v = n10raw, orog = orograw)
@@ -104,14 +107,14 @@ for (ni in 1:ndays) {
 }
 
 near3planef <-
-  gzip(sprintf('interpolated/%s_interp_for_COMSAT_near3.csv.gz', nora10))
+  gzfile(sprintf('interpolated/%s_interp_for_COMSAT_near3.csv.gz', nora10))
 write.table(round(near3plane, digits = signifdigits),
             file = near3planef,
             row.names = FALSE,
             col.names = paste0('id', comsat[['ID']]),
             sep = ',')
 cokrigingf <-
-  gzip(sprintf('interpolated/%s_interp_for_COMSAT_cokrig.csv.gz', nora10))
+  gzfile(sprintf('interpolated/%s_interp_for_COMSAT_cokrig.csv.gz', nora10))
 write.table(round(cokriging, digits = signifidigits), 
             file = cokrigingf,
             row.names = FALSE,
