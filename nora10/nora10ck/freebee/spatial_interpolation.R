@@ -7,11 +7,11 @@ nora10 <- strsplit(nora10nc, '.', fixed = TRUE)[[1]][1]
 foo <- strsplit(nora10, '_', fixed = TRUE)[[1]]
 if (length(foo) == 6) {
   varname <- sprintf('%s_%s', foo[4], foo[5])
-  year <- int(foo[6])
+  year <- as.integer(foo[6])
 }
 if (length(foo) == 5) {
   varname <- foo[4]
-  year <- int(foo[5])
+  year <- as.integer(foo[5])
 }
 
 
