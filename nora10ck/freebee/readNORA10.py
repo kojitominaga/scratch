@@ -5,6 +5,7 @@ if alldays == True, then timei is ignored (all days written out)
 """
 
 import sys
+import os
 import netCDF4
 import numpy as np
 
@@ -35,15 +36,13 @@ def writeoutalldays(ncfname, fm, outdir):
 
 if __name__ == '__main__':
     ncfn = sys.argv[1]
-    ti = int(sys.argv[2])
     signifdigits = int(sys.argv[3])
-    alldays = bool(sys.argv[4])
-    if len(sys.argv) > 4: 
-        outfn = sys.argv[5]
-    else:
-        outfn = None
+    alldays = bool(sys.argv[4] == 'True')
+    outdir = sys.argv[5]
+    os.makedirs(outdir)
     if alldays:
-        writeoutalldays(ncfn, '%%.%sf' % signifdigit, outdir)
+        writeoutalldays(ncfn, '%%.%sf' % signifdigits, outdir)
     else:
         writeout(ncfn, ti, '%%.%sf' % signifdigits, outdir)
+        ti = int(sys.argv[2])
     
