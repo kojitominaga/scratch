@@ -14,7 +14,7 @@ freebee/
     latfn = 'NORA10_11km_lat.txt'
     lonfn = 'NORA10_11km_lon.txt'
     orogfn = 'NORA10_11km_orog.txt'
-- spatial_interpolation
+- spatial_interpolation.R
   - usage: 
     ## usage: Rscript spatial_interpolation.R --args NORA10file
   - uses:
@@ -28,4 +28,5 @@ freebee/
        - temp/ this is intermediate files between .nc and interpolation analyses
        - interpolated/ results of interpolation
 
-
+- batchspatial.py -> batchspatial.sh
+  - calls spatial_interpolation.R many times
