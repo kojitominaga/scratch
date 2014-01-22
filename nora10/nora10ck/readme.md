@@ -1,6 +1,11 @@
 about this folder
 =================
 
+TODO
+----
+
+maybe the hard-coded significant digits for the various meteorological variables to a file. 
+
 freebee/
 --------
 
