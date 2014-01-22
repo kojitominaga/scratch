@@ -41,14 +41,6 @@ bb1 <- (oroglat > comsatwraplat[1]) &
 if (!('temp' %in% list.files('.'))) dir.create('temp')
 if (!('interpolated' %in% list.files('.'))) dir.create('interpolated')
 
-cat('reading .nc file...\n')
-cmd <- sprintf('python readNORA10.py %s na %s True temp/%s/%s',
-               nora10nc, signifdigit, varname, year)
-cat(cmd)
-cat('\n')
-system(cmd)
-cat('\nfinished reading .nc file\n')
-
 ndays <- sum(grepl(nora10,
                    list.files(sprintf('temp/%s/%s/', varname, year)))
              ) ## index starts with 0
@@ -108,14 +100,14 @@ for (ni in 1:ndays) {
 
 near3planef <-
   gzfile(sprintf('interpolated/%s_interp_for_COMSAT_near3.csv.gz', nora10))
-write.table(round(near3plane, digits = signifdigits),
+write.table(round(near3plane, digits = signifdigit),
             file = near3planef,
             row.names = FALSE,
             col.names = paste0('id', comsat[['ID']]),
             sep = ',')
 cokrigingf <-
   gzfile(sprintf('interpolated/%s_interp_for_COMSAT_cokrig.csv.gz', nora10))
-write.table(round(cokriging, digits = signifidigits), 
+write.table(round(cokriging, digits = signifidigit), 
             file = cokrigingf,
             row.names = FALSE,
             col.names = paste0('id', comsat[['ID']]),
