@@ -1,6 +1,6 @@
 years = [2007, 2008, 2009, 2010, 2011, 2012]
-vars = ['ta_2m', 'pr', 'psl', 'rss', 'rls', 'wss_10m', 'hur_2m']
-hourres = ['1H', '1H', '1H', '3H', '3H', '1H', '1H']
+vars = ['ta_2m', 'pr', 'psl', 'rss', 'rls', 'wss_10m', 'hur_2m', 'albedo']
+hourres = ['1H', '1H', '1H', '3H', '3H', '1H', '1H', '1H']
 b11b = 'NORA10'
 b11c = '11km'
 
