@@ -107,7 +107,7 @@ write.table(round(near3plane, digits = signifdigit),
             sep = ',')
 cokrigingf <-
   gzfile(sprintf('interpolated/%s_interp_for_COMSAT_cokrig.csv.gz', nora10))
-write.table(round(cokriging, digits = signifidigit), 
+write.table(round(cokriging, digits = signifdigit), 
             file = cokrigingf,
             row.names = FALSE,
             col.names = paste0('id', comsat[['ID']]),
