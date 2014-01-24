@@ -23,7 +23,8 @@ signifdigit <- switch(varname,
                       'rls' = 9,
                       'wss_10m' = 3,
                       'hur_2m' = 2,
-                      'albedo' = 3)
+                      'albedo' = 3,
+                      'ps' = 2)
 require(intervals)
 require(sp)
 require(gstat)
