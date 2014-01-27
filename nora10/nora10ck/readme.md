@@ -35,3 +35,7 @@ freebee/
 
 - batchspatial.py -> batchspatial.sh
   - calls spatial_interpolation.R many times
+
+Hours on abel
+-------------
+About 10 hours per interpolation
