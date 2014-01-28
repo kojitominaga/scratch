@@ -24,10 +24,13 @@ for (vi in 1:length(vars)) {
                      near3 = unlist(lapply(datan, c, recursive = TRUE)))
   ra <- range(c(data, recursive = TRUE))
   png(pngfn, width = 960, height = 960, pointsize = 24)
-  plot(data[['cokrig']], data[['near3']], type = 'p', pch = 19, 
+  plot(data[['cokrig']], data[['near3']],
+       xlim = ra, ylim = ra, 
+       type = 'p', pch = 19, col = '#11111111',
        main = vars[vi],
        xlab = 'Co-kriging by elevation (nearest 10)',
        ylab = 'Near-three plane interpolation')
+  abline(a = 0, b = 1, col = 'blue')
   dev.off()
 }
 
