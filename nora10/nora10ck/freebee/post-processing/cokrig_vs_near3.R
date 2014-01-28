@@ -19,13 +19,13 @@ for (vi in 1:length(vars)) {
                     '_', years, '_interp_for_COMSAT_near3.csv.gz')
   pngfn <- paste0(vars[vi], '.png')
   datac <- lapply(fnamesc, read.csv)
-  datan <- lapply(fnamesc, read.csv)
+  datan <- lapply(fnamesn, read.csv)
   data <- data.frame(cokrig = unlist(lapply(datac, c, recursive = TRUE)),
                      near3 = unlist(lapply(datan, c, recursive = TRUE)))
   ra <- range(c(data, recursive = TRUE))
   png(pngfn, width = 960, height = 960, pointsize = 24)
   plot(data[['cokrig']], data[['near3']], type = 'p', pch = 19, 
-       main = var[vi],
+       main = vars[vi],
        xlab = 'Co-kriging by elevation (nearest 10)',
        ylab = 'Near-three plane interpolation')
   dev.off()
