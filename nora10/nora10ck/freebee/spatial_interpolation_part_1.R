@@ -14,7 +14,7 @@ if (length(foo) == 5) {
   year <- as.integer(foo[5])
 }
 
-load('signifdigit.R')
+source('signifdigit.R')
 
 require(intervals)
 require(sp)
