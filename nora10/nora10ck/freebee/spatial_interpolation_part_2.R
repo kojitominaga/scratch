@@ -24,7 +24,8 @@ signifdigit <- switch(varname,
                       'wss_10m' = 3,
                       'hur_2m' = 2,
                       'albedo' = 3,
-                      'ps' = 2)
+                      'ps' = 2,
+                      'ts_0m' = 2)
 require(intervals)
 require(sp)
 require(gstat)
