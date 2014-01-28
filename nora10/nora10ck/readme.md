@@ -4,6 +4,9 @@ about this folder
 TODO
 ----
 
+## new 2014-01-28
+I discovered a problem with the variogram model. Now I'm trying to find out the best way to choose the model. 
+
 maybe the hard-coded significant digits for the various meteorological variables to a file. 
 
 freebee/
