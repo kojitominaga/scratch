@@ -14,18 +14,8 @@ if (length(foo) == 5) {
   year <- as.integer(foo[5])
 }
 
+load('signifdigit.R')
 
-signifdigit <- switch(varname,
-                      'ta_2m' = 2,
-                      'pr' = 8,
-                      'psl' = 2,
-                      'rss' = 9,
-                      'rls' = 9,
-                      'wss_10m' = 3,
-                      'hur_2m' = 2,
-                      'albedo' = 3,
-                      'ps' = 2,
-                      'ts_0m' = 2)
 require(intervals)
 require(sp)
 require(gstat)
