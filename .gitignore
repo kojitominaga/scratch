@@ -1,2 +1,4 @@
 *.csv.gz
 *.png
+*.nc
+*.txt.bz2
