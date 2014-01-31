@@ -64,16 +64,14 @@ for (nii in 1:length(chosen)) { # 1:ndays) {
   ## co-kriging with elevation
   vario <- variogram(v ~ orog, n10n, cutoff = 100)
   maxgamma <- max(vario[['gamma']])
-  LinNug <- vgm(maxgamma, 'Lin', 100, 0.01 * maxgamma)
-  LinNug2 <- vgm(maxgamma / 2, 'Lin', 100, 0.01 * maxgamma)
-  Lin <- vgm(maxgamma, 'Lin', 100)
   vf <- fit.variogram(vario,
                       vgm(maxgamma / 2, 'Sph', 50,
                           add.to = vgm(maxgamma / 2, 'Sph', 75, 
                             add.to = vgm(maxgamma / 2, 'Exp', 100,
                               add.to = vgm(maxgamma / 2, 'Gau', 100,
-                                add.to = LinNug2)))),
-                      fit.sills = TRUE, fit.ranges = FALSE)
+                                add.to = vgm(maxgamma / 2, 'Lin', 100,
+                                  maxgamma / 2)))),
+                      fit.sills = TRUE, fit.ranges = FALSE))
   vf.Lin <- fit.variogram(vario, vgm(maxgamma, 'Lin', 100),
                           fit.sills = TRUE, fit.ranges = FALSE)
   print(vf)
@@ -128,8 +126,55 @@ for (nii in 1:length(chosen)) { # 1:ndays) {
          ifelse(comsat[['orog']] < 400, 'gray', 'blue')),
        xlim = ra, ylim = ra)
   dev.off()
-  
 
+  ## lake specific
+  nn <- 100
+  nlocal <- 10
+  comsati <- 30
+  ## example lake comsat[comsati, ]
+  r <- rank(spDistsN1(n10df, comsat[comsati, ], longlat = TRUE))
+  n10r <- n10df[r <= nn, ]
+  ## 1. inverse distance
+  kklm <- krige(v ~ 1, n10r, comsat[comsati, ], nmax = nlocal)
+  ## 2. inverse distance weighted
+  kklmw <- krige(v ~ orog, n10r, comsat[comsati, ], nmax = nlocal)
+  ## 3.0 variogram
+  vario <- variogram(v ~ orog, n10r)
+  maxgamma <- max(vario[['gamma']])
+  maxdist <- max(vario[['dist']])
+  ## 3.1 kriging using variogram model "use everything"
+  vf <- fit.variogram(vario,
+                      vgm(maxgamma / 2, 'Sph', maxdist * 0.5,
+                          add.to = vgm(maxgamma / 2, 'Sph', maxdist * 0.75, 
+                            add.to = vgm(maxgamma / 2, 'Exp', maxdist,
+                              add.to = vgm(maxgamma / 2, 'Gau', maxdist,
+                                add.to = vgm(maxgamma / 2, 'Lin', maxdist,
+                                  maxgamma / 2))))),
+                      fit.sills = TRUE, fit.ranges = FALSE)
+  ## 3.1.1 ordinary kriging (vgm: "fit everything")
+  koE <- krige(v ~ 1, n10r, comsat[comsati, ], vf, nmax = nlocal)
+  ## 3.1.2 universal kriging (co-krig with orog) (vgm: "fit everything")
+  kuE <- krige(v ~ orog, n10r, comsat[comsati, ], vf, nmax = nlocal)
+  ## 3.2 kriging using variogram model "linear"
+  vfL <- fit.variogram(vario, vgm(maxgamma, 'Lin', maxdist), 
+                       fit.sills = TRUE, fit.ranges = FALSE)  
+  ## 3.2.1 ordinary kriging (vgm: "linear")
+  koL <- krige(v ~ 1, n10r, comsat[comsati, ], vfL, nmax = nlocal)
+  ## 3.2.2 universal kriging (co-krig with orog) (vgm: "linear")
+  kuL <- krige(v ~ orog, n10r, comsat[comsati, ], vfL, nmax = nlocal)
+  predicted.list <- list(kklm = kklm, kklmw = kklmw,
+                         koE = koE, kuE = kuE, koL = koL, kuL = kuL)
+  predicted <- unlist(lapply(predicted.list,
+                             function(x) x@data[['var1.pred']]))
+  print(predicted)
+  print(vf)
+  print(sqrt(attr(vf, 'SSErr') / nrow(vario)))
+  print(vfL)
+  print(sqrt(attr(vfL, 'SSErr') / nrow(vario)))
+  
+                      
+  
+  
   
                           
                           
