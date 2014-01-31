@@ -42,3 +42,37 @@ freebee/
 Hours on abel
 -------------
 About 10 hours per interpolation
+
+Why co-kringing is probably important
+-------------
+
+'''R
+> ku30[which(ku30@data[['var1.pred']] == max(ku30@data[['var1.pred']])), ]
+           coordinates var1.pred var1.var
+30 (5.70417, 59.52667)  279.6142 2.439092
+> r <- rank(spDistsN1(n10n, comsat[30, ], longlat = TRUE))
+> n10n[r <= 10, ]
+               coordinates      v   orog
+33140 (5.479765, 59.44864) 274.15  627.5
+33141 (5.627058, 59.38246) 272.90  732.0
+33387  (5.46215, 59.58978) 274.02  698.5
+33388  (5.610119, 59.5236) 272.27  904.0
+33389 (5.757498, 59.45727) 271.59  904.0
+33390 (5.904316, 59.39075) 271.71  854.0
+33635 (5.593003, 59.66476) 272.84  898.0
+33636 (5.741044, 59.59844) 271.09 1040.0
+33637 (5.888494, 59.53196) 271.02  981.5
+33884 (5.872556, 59.67315) 271.15 1054.0
+> comsat[30, ]
+           coordinates  ID       Lake       Date  Time orog Area.km2 NVE.ID
+30 (5.70417, 59.52667) 394 Vatsvatnet 21.07.2011 17:18   15     2.17   2036
+   NVE.REGINE SMHI.ID EU_CD VDRID
+30     038.5B                    
+> ku30[30, ]
+           coordinates var1.pred var1.var
+30 (5.70417, 59.52667)  279.6142 2.439092
+> ko30[30, ]
+           coordinates var1.pred  var1.var
+30 (5.70417, 59.52667)  271.5875 0.2874269
+'''
+
