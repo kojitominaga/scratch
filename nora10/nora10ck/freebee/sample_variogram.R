@@ -62,25 +62,22 @@ for (nii in 1:length(chosen)) { # 1:ndays) {
   n10n <- n10df[bb1, ] # NORA10 weather variable "N"ear COMSAT
 
   ## co-kriging with elevation
-  v <- variogram(v ~ orog, n10n, cutoff = 100)
-  maxgamma <- max(v[['gamma']])
+  vario <- variogram(v ~ orog, n10n, cutoff = 100)
+  maxgamma <- max(vario[['gamma']])
   LinNug <- vgm(maxgamma, 'Lin', 100, 0.01 * maxgamma)
   LinNug2 <- vgm(maxgamma / 2, 'Lin', 100, 0.01 * maxgamma)
   Lin <- vgm(maxgamma, 'Lin', 100)
-  vf <- switch(
-    varname,
-    'ta_2m' = fit.variogram(v, Lin,
-      fit.sills = TRUE, fit.ranges = FALSE),
-    'pr' = fit.variogram(v,
-      vgm(maxgamma / 2, 'Sph', 50,
-          add.to = vgm(maxgamma / 2, 'Sph', 75, 
-            add.to = vgm(maxgamma / 2, 'Exp', 100,
-              add.to = vgm(maxgamma / 2, 'Gau', 100,
-                add.to = LinNug2)))),
-      fit.sills = TRUE, fit.ranges = FALSE)
-    )
+  vf <- fit.variogram(vario,
+                      vgm(maxgamma / 2, 'Sph', 50,
+                          add.to = vgm(maxgamma / 2, 'Sph', 75, 
+                            add.to = vgm(maxgamma / 2, 'Exp', 100,
+                              add.to = vgm(maxgamma / 2, 'Gau', 100,
+                                add.to = LinNug2)))),
+                      fit.sills = TRUE, fit.ranges = FALSE)
+  vf.Lin <- fit.variogram(vario, vgm(maxgamma, 'Lin', 100),
+                          fit.sills = TRUE, fit.ranges = FALSE)
   print(vf)
-  plot(v[['dist']], v[['gamma']], type = 'p',
+  plot(vario[['dist']], vario[['gamma']], type = 'p',
        ylim = c(0, maxgamma), xlim = c(0, 100),
        ylab = 'Semivariance', xlab = 'Distance',
        main = sprintf('%s (%s) time entry %04d', varname, year, ni))
@@ -89,7 +86,7 @@ for (nii in 1:length(chosen)) { # 1:ndays) {
   text(100, maxgamma / 10 * (((nrow(vf) + 1):1 - 1) / 2 + 0.5),
        labels = c(
          paste(sprintf('RMSE / max(gamma) : %02d %%',
-                       as.integer(sqrt(attr(vf, 'SSErr') / nrow(v)
+                       as.integer(sqrt(attr(vf, 'SSErr') / nrow(vario)
                                        ) / maxgamma * 100)
                        )
                ),
@@ -101,8 +98,45 @@ for (nii in 1:length(chosen)) { # 1:ndays) {
          ),
        pos = 2)
   abline(h = 0)
-  ## k2 <- krige(v ~ orog, n10n, comsat, vf2, nmax = nmax)
-  ## cokriging[ni, ] <- k2[['var1.pred']]
+  ku10 <- krige(v ~ orog, n10n, comsat, vf, nmax = 10)
+  ku30 <- krige(v ~ orog, n10n, comsat, vf, nmax = 30)
+  ku50 <- krige(v ~ orog, n10n, comsat, vf, nmax = 50)
+  ku100 <- krige(v ~ orog, n10n, comsat, vf, nmax = 100)
+  ko10 <- krige(v ~ 1, n10n, comsat, vf, nmax = 10)
+  ko30 <- krige(v ~ 1, n10n, comsat, vf, nmax = 30)
+  ko50 <- krige(v ~ 1, n10n, comsat, vf, nmax = 50)
+  ko100 <- krige(v ~ 1, n10n, comsat, vf, nmax = 100)
+  kuL10 <- krige(v ~ orog, n10n, comsat, vf.Lin, nmax = 10)
+  kuL30 <- krige(v ~ orog, n10n, comsat, vf.Lin, nmax = 30)
+  kuL50 <- krige(v ~ orog, n10n, comsat, vf.Lin, nmax = 50)
+  kuL100 <- krige(v ~ orog, n10n, comsat, vf.Lin, nmax = 100)
+  koL10 <- krige(v ~ 1, n10n, comsat, vf.Lin, nmax = 10)
+  koL30 <- krige(v ~ 1, n10n, comsat, vf.Lin, nmax = 30)
+  koL50 <- krige(v ~ 1, n10n, comsat, vf.Lin, nmax = 50)
+  koL100 <- krige(v ~ 1, n10n, comsat, vf.Lin, nmax = 100)
+  predicted <- data.frame(lapply(
+    list(ku10 = ku10, ku30 = ku30, ku50 = ku50, ku100 = ku100,
+         ko10 = ko10, ko30 = ko30, ko50 = ko50, ko100 = ko100,
+         kuL10 = kuL10, kuL30 = kuL30, kuL50 = kuL50, kuL100 = kuL100,
+         koL10 = koL10, koL30 = koL30, koL50 = koL50, koL100 = koL100), 
+    function(x) x@data[['var1.pred']]))
+  pdf('testpredicted.pdf', height = 6, width = 6)
+  ra <- range(c(predicted[-c(4, 8, 12, 16)], recursive = TRUE))
+  plot(predicted[-c(4, 6:8, 9:16)],
+       pch = 20, cex = 1,
+       col = ifelse(comsat[['orog']] < 200, 'red',
+         ifelse(comsat[['orog']] < 400, 'gray', 'blue')),
+       xlim = ra, ylim = ra)
+  dev.off()
+  
+
+  
+                          
+                          
+  
+  
+  
+  
 }
 
 dev.off()
