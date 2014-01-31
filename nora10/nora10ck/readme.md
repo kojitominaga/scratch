@@ -76,3 +76,48 @@ Why co-kringing is probably important
 30 (5.70417, 59.52667)  271.5875 0.2874269
 ```
 
+Design
+------
+
+- meteorological variable
+- year
+- time entry ("hour" or "3 hours")
+- interpolation methods
+
+Interpolation methods
+-------------
+
+### interpolation types
+
+- simple 
+  - nearest
+  - mean of nearest four
+  - 2D linear interpolation (triangle)
+
+- geographical (2 scopes: i. local near each lake, or ii. supra region) either way there are 100 in the scope
+  - inverse distance
+  - inverse distance with weighting
+  - ordinary kriging with vgm-evrything (see * nlocal)
+  - universal kriging with vgm-everthing (see *)
+  - ordinary kriging with vgm-linear (see *)
+  - universal kriging with vgm-linear (see *)
+
+- nlocal (*)
+  - 10 vertices
+  - 30 vertices
+  - 50 vertices
+  - 100 vertices (all)
+
+### vgm-statistics (time x year x variable)
+
+- vgms (n = nlakes + 1)
+  - each for local vgm (n = nlakes)
+  - one for the supra region (n = 1)
+
+- scope specific
+  - vario (variogram)
+
+- non-scope specific (i.e., need for all vgm configurations)
+  - sills
+  - RMSE / maxgamma
+
