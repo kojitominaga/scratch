@@ -46,7 +46,7 @@ About 10 hours per interpolation
 Why co-kringing is probably important
 -------------
 
-'''R
+```R
 > ku30[which(ku30@data[['var1.pred']] == max(ku30@data[['var1.pred']])), ]
            coordinates var1.pred var1.var
 30 (5.70417, 59.52667)  279.6142 2.439092
@@ -74,5 +74,5 @@ Why co-kringing is probably important
 > ko30[30, ]
            coordinates var1.pred  var1.var
 30 (5.70417, 59.52667)  271.5875 0.2874269
-'''
+```
 
