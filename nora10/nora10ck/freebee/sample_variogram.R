@@ -292,7 +292,7 @@ for (ni in 1:100) {
                           vfe3[[lakei]], nmax = nlocal))
            })
   i3cn <- unlist(lapply(k3cn, function(x) x@data[['var1.pred']]))
-  ## 2bo*, 3bo* : kriging (complex variogram model), universal
+  ## 2co*, 3co* : kriging (complex variogram model), universal
   k2co <- krige(v ~ orog, n10pan, lakes, vfe2o, nmax = nlocal)
   i2co <- k2co@data[['var1.pred']]  
   k3co <-
@@ -317,9 +317,21 @@ for (ni in 1:100) {
   }
 }
 
+if (!file.exists('interpolated')) dir.create('interpolated')
 
-  
+for (lakei in 1:nlakes) {
+  dimnames(interpolated[[lakei]])[[2]] <-
+    c('i1a', 'i1b', 'i1c', 'i2an', 'i2ao', 'i2bn', 'i2bo', 'i2cn', 'i2co')
+}
 
+
+for (lakei in 1:nlakes) {
+  fnameout <- sprintf('interpolated/%s_%s.csv.gz',
+                      nora10, lakes[['waterbodyname']][lakei])
+  g <- gzfile(fnameout, 'w')
+  write.csv(interpolated[[lakei]], file = g, row.names = FALSE)
+  close(g)
+}
 
 
   
