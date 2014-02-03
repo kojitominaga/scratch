@@ -87,18 +87,18 @@ Interpolation methods
 
 ### interpolation types
 
-- simple 
-  - nearest
-  - mean of nearest four
-  - 2D linear interpolation (triangle)
+- simple (1)
+  - nearest (1a)
+  - mean of nearest four (1b)
+  - 2D linear interpolation (triangle) (1c)
 
-- geographical (2 scopes: i. local near each lake, or ii. supra region) either way there are 100 in the scope
-  - inverse distance
-  - inverse distance with weighting
-  - ordinary kriging with vgm-linear (see *)
-  - universal kriging with vgm-linear (see *)
-  - ordinary kriging with vgm-evrything (see *)
-  - universal kriging with vgm-everthing (see *)
+- geographical (2 scopes: i. supra region (2), or ii. local near each lake (3)) either way there are 100 in the scope 
+  - inverse distance (2an, 3an)
+  - inverse distance with weighting (2ao, 3ao)
+  - ordinary kriging with vgm-linear (see *) (2bn*, 3bn*)
+  - universal kriging with vgm-linear (see *) (2bo*, 3bo*)
+  - ordinary kriging with vgm-evrything (see *) (2cn*, 3cn*)
+  - universal kriging with vgm-everthing (see *) (2co*, 3co*)
 
 - nlocal (*)
   - 10 vertices
@@ -109,8 +109,8 @@ Interpolation methods
 ### vgm-statistics (time x year x variable)
 
 - vgms (n = nlakes + 1)
-  - each for local vgm (n = nlakes)
-  - one for the supra region (n = 1)
+  - each for local vgm (n = nlakes) (3_lakeid)
+  - one for the supra region (n = 1) (2)
 
 - scope specific
   - vario (variogram)
