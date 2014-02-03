@@ -27,7 +27,7 @@ source('readCOMSAT.R')
 oroglat <- orogdf@coords[, 2]
 oroglon <- orogdf@coords[, 1]
 
-## boundary box near comsat
+## boundary box near comsat SCOPE @
 bb1 <- (oroglat > comsatwraplat[1]) &
   (oroglat < comsatwraplat[2]) &
   (oroglon > comsatwraplon[1]) &
@@ -46,6 +46,10 @@ require(gstat)
 
 nmax <- 10
 
+lakes <- comsat
+## we will be using non-COMSAT lakes later so use "lakes" as name
+nlakes <- nrow(lakes)
+
 if (!file.exists('samplevariogram')) dir.create('samplevariogram')
 pdf(sprintf('samplevariogram/%s_%s_sample_variogram_fit.pdf', varname, year))
 for (nii in 1:length(chosen)) { # 1:ndays) {
@@ -59,10 +63,68 @@ for (nii in 1:length(chosen)) { # 1:ndays) {
   ## promotes orodf to SpatialPointsDataFrame
   proj4string(n10df) <- llCRS
 
-  n10n <- n10df[bb1, ] # NORA10 weather variable "N"ear COMSAT
+  ## primer: ranks for distances from NORA10 points to each lake
+  ranks <- lapply(as.list(1:nlakes),
+                  function(lakei) {
+                    rank(spDistsN1(n10df, lakes[lakei,], longlat = TRUE))
+                  })
+  
+  ## interpolation type 1 "simple"
+  ## 1a: nearest value
+  i1a <-
+    unlist(lapply(as.list(1:nlakes),
+                  function(lakei) {
+                    n10df@data[['v']][ranks[[lakei]] == 1]
+                  }))
+  ## 1b: mean of nearest four
+  i1b <-
+    unlist(lapply(as.list(1:nlakes),
+                  function(lakei) {
+                    mean(n10df@data[['v']][ranks[[lakei]] < 4])
+                  }))
+  ## 1c: triangular 2D linear interpolation
+  i1c <-
+    unlist(lapply(as.list(1:nlakes),
+                  function(lakei) {
+                    r <- ranks[[lakei]]
+                    cx <- coordinates(lakes[lakei, ])[1, 1]
+                    cy <- coordinates(lakes[lakei, ])[1, 2]
+                    n1 <- n10df[r == 1, ]
+                    n1x <- coordinates(n1)[1, 1]
+                    n1y <- coordinates(n1)[1, 2]
+                    n2 <- n10df[r == 2, ]
+                    n2x <- coordinates(n2)[1, 1]
+                    n2y <- coordinates(n2)[1, 2]
+                    n3 <- n10df[r == 3, ]
+                    n3x <- coordinates(n3)[1, 1]
+                    n3y <- coordinates(n3)[1, 2]
+                    ## now say,
+                    ## p1|n2(x, y) - n1(x, y)| +
+                    ## p2|n3(x, y) - n1(x, y)| = c(x, y)
+                    p2 <-
+                      ((cy - n1y) * (n2x - n1x) /
+                       (n2y - n1y) - (cx - n1x)) /
+                      ((n3y - n1y) * (n2x - n1x) /
+                        (n2y - n1y) - (n3x - n1x))
+                    p1 <- ((cx - n1x) - p2 * (n3x - n1x)) / (n2x - n1x)
+                    ## p1a <- ((cy - n1y) - p2 * (n3y - n1y)) / (n2y - n1y)
+                    ## p1a should be the same as p1
+                    out <- n1[['v']] +
+                      p1 * (n2[['v']] - n1[['v']]) +
+                        p2 * (n3[['v']] - n1[['v']])
+                    return(out)
+                  }))
+
+  ## scope 2 variogram (pan regional) SEE bb1
+  n10n <- n10df[bb1, ]
+  vario2 <- variogram(v ~ orog, n10n, cutoff = 100)
+
+
+
+  
+  
 
   ## co-kriging with elevation
-  vario <- variogram(v ~ orog, n10n, cutoff = 100)
   maxgamma <- max(vario[['gamma']])
   vf <- fit.variogram(vario,
                       vgm(maxgamma / 2, 'Sph', 50,
