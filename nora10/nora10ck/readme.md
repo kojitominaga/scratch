@@ -95,10 +95,10 @@ Interpolation methods
 - geographical (2 scopes: i. local near each lake, or ii. supra region) either way there are 100 in the scope
   - inverse distance
   - inverse distance with weighting
-  - ordinary kriging with vgm-evrything (see * nlocal)
-  - universal kriging with vgm-everthing (see *)
   - ordinary kriging with vgm-linear (see *)
   - universal kriging with vgm-linear (see *)
+  - ordinary kriging with vgm-evrything (see *)
+  - universal kriging with vgm-everthing (see *)
 
 - nlocal (*)
   - 10 vertices
