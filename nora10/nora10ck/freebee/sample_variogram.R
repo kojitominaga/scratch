@@ -63,7 +63,7 @@ nlakes <- nrow(lakes)
 ## if (!file.exists('samplevariogram')) dir.create('samplevariogram')
 ## pdf(sprintf('samplevariogram/%s_%s_sample_variogram_fit.pdf', varname, year))
 
-ninterpmethods <- 9
+ninterpmethods <- 15
 interpolated <- lapply(1:nlakes,
                        function(whatever) {
                          matrix(NA, nrow = ndays, ncol = ninterpmethods)
@@ -71,8 +71,7 @@ interpolated <- lapply(1:nlakes,
 
 
 
-## for (ni in 1:ndays) {
-for (ni in 1:100) {
+for (ni in 1:ndays) {
   n10raw <- scan(sprintf('temp/%s/%s/%s_%04i.txt.bz2',
                          varname, year, nora10, ni - 1),
                  quiet = TRUE)
@@ -86,51 +85,80 @@ for (ni in 1:100) {
                   function(lakei) {
                     rank(spDistsN1(n10df, lakes[lakei,], longlat = TRUE))
                   })
-  
+
+  ## if the nearest 5 has the same value:
+  ##    i1a, i1b, i1c, i3an, i3ao, i3bn, i3bo, i3cn, i3co 
+  ## will have the same value as the estimate (i1a is the same anyway).
+  ## first three will be just about saving computation time
+  ## (numerically will be the same), but the rest can fail when kriging
+  ## so it's important to avoid it.
+  locallyhomog <-
+    lapply(as.list(1:nlakes),
+           function(lakei) {
+             length(unique(n10df[['v']][ranks[[lakei]] <= 5])) == 1
+           })
+  homog <- lapply(as.list(1:nlakes),
+                  function(lakei) {
+                    ifelse(locallyhomog[[lakei]],
+                           n10df[['v']][ranks[[lakei]] == 1], NA)
+                  })
+  cat(sprintf('%s %s %s: %s out %s locally homogeneous\n',
+              varname, year, ni,
+              sum(unlist(locallyhomog)),
+              length(locallyhomog)))  
   ## interpolation type 1 "simple"
   ## 1a: nearest value
   i1a <-
     unlist(lapply(as.list(1:nlakes),
                   function(lakei) {
-                    n10df@data[['v']][ranks[[lakei]] == 1]
+                    n10df[['v']][ranks[[lakei]] == 1]
                   }))
   ## 1b: mean of nearest four
   i1b <-
     unlist(lapply(as.list(1:nlakes),
                   function(lakei) {
-                    mean(n10df@data[['v']][ranks[[lakei]] <= 4])
+                    if (locallyhomog[[lakei]]) {
+                      out <- homog[[lakei]]
+                    } else {
+                      out <- mean(n10df[['v']][ranks[[lakei]] <= 4])
+                    }
+                    return(out)
                   }))
   ## 1c: triangular 2D linear interpolation
   i1c <-
     unlist(lapply(as.list(1:nlakes),
                   function(lakei) {
-                    r <- ranks[[lakei]]
-                    cx <- coordinates(lakes[lakei, ])[1, 1]
-                    cy <- coordinates(lakes[lakei, ])[1, 2]
-                    n1 <- n10df[r == 1, ]
-                    n1x <- coordinates(n1)[1, 1]
-                    n1y <- coordinates(n1)[1, 2]
-                    n2 <- n10df[r == 2, ]
-                    n2x <- coordinates(n2)[1, 1]
-                    n2y <- coordinates(n2)[1, 2]
-                    n3 <- n10df[r == 3, ]
-                    n3x <- coordinates(n3)[1, 1]
-                    n3y <- coordinates(n3)[1, 2]
-                    ## now say,
-                    ## p1|n2(x, y) - n1(x, y)| +
-                    ## p2|n3(x, y) - n1(x, y)| = c(x, y)
-                    p2 <-
-                      ((cy - n1y) * (n2x - n1x) /
-                       (n2y - n1y) - (cx - n1x)) /
-                      ((n3y - n1y) * (n2x - n1x) /
-                        (n2y - n1y) - (n3x - n1x))
-                    p1 <- ((cx - n1x) - p2 * (n3x - n1x)) / (n2x - n1x)
-                    ## p1a <- ((cy - n1y) - p2 * (n3y - n1y)) / (n2y - n1y)
-                    ## p1a should be the same as p1
-                    out <- n1[['v']] +
-                      p1 * (n2[['v']] - n1[['v']]) +
-                        p2 * (n3[['v']] - n1[['v']])
-                    attr(out, "names") <- NULL
+                    if (locallyhomog[[lakei]]) {
+                      out <- homog[[lakei]]
+                    } else {
+                      r <- ranks[[lakei]]
+                      cx <- coordinates(lakes[lakei, ])[1, 1]
+                      cy <- coordinates(lakes[lakei, ])[1, 2]
+                      n1 <- n10df[r == 1, ]
+                      n1x <- coordinates(n1)[1, 1]
+                      n1y <- coordinates(n1)[1, 2]
+                      n2 <- n10df[r == 2, ]
+                      n2x <- coordinates(n2)[1, 1]
+                      n2y <- coordinates(n2)[1, 2]
+                      n3 <- n10df[r == 3, ]
+                      n3x <- coordinates(n3)[1, 1]
+                      n3y <- coordinates(n3)[1, 2]
+                      ## now say,
+                      ## p1|n2(x, y) - n1(x, y)| +
+                      ## p2|n3(x, y) - n1(x, y)| = c(x, y)
+                      p2 <-
+                        ((cy - n1y) * (n2x - n1x) /
+                         (n2y - n1y) - (cx - n1x)) /
+                           ((n3y - n1y) * (n2x - n1x) /
+                            (n2y - n1y) - (n3x - n1x))
+                      p1 <- ((cx - n1x) - p2 * (n3x - n1x)) / (n2x - n1x)
+                      ## p1a <- ((cy - n1y) - p2 * (n3y - n1y)) / (n2y - n1y)
+                      ## p1a should be the same as p1
+                      out <- n1[['v']] +
+                        p1 * (n2[['v']] - n1[['v']]) +
+                          p2 * (n3[['v']] - n1[['v']])
+                      attr(out, "names") <- NULL
+                    }
                     return(out)
                   }))
 
@@ -145,32 +173,62 @@ for (ni in 1:100) {
                    })
   v3 <- lapply(as.list(1:nlakes),
                function(lakei) {
-                 return(variogram(v ~ 1, n10sub[[lakei]], cutoff = 100))
+                 if (locallyhomog[[lakei]]) {
+                   out <- NA
+                 } else {
+                   out <- variogram(v ~ 1, n10sub[[lakei]], cutoff = 100)
+                 }
+                 return <- out
                })
   v3o <- lapply(as.list(1:nlakes),
                 function(lakei) {
-                  return(variogram(v ~ orog, n10sub[[lakei]], cutoff = 100))
+                  if (locallyhomog[[lakei]]) {
+                    out <- NA
+                  } else {
+                    out <- variogram(v ~ orog, n10sub[[lakei]], cutoff = 100)
+                  }
+                  return <- out
                 })
   ## fitted variograms (scopes 2 and 3)
   maxgamma2 <- max(v2[['gamma']])
   maxgamma2o <- max(v2o[['gamma']])
   maxgamma3 <- lapply(as.list(1:nlakes),
                       function(lakei) {
-                        max(v3[[lakei]][['gamma']])
+                        if (locallyhomog[[lakei]]) {
+                          out <- NA
+                        } else {
+                          out <- max(v3[[lakei]][['gamma']])
+                        }
+                        return(out)
                       })
   maxgamma3o <- lapply(as.list(1:nlakes),
                        function(lakei) {
-                         max(v3o[[lakei]][['gamma']])
+                        if (locallyhomog[[lakei]]) {
+                          out <- NA
+                        } else {
+                          out <- max(v3o[[lakei]][['gamma']])
+                        }
+                        return(out)
                        })
   maxdist2 <- max(v2[['dist']])
   maxdist2o <- max(v2o[['dist']])
   maxdist3 <- lapply(as.list(1:nlakes),
                      function(lakei) {
-                       max(v3[[lakei]][['dist']])
+                        if (locallyhomog[[lakei]]) {
+                          out <- NA
+                        } else {
+                          out <- max(v3[[lakei]][['dist']])
+                        }
+                        return(out)
                      })
   maxdist3o <- lapply(as.list(1:nlakes),
                       function(lakei) {
-                        max(v3o[[lakei]][['dist']])
+                        if (locallyhomog[[lakei]]) {
+                          out <- NA
+                        } else {
+                          out <- max(v3o[[lakei]][['dist']])
+                        }
+                        return(out)
                       })
   vfl2 <- fit.variogram(v2, vgm(maxgamma2, 'Lin', maxdist2),
                         fit.sills = TRUE, fit.ranges = FALSE)
@@ -178,18 +236,30 @@ for (ni in 1:100) {
                          fit.sills = TRUE, fit.ranges = FALSE)
   vfl3 <- lapply(as.list(1:nlakes),
                  function(lakei) {
-                   fit.variogram(v3[[lakei]],
-                                 vgm(maxgamma3[[lakei]],
-                                     'Lin', maxdist3[[lakei]]),
-                                 fit.sills = TRUE, fit.ranges = FALSE)
+                   if (locallyhomog[[lakei]]) {
+                     out <- NA
+                   } else {
+                     out <-
+                       fit.variogram(v3[[lakei]],
+                                     vgm(maxgamma3[[lakei]],
+                                         'Lin', maxdist3[[lakei]]),
+                                     fit.sills = TRUE, fit.ranges = FALSE)
+                   }
+                   return(out)
                  })
   vfl3o <- lapply(as.list(1:nlakes),
-                 function(lakei) {
-                   fit.variogram(v3o[[lakei]],
-                                 vgm(maxgamma3o[[lakei]],
-                                     'Lin', maxdist3o[[lakei]]),
-                                 fit.sills = TRUE, fit.ranges = FALSE)
-                 })
+                  function(lakei) {
+                    if (locallyhomog[[lakei]]) {
+                      out <- NA
+                    } else {
+                      out <-
+                        fit.variogram(v3o[[lakei]],
+                                      vgm(maxgamma3o[[lakei]],
+                                          'Lin', maxdist3o[[lakei]]),
+                                      fit.sills = TRUE, fit.ranges = FALSE)
+                    }
+                    return(out)
+                  })
   vfe2 <-
     fit.variogram(v2,
                   vgm(maxgamma2 / 2, 'Sph', maxdist2 * 0.5,
@@ -211,97 +281,187 @@ for (ni in 1:100) {
   vfe3 <-
     lapply(as.list(1:nlakes),
            function(lakei) {
-             fit.variogram(v3[[lakei]],
-                           vgm(maxgamma3[[lakei]] / 2,
-                               'Sph', maxdist3[[lakei]] * 0.5,
-                               add.to = vgm(maxgamma3[[lakei]] / 2,
-                                 'Sph', maxdist3[[lakei]] * 0.75, 
-                                 add.to = vgm(maxgamma3[[lakei]] / 2,
-                                   'Exp', maxdist3[[lakei]],
+             if (locallyhomog[[lakei]]) {
+               out <- NA
+             } else {
+               out <-
+                 fit.variogram(v3[[lakei]],
+                               vgm(maxgamma3[[lakei]] / 2,
+                                   'Sph', maxdist3[[lakei]] * 0.5,
                                    add.to = vgm(maxgamma3[[lakei]] / 2,
-                                     'Gau', maxdist3[[lakei]],
+                                     'Sph', maxdist3[[lakei]] * 0.75, 
                                      add.to = vgm(maxgamma3[[lakei]] / 2,
-                                       'Lin', maxdist3[[lakei]],
-                                       maxgamma3[[lakei]] / 2))))),
-                           fit.sills = TRUE, fit.ranges = FALSE)
+                                       'Exp', maxdist3[[lakei]],
+                                       add.to = vgm(maxgamma3[[lakei]] / 2,
+                                         'Gau', maxdist3[[lakei]],
+                                         add.to = vgm(maxgamma3[[lakei]] / 2,
+                                           'Lin', maxdist3[[lakei]],
+                                           maxgamma3[[lakei]] / 2))))),
+                                    fit.sills = TRUE, fit.ranges = FALSE)
+             }
+             return(out)
            })
   vfe3o <-
     lapply(as.list(1:nlakes),
            function(lakei) {
-             fit.variogram(v3o[[lakei]],
-                           vgm(maxgamma3o[[lakei]] / 2,
-                               'Sph', maxdist3o[[lakei]] * 0.5,
-                               add.to = vgm(maxgamma3o[[lakei]] / 2,
-                                 'Sph', maxdist3o[[lakei]] * 0.75, 
-                                 add.to = vgm(maxgamma3o[[lakei]] / 2,
-                                   'Exp', maxdist3o[[lakei]],
+             if (locallyhomog[[lakei]]) {
+               out <- NA
+             } else {
+               out <-
+                 fit.variogram(v3o[[lakei]],
+                               vgm(maxgamma3o[[lakei]] / 2,
+                                   'Sph', maxdist3o[[lakei]] * 0.5,
                                    add.to = vgm(maxgamma3o[[lakei]] / 2,
-                                     'Gau', maxdist3o[[lakei]],
+                                     'Sph', maxdist3o[[lakei]] * 0.75, 
                                      add.to = vgm(maxgamma3o[[lakei]] / 2,
-                                       'Lin', maxdist3o[[lakei]],
-                                       maxgamma3o[[lakei]] / 2))))),
-                           fit.sills = TRUE, fit.ranges = FALSE)
+                                       'Exp', maxdist3o[[lakei]],
+                                       add.to = vgm(maxgamma3o[[lakei]] / 2,
+                                         'Gau', maxdist3o[[lakei]],
+                                         add.to = vgm(maxgamma3o[[lakei]] / 2,
+                                           'Lin', maxdist3o[[lakei]],
+                                           maxgamma3o[[lakei]] / 2))))),
+                               fit.sills = TRUE, fit.ranges = FALSE)
+             }
+             return(out)
            })
   ## 2an*, 3an* : inverse distance
   k2an <- krige(v ~ 1, n10pan, lakes, nmax = nlocal)
-  i2an <- k2an@data[['var1.pred']]
+  i2an <- k2an[['var1.pred']]
   k3an <-
     lapply(as.list(1:nlakes),
            function(lakei) {
-             return(krige(v ~ 1, n10sub[[lakei]], lakes[lakei, ],
-                          nmax = nlocal))
+             if (locallyhomog[[lakei]]) {
+               out <- NA
+             } else {
+               out <- krige(v ~ 1, n10sub[[lakei]], lakes[lakei, ],
+                            nmax = nlocal)
+             }
+             return(out)
            })
-  i3an <- unlist(lapply(k3an, function(x) x@data[['var1.pred']]))
+  i3an <- unlist(lapply(as.list(1:nlakes),
+                        function(lakei) {
+                          if (locallyhomog[[lakei]]) {
+                            out <- homog[[lakei]]
+                          } else {
+                            out <- k3an[[lakei]][['var1.pred']]
+                          }
+                          return(out)
+                        }))
   ## 2ao*, 3ao* : inverse distance with weighting by orog
   k2ao <- krige(v ~ orog, n10pan, lakes, nmax = nlocal)
-  i2ao <- k2ao@data[['var1.pred']]
+  i2ao <- k2ao[['var1.pred']]
   k3ao <-
     lapply(as.list(1:nlakes),
            function(lakei) {
-             return(krige(v ~ orog, n10sub[[lakei]], lakes[lakei, ],
-                          nmax = nlocal))
+             if (locallyhomog[[lakei]]) {
+               out <- NA
+             } else {
+               out <- krige(v ~ orog, n10sub[[lakei]], lakes[lakei, ],
+                            nmax = nlocal)
+             }
+             return(out)
            })
-  i3ao <- unlist(lapply(k3ao, function(x) x@data[['var1.pred']]))
+  i3ao <- unlist(lapply(as.list(1:nlakes),
+                        function(lakei) {
+                          if (locallyhomog[[lakei]]) {
+                            out <- homog[[lakei]]
+                          } else {
+                            out <- k3ao[[lakei]][['var1.pred']]
+                          }
+                          return(out)
+                        }))
   ## 2bn*, 3bn* : kriging (linear variogram model), ordinary
   k2bn <- krige(v ~ 1, n10pan, lakes, vfl2, nmax = nlocal)
-  i2bn <- k2bn@data[['var1.pred']]  
+  i2bn <- k2bn[['var1.pred']]  
   k3bn <-
     lapply(as.list(1:nlakes),
            function(lakei) {
-             return(krige(v ~ 1, n10sub[[lakei]], lakes[lakei, ],
-                          vfl3[[lakei]], nmax = nlocal))
+             if (locallyhomog[[lakei]]) {
+               out <- NA
+             } else {
+               out <- krige(v ~ 1, n10sub[[lakei]], lakes[lakei, ],
+                            vfl3[[lakei]], nmax = nlocal)
+             }
+             return(out)
            })
-  i3bn <- unlist(lapply(k3bn, function(x) x@data[['var1.pred']]))
+  i3bn <- unlist(lapply(as.list(1:nlakes),
+                        function(lakei) {
+                          if (locallyhomog[[lakei]]) {
+                            out <- homog[[lakei]]
+                          } else {
+                            out <- k3bn[[lakei]][['var1.pred']]
+                          }
+                          return(out)
+                        }))
   ## 2bo*, 3bo* : kriging (linear variogram model), universal
   k2bo <- krige(v ~ orog, n10pan, lakes, vfl2o, nmax = nlocal)
-  i2bo <- k2bo@data[['var1.pred']]  
+  i2bo <- k2bo[['var1.pred']]  
   k3bo <-
     lapply(as.list(1:nlakes),
            function(lakei) {
-             return(krige(v ~ orog, n10sub[[lakei]], lakes[lakei, ],
-                          vfl3o[[lakei]], nmax = nlocal))
+             if (locallyhomog[[lakei]]) {
+               out <- NA
+             } else {
+               out <- krige(v ~ orog, n10sub[[lakei]], lakes[lakei, ],
+                          vfl3o[[lakei]], nmax = nlocal)
+             }
+             return(out)
            })
-  i3bo <- unlist(lapply(k3bo, function(x) x@data[['var1.pred']]))
+  i3bo <- unlist(lapply(as.list(1:nlakes),
+                        function(lakei) {
+                          if (locallyhomog[[lakei]]) {
+                            out <- homog[[lakei]]
+                          } else {
+                            out <- k3bo[[lakei]][['var1.pred']]
+                          }
+                          return(out)
+                        }))
   ## 2cn*, 3cn* : kriging (complex variogram model), ordinary
   k2cn <- krige(v ~ 1, n10pan, lakes, vfe2, nmax = nlocal)
-  i2cn <- k2cn@data[['var1.pred']]  
+  i2cn <- k2cn[['var1.pred']]  
   k3cn <-
     lapply(as.list(1:nlakes),
            function(lakei) {
-             return(krige(v ~ 1, n10sub[[lakei]], lakes[lakei, ],
-                          vfe3[[lakei]], nmax = nlocal))
+             if (locallyhomog[[lakei]]) {
+               out <- NA
+             } else {
+               out <- krige(v ~ 1, n10sub[[lakei]], lakes[lakei, ],
+                            vfe3[[lakei]], nmax = nlocal)
+             }
+             return(out)
            })
-  i3cn <- unlist(lapply(k3cn, function(x) x@data[['var1.pred']]))
+  i3cn <- unlist(lapply(as.list(1:nlakes),
+                        function(lakei) {
+                          if (locallyhomog[[lakei]]) {
+                            out <- homog[[lakei]]
+                          } else {
+                            out <- k3cn[[lakei]][['var1.pred']]
+                          }
+                          return(out)
+                        }))
   ## 2co*, 3co* : kriging (complex variogram model), universal
   k2co <- krige(v ~ orog, n10pan, lakes, vfe2o, nmax = nlocal)
-  i2co <- k2co@data[['var1.pred']]  
+  i2co <- k2co[['var1.pred']]  
   k3co <-
     lapply(as.list(1:nlakes),
            function(lakei) {
-             return(krige(v ~ orog, n10sub[[lakei]], lakes[lakei, ],
-                          vfe3o[[lakei]], nmax = nlocal))
+             if (locallyhomog[[lakei]]) {
+               out <- NA
+             } else {
+               out <- krige(v ~ orog, n10sub[[lakei]], lakes[lakei, ],
+                            vfe3o[[lakei]], nmax = nlocal)
+             }
+             return(out)
            })
-  i3co <- unlist(lapply(k3co, function(x) x@data[['var1.pred']]))
+  i3co <- unlist(lapply(as.list(1:nlakes),
+                        function(lakei) {
+                          if (locallyhomog[[lakei]]) {
+                            out <- homog[[lakei]]
+                          } else {
+                            out <- k3co[[lakei]][['var1.pred']]
+                          }
+                          return(out)
+                        }))
 
   ## finally putting the calculated values in container
   for (lakei in 1:nlakes) {
@@ -313,7 +473,13 @@ for (ni in 1:100) {
                                      i2bn[lakei],
                                      i2bo[lakei],
                                      i2cn[lakei],
-                                     i2co[lakei])
+                                     i2co[lakei],
+                                     i3an[lakei],
+                                     i3ao[lakei],
+                                     i3bn[lakei],
+                                     i3bo[lakei],
+                                     i3cn[lakei],
+                                     i3co[lakei])
   }
 }
 
@@ -321,7 +487,9 @@ if (!file.exists('interpolated')) dir.create('interpolated')
 
 for (lakei in 1:nlakes) {
   dimnames(interpolated[[lakei]])[[2]] <-
-    c('i1a', 'i1b', 'i1c', 'i2an', 'i2ao', 'i2bn', 'i2bo', 'i2cn', 'i2co')
+    c('i1a', 'i1b', 'i1c',
+      'i2an', 'i2ao', 'i2bn', 'i2bo', 'i2cn', 'i2co',
+      'i3an', 'i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co')
 }
 
 
@@ -392,7 +560,7 @@ for (lakei in 1:nlakes) {
 ##          ko10 = ko10, ko30 = ko30, ko50 = ko50, ko100 = ko100,
 ##          kuL10 = kuL10, kuL30 = kuL30, kuL50 = kuL50, kuL100 = kuL100,
 ##          koL10 = koL10, koL30 = koL30, koL50 = koL50, koL100 = koL100), 
-##     function(x) x@data[['var1.pred']]))
+##     function(x) x[['var1.pred']]))
 ##   pdf('testpredicted.pdf', height = 6, width = 6)
 ##   ra <- range(c(predicted[-c(4, 8, 12, 16)], recursive = TRUE))
 ##   plot(predicted[-c(4, 6:8, 9:16)],
@@ -440,7 +608,7 @@ for (lakei in 1:nlakes) {
 ##   predicted.list <- list(kklm = kklm, kklmw = kklmw,
 ##                          koE = koE, kuE = kuE, koL = koL, kuL = kuL)
 ##   predicted <- unlist(lapply(predicted.list,
-##                              function(x) x@data[['var1.pred']]))
+##                              function(x) x[['var1.pred']]))
 ##   print(predicted)
 ##   print(vf)
 ##   print(sqrt(attr(vf, 'SSErr') / nrow(vario)))

@@ -1,4 +1,4 @@
-years = range(1988, 2013)
+years = range(2008, 2010)
 vars = ['ta_2m', 'pr', 'psl', 'rss', 'rls', 'wss_10m', 'hur_2m', 
         'albedo', 'ps', 'ts_0m']
 hourres = ['1H', '1H', '1H', '3H', '3H', '1H', '1H', '1H', '3H', '1H']
