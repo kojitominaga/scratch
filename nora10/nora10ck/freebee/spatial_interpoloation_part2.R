@@ -3,7 +3,7 @@
 choosethismany <- 30 ## choose this many hours from the available hours
 
 ## nora10nc <- commandArgs(trailingOnly = TRUE)[2]
-nora10nc <- 'NORA10_3H_11km_rss_2012.nc'
+nora10nc <- 'NORA10_1H_11km_ts_0m_2012.nc'
 cat(nora10nc)
 cat('\n')
 nora10 <- strsplit(nora10nc, '.', fixed = TRUE)[[1]][1]
@@ -73,7 +73,7 @@ interpolated <- lapply(1:nlakes,
 
 
 ## for (ni in 1:ndays) {
-for (ni in 1:48) {
+for (ni in 1:10) {
   n10raw <- scan(sprintf('temp/%s/%s/%s_%04i.txt.bz2',
                          varname, year, nora10, ni - 1),
                  quiet = TRUE)
