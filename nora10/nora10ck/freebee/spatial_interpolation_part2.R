@@ -56,6 +56,7 @@ proj4string(nve) <- llCRS
 lakes <- nve
 
 nlocal <- 50
+ncutoff <- 100
 
 ## lakes <- comsat
 ## we will be using non-COMSAT lakes later so use "lakes" as name
@@ -70,7 +71,18 @@ interpolated <- lapply(1:nlakes,
                          matrix(NA, nrow = ndays, ncol = ninterpmethods)
                        })
 
-
+if (!file.exists('interpolated')) dir.create('interpolated')
+if (!file.exists('interpolated/vario')) dir.create('interpolated/vario')
+if (!file.exists('interpolated/pred')) dir.create('interpolated/pred')
+if (!file.exists(paste0('interpolated/vario/', varname))) {
+  dir.create(paste0('interpolated/vario/', varname))
+}
+if (!file.exists(paste0('interpolated/pred/', varname))) {
+  dir.create(paste0('interpolated/pred/', varname))
+}
+if (!file.exists(paste0('interpolated/vario/', varname, '/', year))) {
+  dir.create(paste0('interpolated/vario/', varname, '/', year))
+}
 
 ## for (ni in 1:ndays) {
 for (ni in 1:10) {
@@ -175,20 +187,20 @@ for (ni in 1:10) {
     v2 <- NA
     v2o <- NA
   } else {
-    v2 <- variogram(v ~ 1, n10pan, cutoff = 100)
-    v2o <- variogram(v ~ orog, n10pan, cutoff = 100)
+    v2 <- variogram(v ~ 1, n10pan, cutoff = ncutoff)
+    v2o <- variogram(v ~ orog, n10pan, cutoff = ncutoff)
   }
   ## scope 3 variogram
   n10sub <- lapply(as.list(1:nlakes),
                    function(lakei) {
-                     return(n10df[ranks[[lakei]] <= 100, ])
+                     return(n10df[ranks[[lakei]] <= ncutoff, ])
                    })
   v3 <- lapply(as.list(1:nlakes),
                function(lakei) {
                  if (locallyhomog3[[lakei]]) {
                    out <- NA
                  } else {
-                   out <- variogram(v ~ 1, n10sub[[lakei]], cutoff = 100)
+                   out <- variogram(v ~ 1, n10sub[[lakei]], cutoff = ncutoff)
                  }
                  return <- out
                })
@@ -197,7 +209,7 @@ for (ni in 1:10) {
                   if (locallyhomog3[[lakei]]) {
                     out <- NA
                   } else {
-                    out <- variogram(v ~ orog, n10sub[[lakei]], cutoff = 100)
+                    out <- variogram(v ~ orog, n10sub[[lakei]], cutoff = ncutoff)
                   }
                   return <- out
                 })
@@ -533,9 +545,12 @@ for (ni in 1:10) {
                                      i3cn[lakei],
                                      i3co[lakei])
   }
+  variofn <-
+    sprintf('interpolated/vario/%s/%s/%s_%04d_%s_variograms_cutoff_%s.RData',
+            varname, year, nora10, ni,
+            lakes[['waterbodyname']][lakei], ncutoff)
+  save(list = c('v2', 'v2o', 'v3', 'v3o'), file = variofn)
 }
-
-if (!file.exists('interpolated')) dir.create('interpolated')
 
 for (lakei in 1:nlakes) {
   dimnames(interpolated[[lakei]])[[2]] <-
@@ -546,8 +561,8 @@ for (lakei in 1:nlakes) {
 
 
 for (lakei in 1:nlakes) {
-  fnameout <- sprintf('interpolated/%s_%s.csv.gz',
-                      nora10, lakes[['waterbodyname']][lakei])
+  fnameout <- sprintf('interpolated/pred/%s/%s_%s.csv.gz',
+                      varname, nora10, lakes[['waterbodyname']][lakei])
   g <- gzfile(fnameout, 'w')
   write.csv(interpolated[[lakei]], file = g, row.names = FALSE)
   close(g)

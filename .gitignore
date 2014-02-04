@@ -5,3 +5,8 @@
 nora10/nora10ck/freebee/comsat/NSD/*
 nora10/nora10ck/freebee/*.pdf
 nora10/nora10ck/freebee/samplevariogram/*.pdf
+nora10/nora10ck/freebee/interpolated/*
+co2/comsat/*
+co2/input*
+co2/output*
+co2/phreeqc-2.18.3/*
