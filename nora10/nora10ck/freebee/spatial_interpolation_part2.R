@@ -2,8 +2,7 @@
 
 choosethismany <- 30 ## choose this many hours from the available hours
 
-## nora10nc <- commandArgs(trailingOnly = TRUE)[2]
-nora10nc <- 'NORA10_1H_11km_ts_0m_2012.nc'
+nora10nc <- commandArgs(trailingOnly = TRUE)[2]
 cat(nora10nc)
 cat('\n')
 nora10 <- strsplit(nora10nc, '.', fixed = TRUE)[[1]][1]
@@ -70,6 +69,11 @@ interpolated <- lapply(1:nlakes,
                        function(whatever) {
                          matrix(NA, nrow = ndays, ncol = ninterpmethods)
                        })
+nmetadata <- 66
+metadata <- lapply(1:nlakes,
+                   function(whatever) {
+                     matrix(NA, nrow = ndays, ncol = nmetadata)
+                   })
 
 if (!file.exists('interpolated')) dir.create('interpolated')
 if (!file.exists('interpolated/vario')) dir.create('interpolated/vario')
@@ -84,8 +88,7 @@ if (!file.exists(paste0('interpolated/vario/', varname, '/', year))) {
   dir.create(paste0('interpolated/vario/', varname, '/', year))
 }
 
-## for (ni in 1:ndays) {
-for (ni in 1:10) {
+for (ni in 1:ndays) {
   n10raw <- scan(sprintf('temp/%s/%s/%s_%04i.txt.bz2',
                          varname, year, nora10, ni - 1),
                  quiet = TRUE)
@@ -138,7 +141,7 @@ for (ni in 1:10) {
     unlist(lapply(as.list(1:nlakes),
                   function(lakei) {
                     if (locallyhomog3[[lakei]]) {
-                      out <- homog[[lakei]]
+                      out <- homog3[[lakei]]
                     } else {
                       out <- mean(n10df[['v']][ranks[[lakei]] <= 4])
                     }
@@ -149,7 +152,7 @@ for (ni in 1:10) {
     unlist(lapply(as.list(1:nlakes),
                   function(lakei) {
                     if (locallyhomog3[[lakei]]) {
-                      out <- homog[[lakei]]
+                      out <- homog3[[lakei]]
                     } else {
                       r <- ranks[[lakei]]
                       cx <- coordinates(lakes[lakei, ])[1, 1]
@@ -362,9 +365,11 @@ for (ni in 1:10) {
   if (completelyhomog2) {
     k2an <- NA
     i2an <- homog2
+    i2an.var <- rep(NA, times = nlakes)
   } else {
     k2an <- krige(v ~ 1, n10pan, lakes, nmax = nlocal)
     i2an <- k2an[['var1.pred']]
+    i2an.var <- k2an[['var1.var']]
   }
   k3an <-
     lapply(as.list(1:nlakes),
@@ -386,13 +391,24 @@ for (ni in 1:10) {
                           }
                           return(out)
                         }))
+  i3an.var <- unlist(lapply(as.list(1:nlakes),
+                            function(lakei) {
+                              if (locallyhomog3[[lakei]]) {
+                                out <- NA
+                              } else {
+                                out <- k3an[[lakei]][['var1.var']]
+                              }
+                              return(out)
+                            }))
   ## 2ao*, 3ao* : inverse distance with weighting by orog
   if (completelyhomog2) {
     k2ao <- NA
     i2ao <- homog2
+    i2ao.var <- rep(NA, times = nlakes)
   } else {
     k2ao <- krige(v ~ orog, n10pan, lakes, nmax = nlocal)
     i2ao <- k2ao[['var1.pred']]
+    i2ao.var <- k2ao[['var1.var']]
   }
   k3ao <-
     lapply(as.list(1:nlakes),
@@ -414,13 +430,24 @@ for (ni in 1:10) {
                           }
                           return(out)
                         }))
+  i3ao.var <- unlist(lapply(as.list(1:nlakes),
+                            function(lakei) {
+                              if (locallyhomog3[[lakei]]) {
+                                out <- NA
+                              } else {
+                                out <- k3ao[[lakei]][['var1.var']]
+                              }
+                              return(out)
+                            }))
   ## 2bn*, 3bn* : kriging (linear variogram model), ordinary
   if (completelyhomog2) {
     k2bn <- NA
     i2bn <- homog2
+    i2bn.var <- rep(NA, times = nlakes)
   } else {
     k2bn <- krige(v ~ 1, n10pan, lakes, vfl2, nmax = nlocal)
     i2bn <- k2bn[['var1.pred']]
+    i2bn.var <- k2bn[['var1.var']]
   }
   k3bn <-
     lapply(as.list(1:nlakes),
@@ -442,13 +469,24 @@ for (ni in 1:10) {
                           }
                           return(out)
                         }))
+  i3bn.var <- unlist(lapply(as.list(1:nlakes),
+                            function(lakei) {
+                              if (locallyhomog3[[lakei]]) {
+                                out <- NA
+                              } else {
+                                out <- k3bn[[lakei]][['var1.var']]
+                              }
+                              return(out)
+                            }))
   ## 2bo*, 3bo* : kriging (linear variogram model), universal
   if (completelyhomog2) {
     k2bo <- NA
     i2bo <- homog2
+    i2bo.var <- rep(NA, times = nlakes)
   } else {
     k2bo <- krige(v ~ orog, n10pan, lakes, vfl2o, nmax = nlocal)
     i2bo <- k2bo[['var1.pred']]
+    i2bo.var <- k2bo[['var1.var']]
   } 
   k3bo <-
     lapply(as.list(1:nlakes),
@@ -470,13 +508,24 @@ for (ni in 1:10) {
                           }
                           return(out)
                         }))
+  i3bo.var <- unlist(lapply(as.list(1:nlakes),
+                            function(lakei) {
+                              if (locallyhomog3[[lakei]]) {
+                                out <- NA
+                              } else {
+                                out <- k3bo[[lakei]][['var1.var']]
+                              }
+                              return(out)
+                            }))
   ## 2cn*, 3cn* : kriging (complex variogram model), ordinary
   if (completelyhomog2) {
     k2cn <- NA
     i2cn <- homog2
+    i2cn.var <- rep(NA, times = nlakes)
   } else {
     k2cn <- krige(v ~ 1, n10pan, lakes, vfe2, nmax = nlocal)
     i2cn <- k2cn[['var1.pred']]
+    i2cn.var <- k2cn[['var1.var']]
   }
   k3cn <-
     lapply(as.list(1:nlakes),
@@ -498,13 +547,24 @@ for (ni in 1:10) {
                           }
                           return(out)
                         }))
+  i3cn.var <- unlist(lapply(as.list(1:nlakes),
+                            function(lakei) {
+                              if (locallyhomog3[[lakei]]) {
+                                out <- NA
+                              } else {
+                                out <- k3cn[[lakei]][['var1.var']]
+                              }
+                              return(out)
+                            }))
   ## 2co*, 3co* : kriging (complex variogram model), universal
   if (completelyhomog2) {
     k2co <- NA
     i2co <- homog2
+    i2co.var <- rep(NA, times = nlakes)
   } else {
     k2co <- krige(v ~ orog, n10pan, lakes, vfe2o, nmax = nlocal)
     i2co <- k2co[['var1.pred']]
+    i2co.var <- k2co[['var1.var']]
   }
   k3co <-
     lapply(as.list(1:nlakes),
@@ -526,24 +586,105 @@ for (ni in 1:10) {
                           }
                           return(out)
                         }))
-
+  i3co.var <- unlist(lapply(as.list(1:nlakes),
+                            function(lakei) {
+                              if (locallyhomog3[[lakei]]) {
+                                out <- NA
+                              } else {
+                                out <- k3co[[lakei]][['var1.var']]
+                              }
+                              return(out)
+                            }))
+  
   ## finally putting the calculated values in container
   for (lakei in 1:nlakes) {
-    interpolated[[lakei]][ni, ] <- c(i1a[lakei],
-                                     i1b[lakei],
-                                     i1c[lakei],
-                                     i2an[lakei],
-                                     i2ao[lakei],
-                                     i2bn[lakei],
-                                     i2bo[lakei],
-                                     i2cn[lakei],
-                                     i2co[lakei],
-                                     i3an[lakei],
-                                     i3ao[lakei],
-                                     i3bn[lakei],
-                                     i3bo[lakei],
-                                     i3cn[lakei],
-                                     i3co[lakei])
+    interpolated[[lakei]][ni, ] <-
+      c(i1a[lakei],
+        i1b[lakei],
+        i1c[lakei],
+        i2an[lakei],
+        i2ao[lakei],
+        i2bn[lakei],
+        i2bo[lakei],
+        i2cn[lakei],
+        i2co[lakei],
+        i3an[lakei],
+        i3ao[lakei],
+        i3bn[lakei],
+        i3bo[lakei],
+        i3cn[lakei],
+        i3co[lakei])
+    metadata[[lakei]][ni, ] <-
+      c(completelyhomog2 * 1,
+        locallyhomog3[[lakei]] * 1,
+        maxgamma2,
+        maxgamma2o,
+        maxgamma3[[lakei]],
+        maxgamma3o[[lakei]],
+        maxdist2,
+        maxdist2o,
+        maxdist3[[lakei]],
+        maxdist3o[[lakei]],
+        round(ifelse(completelyhomog2, NA, vfl2[['psill']]) /
+              maxgamma2, digits = 3),
+        round(ifelse(completelyhomog2, NA, vfl2o[['psill']]) /
+              maxgamma2o, digits = 3),
+        round(ifelse(locallyhomog3[[lakei]], NA, vfl3[[lakei]][['psill']]) /
+              maxgamma3[[lakei]], digits = 3),
+        round(ifelse(locallyhomog3[[lakei]], NA, vfl3o[[lakei]][['psill']]) /
+              maxgamma3o[[lakei]], digits = 3),
+        round(ifelse(rep(completelyhomog2, times = 6),
+                     rep(NA, times = 6), vfe2[['psill']]) /
+              maxgamma2, digits = 3), ## 6 elements
+        round(ifelse(rep(completelyhomog2, times = 6),
+                     rep(NA, times = 6), vfe2o[['psill']]) /
+              maxgamma2o, digits = 3), ## 6 elements
+        round(ifelse(rep(locallyhomog3[[lakei]], times = 6),
+                     rep(NA, times = 6), vfe3[[lakei]][['psill']]) /
+              maxgamma3[[lakei]], digits = 3), ## 6 elements
+        round(ifelse(rep(locallyhomog3[[lakei]], times = 6),
+                     rep(NA, times = 6), vfe3o[[lakei]][['psill']]) /
+              maxgamma3o[[lakei]], digits = 3),  ## 6 elements
+        ifelse(completelyhomog2, NA, attr(vfl2, 'SSErr')),
+        ifelse(completelyhomog2, NA, attr(vfl2o, 'SSErr')),
+        ifelse(locallyhomog3[[lakei]], NA, attr(vfl3[[lakei]], 'SSErr')),
+        ifelse(locallyhomog3[[lakei]], NA, attr(vfl3o[[lakei]], 'SSErr')),
+        ifelse(completelyhomog2, NA, attr(vfe2, 'SSErr')),
+        ifelse(completelyhomog2, NA, attr(vfe2o, 'SSErr')),
+        ifelse(locallyhomog3[[lakei]], NA, attr(vfe3[[lakei]], 'SSErr')),
+        ifelse(locallyhomog3[[lakei]], NA, attr(vfe3o[[lakei]], 'SSErr')),
+        ifelse(completelyhomog2, NA,
+               sqrt(attr(vfl2, 'SSErr') / nrow(vfl2)) / maxgamma2), 
+        ifelse(completelyhomog2, NA,
+               sqrt(attr(vfl2o, 'SSErr') / nrow(vfl2o)) / maxgamma2o),
+        ifelse(locallyhomog3[[lakei]], NA,
+               sqrt(attr(vfl3[[lakei]], 'SSErr') /
+                    nrow(vfl3[[lakei]])) / maxgamma3[[lakei]]),
+        ifelse(locallyhomog3[[lakei]], NA,
+               sqrt(attr(vfl3o[[lakei]], 'SSErr') /
+                    nrow(vfl3o[[lakei]])) / maxgamma3o[[lakei]]),
+        ifelse(completelyhomog2, NA,
+               sqrt(attr(vfe2, 'SSErr') / nrow(vfe2)) / maxgamma2),
+        ifelse(completelyhomog2, NA,
+               sqrt(attr(vfe2o, 'SSErr') / nrow(vfe2o)) / maxgamma2o),
+        ifelse(locallyhomog3[[lakei]], NA,
+               sqrt(attr(vfe3[[lakei]], 'SSErr') /
+                    nrow(vfe3[[lakei]])) / maxgamma3[[lakei]]),
+        ifelse(locallyhomog3[[lakei]], NA,
+               sqrt(attr(vfe3o[[lakei]], 'SSErr') /
+                    nrow(vfe3o[[lakei]])) / maxgamma3o[[lakei]]),
+        i2an.var[lakei],
+        i2ao.var[lakei],
+        i2bn.var[lakei],
+        i2bo.var[lakei],
+        i2cn.var[lakei],
+        i2co.var[lakei],
+        i3an.var[lakei],
+        i3ao.var[lakei],
+        i3bn.var[lakei],
+        i3bo.var[lakei],
+        i3cn.var[lakei],
+        i3co.var[lakei])
   }
   variofn <-
     sprintf('interpolated/vario/%s/%s/%s_%04d_%s_variograms_cutoff_%s.RData',
@@ -557,6 +698,20 @@ for (lakei in 1:nlakes) {
     c('i1a', 'i1b', 'i1c',
       'i2an', 'i2ao', 'i2bn', 'i2bo', 'i2cn', 'i2co',
       'i3an', 'i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co')
+  dimnames(metadata[[lakei]])[[2]] <-
+    c('panhomog', 'localhomog',
+      paste0('maxgamma', c('2', '2o', '3', '3o')), 
+      paste0('maxdist', c('2', '2o', '3', '3o')), 
+      paste0('vfl', c('2', '2o', '3', '3o'), '.Lin'),
+      paste0('vfe', rep(c('2', '2o', '3', '3o'), each = 6), '.',
+             rep(c('Nug', 'Lin', 'Gau', 'Exp', 'Sph75', 'Sph50'), times = 4)),
+      paste0('vfl', c('2', '2o', '3', '3o'), '.SSE'), 
+      paste0('vfe', c('2', '2o', '3', '3o'), '.SSE'), 
+      paste0('vfl', c('2', '2o', '3', '3o'), '.PartialRMSE'),
+      paste0('vfe', c('2', '2o', '3', '3o'), '.PartialRMSE'),
+      paste0('i', rep(c(2, 3), each = 6),
+             rep(rep(c('a', 'b', 'c'), each = 2), times = 2),
+             rep(c('n', 'o'), times = 6), '.var')) 
 }
 
 
@@ -565,6 +720,11 @@ for (lakei in 1:nlakes) {
                       varname, nora10, lakes[['waterbodyname']][lakei])
   g <- gzfile(fnameout, 'w')
   write.csv(interpolated[[lakei]], file = g, row.names = FALSE)
+  close(g)
+  fnameout <- sprintf('interpolated/pred/%s/%s_%s_metadata.csv.gz',
+                      varname, nora10, lakes[['waterbodyname']][lakei])
+  g <- gzfile(fnameout, 'w')
+  write.csv(metadata[[lakei]], file = g, row.names = FALSE)
   close(g)
 }
 
