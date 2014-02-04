@@ -685,12 +685,12 @@ for (ni in 1:ndays) {
         i3bo.var[lakei],
         i3cn.var[lakei],
         i3co.var[lakei])
+    variofn <-
+      sprintf('interpolated/vario/%s/%s/%s_%04d_%s_variograms_cutoff_%s.RData',
+              varname, year, nora10, ni,
+              lakes[['waterbodyname']][lakei], ncutoff)
+    save(list = c('v2', 'v2o', 'v3', 'v3o'), file = variofn)
   }
-  variofn <-
-    sprintf('interpolated/vario/%s/%s/%s_%04d_%s_variograms_cutoff_%s.RData',
-            varname, year, nora10, ni,
-            lakes[['waterbodyname']][lakei], ncutoff)
-  save(list = c('v2', 'v2o', 'v3', 'v3o'), file = variofn)
 }
 
 for (lakei in 1:nlakes) {
