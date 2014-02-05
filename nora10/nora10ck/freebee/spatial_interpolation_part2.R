@@ -48,11 +48,9 @@ nmax <- 10
 
 
 ## reading nve data
-nve <- read.csv('nve/coordinates.csv')
-coordinates(nve) <- c('longitude', 'latitude')
-proj4string(nve) <- llCRS
-
-lakes <- nve
+lakes <- read.csv('locations.csv')
+coordinates(lakes) <- c('longitude', 'latitude')
+proj4string(lakes) <- llCRS
 
 nlocal <- 50
 ncutoff <- 100
@@ -688,7 +686,7 @@ for (ni in 1:ndays) {
     variofn <-
       sprintf('interpolated/vario/%s/%s/%s_%04d_%s_variograms_cutoff_%s.RData',
               varname, year, nora10, ni,
-              lakes[['waterbodyname']][lakei], ncutoff)
+              lakes[['name']][lakei], ncutoff)
     save(list = c('v2', 'v2o', 'v3', 'v3o'), file = variofn)
   }
 }
@@ -717,12 +715,12 @@ for (lakei in 1:nlakes) {
 
 for (lakei in 1:nlakes) {
   fnameout <- sprintf('interpolated/pred/%s/%s_%s.csv.gz',
-                      varname, nora10, lakes[['waterbodyname']][lakei])
+                      varname, nora10, lakes[['name']][lakei])
   g <- gzfile(fnameout, 'w')
   write.csv(interpolated[[lakei]], file = g, row.names = FALSE)
   close(g)
   fnameout <- sprintf('interpolated/pred/%s/%s_%s_metadata.csv.gz',
-                      varname, nora10, lakes[['waterbodyname']][lakei])
+                      varname, nora10, lakes[['name']][lakei])
   g <- gzfile(fnameout, 'w')
   write.csv(metadata[[lakei]], file = g, row.names = FALSE)
   close(g)

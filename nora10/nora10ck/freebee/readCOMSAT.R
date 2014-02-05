@@ -10,6 +10,6 @@ coordinates(comsat) <- c('Longitude', 'Latitude')
 proj4string(comsat) <- llCRS
 
 comsatwraplon <- c(4, 20)
-comsatwraplat <- c(58, 63.3)
+comsatwraplat <- c(58, 65)
 
 
