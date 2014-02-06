@@ -10,3 +10,4 @@ co2/comsat/*
 co2/input*
 co2/output*
 co2/phreeqc-2.18.3/*
+*.Rhistory
