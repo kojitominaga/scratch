@@ -33,14 +33,14 @@ ew <- (1 + 1e-6 * 1020 * (4.5 + 0.0006 * (tac) ^ 2)) *
 r <- (hur / 100) * 0.62197 * ew / (1020 - ew)
 ea <- r * 1020 / (0.62197 + r)
 
-fc <- (rls3 + 4 * 0.985 * 5.6697e-8 * (ta ^ 3) * (ts - ta)) /
+fc <- (rls3 * 100000 + 4 * 0.985 * 5.6697e-8 * (ta ^ 3) * (ts - ta)) /
   (-0.985 * 5.6697e-8 * (ta ^ 4) * (0.39 - 0.05 * sqrt(ea))) # use K
 a1 <- 0.76
 cc <- (1 - fc) / a1
 
-cc <- 0.6
-fc <- 1 - a1 * cc
-rls <- (-0.985 * 5.6697e-8 * (ta ^ 4) * (0.39 - 0.05 * sqrt(ea)) * fc) - 4 * 0.985 * 5.6697e-8 * (ta ^ 3) * (ts - ta)
+## cc <- 0.6
+## fc <- 1 - a1 * cc
+## rls <- (-0.985 * 5.6697e-8 * (ta ^ 4) * (0.39 - 0.05 * sqrt(ea)) * fc) - 4 * 0.985 * 5.6697e-8 * (ta ^ 3) * (ts - ta)
 
 
 
@@ -71,7 +71,7 @@ for (vi in 1:length(nora)) {
   plot1(nora[[vi]], names(nora)[vi])
 }
 
-plot2 <- function(df1, varname, days = 1:(24 * 7)) {
+plot2 <- function(df1, varname, days = 1:(24 * 7) + 4000) {
   ra <- range(as.matrix(df1[days, ]), na.rm = TRUE)
   print(ra)
   if (!file.exists('png')) dir.create('png')
@@ -93,7 +93,7 @@ plot2 <- function(df1, varname, days = 1:(24 * 7)) {
   dev.off()
 }
 
-for (vi in 1:length(nora)) {
+for (vi in c(1:4, 8:10)) { # 1:length(nora)) {
   plot2(nora[[vi]], names(nora)[vi])
 }
 
