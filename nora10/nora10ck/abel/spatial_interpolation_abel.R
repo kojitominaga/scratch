@@ -1,15 +1,31 @@
-## usage: Rscript sample_variogram.R --args varname year timei
+## usage: Rscript sample_variogram_abel.R --args varname year ti rawpath outdir ncfn locations.csv
+##        ncfn actually not read - just used as part of the name for the output
 
-varname <- commandArgs(trainlingOnly = TRUE)[2]
-year <- commandArgs(trainlingOnly = TRUE)[3]
-ni <- commandArgs(trainlingOnly = TRUE)[4]
+varname <- commandArgs(trailingOnly = TRUE)[2]
+year <- commandArgs(trailingOnly = TRUE)[3]
+ni <- as.integer(commandArgs(trailingOnly = TRUE)[4])
+rawpath <- commandArgs(trailingOnly = TRUE)[5]
+ourdir <- commandArgs(trailingOnly = TRUE)[6]
+ncfn <- commmandArgs(trailingOnly = TRUE)[7]
+locationsfn <- commandArgs(trailingOnly = TRUE)[8]
 
-source('signifdigit.R')
+ncfn2 <- strsplit(ncfn, '.nc')[[1]][1]
+
+signifdigit <- switch(varname,
+                      'ta_2m' = 2,
+                      'pr' = 8,
+                      'psl' = 2,
+                      'rss' = 9,
+                      'rls' = 9,
+                      'wss_10m' = 3,
+                      'hur_2m' = 2,
+                      'albedo' = 3,
+                      'ps' = 2,
+                      'ts_0m' = 2)
 
 require(intervals)
 require(sp)
 require(gstat)
-
 
 nx = 248
 ny = 400
@@ -43,7 +59,7 @@ require(gstat)
 
 nmax <- 10
 
-lakes <- read.csv('locations.csv')
+lakes <- read.csv(locationsfn)
 coordinates(lakes) <- c('longitude', 'latitude')
 proj4string(lakes) <- llCRS
 
@@ -53,32 +69,25 @@ ncutoff <- 100
 nlakes <- nrow(lakes)
 
 ninterpmethods <- 9
-interpolated <- lapply(1:nlakes,
-                       function(whatever) {
-                         matrix(NA, nrow = ndays, ncol = ninterpmethods)
-                       })
+interpolated <- lapply(1:nlakes, function(x) rep(NA, times = ninterpmethods))
+
 nmetadata <- 33
-metadata <- lapply(1:nlakes,
-                   function(whatever) {
-                     matrix(NA, nrow = ndays, ncol = nmetadata)
-                   })
+metadata <- lapply(1:nlakes, function(x) rep(NA, times = nmeatadata))
 
-if (!file.exists('interpolated')) dir.create('interpolated')
-if (!file.exists('interpolated/vario')) dir.create('interpolated/vario')
-if (!file.exists('interpolated/pred')) dir.create('interpolated/pred')
-if (!file.exists(paste0('interpolated/vario/', varname))) {
-  dir.create(paste0('interpolated/vario/', varname))
-}
-if (!file.exists(paste0('interpolated/pred/', varname))) {
-  dir.create(paste0('interpolated/pred/', varname))
-}
-if (!file.exists(paste0('interpolated/vario/', varname, '/', year))) {
-  dir.create(paste0('interpolated/vario/', varname, '/', year))
-}
+## if (!file.exists('interpolated')) dir.create('interpolated')
+## if (!file.exists('interpolated/vario')) dir.create('interpolated/vario')
+## if (!file.exists('interpolated/pred')) dir.create('interpolated/pred')
+## if (!file.exists(paste0('interpolated/vario/', varname))) {
+##   dir.create(paste0('interpolated/vario/', varname))
+## }
+## if (!file.exists(paste0('interpolated/pred/', varname))) {
+##   dir.create(paste0('interpolated/pred/', varname))
+## }
+## if (!file.exists(paste0('interpolated/vario/', varname, '/', year))) {
+##   dir.create(paste0('interpolated/vario/', varname, '/', year))
+## }
 
-n10raw <- scan(sprintf('temp/%s/%s/%s_%04i.txt.bz2',
-                       varname, year, nora10, ni - 1),
-               quiet = TRUE)
+n10raw <- scan(rawpath, quiet = TRUE)
 n10df <- data.frame(lat, lon, v = n10raw, orog = orograw)
 coordinates(n10df) <- c('lon', 'lat')
 ## promotes orodf to SpatialPointsDataFrame
@@ -583,24 +592,49 @@ i3co.var <- unlist(lapply(as.list(1:nlakes),
                           }))
 
 ## finally putting the calculated values in container
+if (!file.exists('interpolated')) dir.create('interpolated')
+outdir2 <- sprintf('%s/interpolated', outdir)
 for (lakei in 1:nlakes) {
-  interpolated[[lakei]][ni, ] <-
-    c(i1a[lakei],
-      i1b[lakei],
-      i1c[lakei],
-      ## i2an[lakei],
-      ## i2ao[lakei],
-      ## i2bn[lakei],
-      ## i2bo[lakei],
-      ## i2cn[lakei],
-      ## i2co[lakei],
-      i3an[lakei],
-      i3ao[lakei],
-      i3bn[lakei],
-      i3bo[lakei],
-      i3cn[lakei],
-      i3co[lakei])
-  metadata[[lakei]][ni, ] <-
+  lakename <- lakes[['name']][lakei]
+  if (!file.exists(sprintf('%s/%s', outdir, lakename))) {
+    dir.create('%s/%s', outdir, lakename)
+  }
+  if (!file.exists(sprintf('%s/%s/%s', outdir, lakename, varname))) {
+    dir.create(sprintf('%s/%s/%s', outdir, lakename, varname))
+  }
+  if (!file.exists(sprintf('%s/%s/%s/pred', outdir, lakename, varname))) {
+    dir.create(sprintf('%s/%/%s/pred', outdir, lakename, varname))
+  }
+  if (!file.exists(sprintf('%s/%s/%s/meta', outdir, lakename, varname))) {
+    dir.create(sprintf('%s/%/%s/meta', outdir, lakename, varname))
+  }
+  if (!file.exists(sprintf('%s/%s/%s/vario', outdir, lakename, varname))) {
+    dir.create(sprintf('%s/%/%s/vario', outdir, lakename, varname))
+  }
+  predfn <- sprintf('%s/%s/%s/pred/%s_%04i_%s_interpolated_cutoff_%s.txt',
+                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff)
+  metafn <- sprintf('%s/%s/%s/meta/%s_%04i_%s_metadatainterp_cutoff_%s.txt',
+                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff)
+  variofn <- sprintf('%s/%s/%s/meta/%s_%04i_%s_variograms_cutoff_%s.RData',
+                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff)
+  interpolated <- c(i1a[lakei],
+                    i1b[lakei],
+                    i1c[lakei],
+                    ## i2an[lakei],
+                    ## i2ao[lakei],
+                    ## i2bn[lakei],
+                    ## i2bo[lakei],
+                    ## i2cn[lakei],
+                    ## i2co[lakei],
+                    i3an[lakei],
+                    i3ao[lakei],
+                    i3bn[lakei],
+                    i3bo[lakei],
+                    i3cn[lakei],
+                    i3co[lakei])
+  cat(interpolated, file = predfn)
+  cat('\n', file = predfn)
+  metadata <-
     c(
       ## completelyhomog2 * 1,
       locallyhomog3[[lakei]] * 1,
@@ -672,48 +706,35 @@ for (lakei in 1:nlakes) {
       i3bo.var[lakei],
       i3cn.var[lakei],
       i3co.var[lakei])
-  variofn <-
-    sprintf('interpolated/vario/%s/%s/%s_%04d_%s_variograms_cutoff_%s.RData',
-            varname, year, nora10, ni,
-            lakes[['name']][lakei], ncutoff)
+  cat(metadata, file = metafn)
+  cat('\n', file = metafn)
   ## save(list = c('v2', 'v2o', 'v3', 'v3o'), file = variofn)
-  save(list = c('v3', 'v3o'), file = variofn)
+  v3l <- v3[[lakei]]
+  v3ol <- v3[[lakei]]
+  save(list = c('v3l', 'v3ol'), file = variofn)
 }
 
 
-for (lakei in 1:nlakes) {
-  dimnames(interpolated[[lakei]])[[2]] <-
-    c('i1a', 'i1b', 'i1c',
-      'i2an', 'i2ao', 'i2bn', 'i2bo', 'i2cn', 'i2co',
-      'i3an', 'i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co')
-  dimnames(metadata[[lakei]])[[2]] <-
-    c('panhomog', 'localhomog',
-      paste0('maxgamma', c('2', '2o', '3', '3o')), 
-      paste0('maxdist', c('2', '2o', '3', '3o')), 
-      paste0('vfl', c('2', '2o', '3', '3o'), '.Lin'),
-      paste0('vfe', rep(c('2', '2o', '3', '3o'), each = 6), '.',
-             rep(c('Nug', 'Lin', 'Gau', 'Exp', 'Sph75', 'Sph50'), times = 4)),
-      paste0('vfl', c('2', '2o', '3', '3o'), '.SSE'), 
-      paste0('vfe', c('2', '2o', '3', '3o'), '.SSE'), 
-      paste0('vfl', c('2', '2o', '3', '3o'), '.PartialRMSE'),
-      paste0('vfe', c('2', '2o', '3', '3o'), '.PartialRMSE'),
-      paste0('i', rep(c(2, 3), each = 6),
-             rep(rep(c('a', 'b', 'c'), each = 2), times = 2),
-             rep(c('n', 'o'), times = 6), '.var')) 
+## for (lakei in 1:nlakes) {
+##   dimnames(interpolated[[lakei]])[[2]] <-
+##     c('i1a', 'i1b', 'i1c',
+##       'i2an', 'i2ao', 'i2bn', 'i2bo', 'i2cn', 'i2co',
+##       'i3an', 'i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co')
+##   dimnames(metadata[[lakei]])[[2]] <-
+##     c('panhomog', 'localhomog',
+##       paste0('maxgamma', c('2', '2o', '3', '3o')), 
+##       paste0('maxdist', c('2', '2o', '3', '3o')), 
+##       paste0('vfl', c('2', '2o', '3', '3o'), '.Lin'),
+##       paste0('vfe', rep(c('2', '2o', '3', '3o'), each = 6), '.',
+##              rep(c('Nug', 'Lin', 'Gau', 'Exp', 'Sph75', 'Sph50'), times = 4)),
+##       paste0('vfl', c('2', '2o', '3', '3o'), '.SSE'), 
+##       paste0('vfe', c('2', '2o', '3', '3o'), '.SSE'), 
+##       paste0('vfl', c('2', '2o', '3', '3o'), '.PartialRMSE'),
+##       paste0('vfe', c('2', '2o', '3', '3o'), '.PartialRMSE'),
+##       paste0('i', rep(c(2, 3), each = 6),
+##              rep(rep(c('a', 'b', 'c'), each = 2), times = 2),
+##              rep(c('n', 'o'), times = 6), '.var')) 
   
-
-for (lakei in 1:nlakes) {
-  fnameout <- sprintf('interpolated/pred/%s/%s_%s.csv.gz',
-                      varname, nora10, lakes[['name']][lakei])
-  g <- gzfile(fnameout, 'w')
-  write.csv(interpolated[[lakei]], file = g, row.names = FALSE)
-  close(g)
-  fnameout <- sprintf('interpolated/pred/%s/%s_%s_metadata.csv.gz',
-                      varname, nora10, lakes[['name']][lakei])
-  g <- gzfile(fnameout, 'w')
-  write.csv(metadata[[lakei]], file = g, row.names = FALSE)
-  close(g)
-}
 
 
   

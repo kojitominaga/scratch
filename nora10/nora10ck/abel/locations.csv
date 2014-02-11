@@ -1,0 +1,27 @@
+name, latitude, longitude, orog,years,originalname,requester
+Grunnaai,59.517941,8.688288,580,2006-2012,Grunnåi,Su Ming
+Hovatn,58.973711,7.788549,690,2006-2012,Hovatn,Su Ming
+Eptevatn,58.677,8.042,350,2006-2012,Eptevatn,Su Ming
+Birtevatn,59.053,7.953,611,2006-2012,Birtevatn,Su Ming
+Oeljusjoeane,60.948,8.093,1333,2006-2012,Øljusjøane,Su Ming
+Juklevatnet,61.028,8.239,1286,2006-2012,Juklevatnet,Su Ming
+Hoeyvatnet,61.663,8.111,905,2006-2012,Høyvatnet Høydalsvatnet,Su Ming
+Rauddalsvatnet,61.908,7.73,913,2006-2012,Rauddalsvatnet,Su Ming
+Breiddalsvatnet,62.014,7.59,900,2006-2012,Breiddalsvatnet,Su Ming
+Vaester-Raennoebodsjoen,62.334249,16.972703,63,2011,Väster-Rännöbodsjön,Anna
+StorvatnetAgdenes,63.599666,9.640665,6,2011,Storvatnet Agdenes,Anna
+LangtjernNIVA,60.37129,9.728,516,all,Langtjernet Flå,NIVA
+GulsvikIInew,60.383,9.605,142,recent,MET24710,Koji
+GulsvikIV,60.3897,9.573,149,recent,MET24770,Koji
+NesbyenII,60.5667,9.1333,165,recent,MET24870,Koji
+NesbyenSkoglund,60.5685,9.122,167,recent,MET24880,Koji
+NesbyenTodokk,60.5672,9.1337,166,recent,MET24890,Koji
+OsloBlindern,59.9423,10.72,94,any,MET24700-2,Koji
+Rygge,59.3787,10.7752,40,1980-2012,MET17150,Koji
+RyggeHuggenes,59.398,10.7543,35,1980-2012,MET17380,Koji
+Aas,59.6605,10.782,89,1980-2012,MET17850,Koji
+AasRustadskogen,59.6667,10.8,120,1980-2012,MET17870,Koji
+MjoesaSkreia,60.667,11.083,123,1970-2012,Mjøsa Skreia station,Jannicke
+VansjoeStorefjorden,59.39342,10.83656,25,1980-2012,Vansjø Storefjorden,Koji
+VansjoeVanemfjorden,59.4435,10.75461,25,1980-2012,Vansjø Vanemfjorden,Koji
+HoboelelvaKure,59.529395,10.83975,47,1980-2012,Hobølelva ved Kurefossen,Koji

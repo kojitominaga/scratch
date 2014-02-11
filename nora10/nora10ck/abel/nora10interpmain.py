@@ -47,6 +47,13 @@ locationspath = sys.argv[2]
 scratchdir = sys.argv[3]
 ## use $SCRATCH
 
+locationspathscratch = '/'.join([scratchdir, 'locations.csv'])
+shutil.copy2(locationspath, locationspathscratch)
+
+f = open(locaitonspathscratch, 'r')
+throwaway = f.readline()
+locations = [l.split(',')[0] for l in f.readlines()]
+
 ncfn = ncpath.split('/')[-1]
 t1 = ''.join(ncfn.split(".nc")[:-1])
 varname = '_'.join(t1.split('_')[3:-1])
@@ -55,15 +62,15 @@ fm = fms[varname]
 
 ## create necessary directories if not existing yet
 pathprefix = "/work/users/kojito/nora10/"
-path1 = '/'.join([pathprefix, "intermediate", "extracted", varname, year])
+path1 = '/'.join([pathprefix, "intermediate", varname, year])
 os.makedirs(path1)
-path2 = '/'.join([pathprefix, "intermediate", "interpolated", varname, year])
+path2 = '/'.join([pathprefix, "interpolated", varname, year])
 os.makedirs(path2)
 path0s = '/'.join([scratchdir, "nc"])
 os.makedirs(path0s)
-path1s = '/'.join([scratchdir, "intermediate", "extracted", varname, year])
+path1s = '/'.join([scratchdir, "intermediate", varname, year])
 os.makedirs(path1s)
-path2s = '/'.join([scratchdir, "intermediate", "interpolated", varname, year])
+path2s = '/'.join([scratchdir, "interpolated", varname, year])
 os.makedirs(path2s)
 
 ## part 1: NetCDF to "extracted"
@@ -76,7 +83,11 @@ else:
     
     ## 2) get number of time points (hours or 3-h intervals)
     r = netCDF4.Dataset(ncpathscratch)
-    tt = r.variables['time'].shape[0]
+    
+    #############################
+    ## tt = r.variables['time'].shape[0]
+    tt = 3
+    #############################
     
     ## 3) do or resume part1
     ## 3.1) check how many have been done
@@ -157,4 +168,60 @@ else:
 
     ## 3.2) run as many as what is not yet done 
     for ti in range(thelasti + 1, tt): 
-        os.system(
+        cmd = 'Rscript sample_variogram_abel.R --args %s %s %s %s %s %s %s' % (
+            varname, year, ti, (path1s + '%04i' % ti + '.txt.bz2'), 
+            path2s, ncfn, locationspathscratch)
+        print(cmd)
+        os.system(cmd)
+        ## 3.2.1) every 100 create tar and send it to path2
+        if ti % 100 == 99:
+            ti1 = ti - 99
+            tfname = '/'.join(path2, '%04i-%04i.tar' % (ti1, ti))
+            tf = tarfile.open(tfname, 'w')
+            filestoadd1 = ['%s/%s/%s/pred/%s_%04i_%s_%s' % (
+                path2s, location, varname, ncfn2, tii, location, 
+                'interpolated_cutoff_50.txt') 
+                for tii in range(ti1, ti + 1) for location in locations]
+            filestoadd2 = ['%s/%s/%s/meta/%s_%04i_%s_%s' % (
+                path2s, location, varname, ncfn2, tii, location, 
+                'metadatainterp_cutoff_50.txt') 
+                for tii in range(ti1, ti + 1) for location in locations]
+            filestoadd3 = ['%s/%s/%s/vario/%s_%04i_%s_%s' % (
+                path2s, location, varname, ncfn2, tii, location, 
+                'variograms_cutoff_50.RData') 
+                for tii in range(ti1, ti + 1) for location in locations]
+            filestoadd = filestoadd1 + filestoadd2 + filestoadd3
+            for f2add in filestoadd:
+                tf.add(f2add, arcname = f2add.split('/')[-1])
+            tf.close()
+            print('created %s' % tfname)
+
+    ## 3.3) create tar for the last bit (n < 100) and send it to path1
+    tti1 = (tt // 100) * 100 
+    tfname = '/'.join(path1, '%04i-%04i.tar' % (tti1, tt))
+    tf = tarfile.open(tfname, 'w')
+    filestoadd1 = ['%s/%s/%s/pred/%s_%04i_%s_%s' % (
+        path2s, location, varname, ncfn2, tii, location, 
+        'interpolated_cutoff_50.txt') 
+        for tii in range(ti1, ti + 1) for location in locations]
+    filestoadd2 = ['%s/%s/%s/meta/%s_%04i_%s_%s' % (
+        path2s, location, varname, ncfn2, tii, location, 
+        'metadatainterp_cutoff_50.txt') 
+        for tii in range(ti1, ti + 1) for location in locations]
+    filestoadd3 = ['%s/%s/%s/vario/%s_%04i_%s_%s' % (
+        path2s, location, varname, ncfn2, tii, location, 
+        'variograms_cutoff_50.RData') 
+        for tii in range(ti1, ti + 1) for location in locations]
+    filestoadd = filestoadd1 + filestoadd2 + filestoadd3
+    for f2add in filestoadd:
+        tf.add(f2add, arcname = f2add.split('/')[-1])
+        tf.close()
+        print('created %s' % tfname)
+    tf.close()
+    print('created %s' % tfname)
+        
+    ## 3.4) make the file with the name COMPLETED
+    f = open('/'.join([path2, 'COMPLETED']), 'w')
+    f.write(time.strftime('%c', time.gmtime()))
+    f.close()
+    print('finished part 1 and created file COMPLETE under %s' % path1)
