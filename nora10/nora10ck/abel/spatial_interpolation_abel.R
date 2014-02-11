@@ -5,8 +5,8 @@ varname <- commandArgs(trailingOnly = TRUE)[2]
 year <- commandArgs(trailingOnly = TRUE)[3]
 ni <- as.integer(commandArgs(trailingOnly = TRUE)[4])
 rawpath <- commandArgs(trailingOnly = TRUE)[5]
-ourdir <- commandArgs(trailingOnly = TRUE)[6]
-ncfn <- commmandArgs(trailingOnly = TRUE)[7]
+outdir <- commandArgs(trailingOnly = TRUE)[6]
+ncfn <- commandArgs(trailingOnly = TRUE)[7]
 locationsfn <- commandArgs(trailingOnly = TRUE)[8]
 
 ncfn2 <- strsplit(ncfn, '.nc')[[1]][1]
@@ -53,9 +53,8 @@ if (!('interpolated' %in% list.files('.'))) dir.create('interpolated')
 ##                    list.files(sprintf('temp/%s/%s/', varname, year)))
 ##              ) ## index starts with 0
 
-chosen <- sample(1:ndays, size = choosethismany, replace = FALSE)
 
-require(gstat)
+require(gstat) ## for some reason I have to call this again
 
 nmax <- 10
 
@@ -72,7 +71,7 @@ ninterpmethods <- 9
 interpolated <- lapply(1:nlakes, function(x) rep(NA, times = ninterpmethods))
 
 nmetadata <- 33
-metadata <- lapply(1:nlakes, function(x) rep(NA, times = nmeatadata))
+metadata <- lapply(1:nlakes, function(x) rep(NA, times = nmetadata))
 
 ## if (!file.exists('interpolated')) dir.create('interpolated')
 ## if (!file.exists('interpolated/vario')) dir.create('interpolated/vario')
@@ -592,30 +591,28 @@ i3co.var <- unlist(lapply(as.list(1:nlakes),
                           }))
 
 ## finally putting the calculated values in container
-if (!file.exists('interpolated')) dir.create('interpolated')
-outdir2 <- sprintf('%s/interpolated', outdir)
 for (lakei in 1:nlakes) {
   lakename <- lakes[['name']][lakei]
   if (!file.exists(sprintf('%s/%s', outdir, lakename))) {
-    dir.create('%s/%s', outdir, lakename)
+    dir.create(sprintf('%s/%s', outdir, lakename))
   }
   if (!file.exists(sprintf('%s/%s/%s', outdir, lakename, varname))) {
     dir.create(sprintf('%s/%s/%s', outdir, lakename, varname))
   }
   if (!file.exists(sprintf('%s/%s/%s/pred', outdir, lakename, varname))) {
-    dir.create(sprintf('%s/%/%s/pred', outdir, lakename, varname))
+    dir.create(sprintf('%s/%s/%s/pred', outdir, lakename, varname))
   }
   if (!file.exists(sprintf('%s/%s/%s/meta', outdir, lakename, varname))) {
-    dir.create(sprintf('%s/%/%s/meta', outdir, lakename, varname))
+    dir.create(sprintf('%s/%s/%s/meta', outdir, lakename, varname))
   }
   if (!file.exists(sprintf('%s/%s/%s/vario', outdir, lakename, varname))) {
-    dir.create(sprintf('%s/%/%s/vario', outdir, lakename, varname))
+    dir.create(sprintf('%s/%s/%s/vario', outdir, lakename, varname))
   }
-  predfn <- sprintf('%s/%s/%s/pred/%s_%04i_%s_interpolated_cutoff_%s.txt',
-                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff)
-  metafn <- sprintf('%s/%s/%s/meta/%s_%04i_%s_metadatainterp_cutoff_%s.txt',
-                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff)
-  variofn <- sprintf('%s/%s/%s/meta/%s_%04i_%s_variograms_cutoff_%s.RData',
+  predfn <- sprintf('%s/%s/%s/pred/%s_%04i_%s_interpolated_cutoff_%s_nlocal_%s.txt',
+                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff, nlocal)
+  metafn <- sprintf('%s/%s/%s/meta/%s_%04i_%s_metadatainterp_cutoff_%s_nlocal_%s.txt',
+                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff, nlocal)
+  variofn <- sprintf('%s/%s/%s/vario/%s_%04i_%s_variograms_cutoff_%s.RData',
                     outdir, lakename, varname, ncfn2, ni, lakename, ncutoff)
   interpolated <- c(i1a[lakei],
                     i1b[lakei],
@@ -633,7 +630,7 @@ for (lakei in 1:nlakes) {
                     i3cn[lakei],
                     i3co[lakei])
   cat(interpolated, file = predfn)
-  cat('\n', file = predfn)
+  cat('\n', file = predfn, append = TRUE)
   metadata <-
     c(
       ## completelyhomog2 * 1,
@@ -707,7 +704,7 @@ for (lakei in 1:nlakes) {
       i3cn.var[lakei],
       i3co.var[lakei])
   cat(metadata, file = metafn)
-  cat('\n', file = metafn)
+  cat('\n', file = metafn, append = TRUE)
   ## save(list = c('v2', 'v2o', 'v3', 'v3o'), file = variofn)
   v3l <- v3[[lakei]]
   v3ol <- v3[[lakei]]
