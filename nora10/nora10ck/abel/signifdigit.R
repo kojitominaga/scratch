@@ -1,0 +1,11 @@
+signifdigit <- switch(varname,
+                      'ta_2m' = 2,
+                      'pr' = 8,
+                      'psl' = 2,
+                      'rss' = 9,
+                      'rls' = 9,
+                      'wss_10m' = 3,
+                      'hur_2m' = 2,
+                      'albedo' = 3,
+                      'ps' = 2,
+                      'ts_0m' = 2)
