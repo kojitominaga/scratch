@@ -224,21 +224,21 @@ else:
     tfname = '/'.join([path1, '%04i-%04i.tar' % (tti1, tt - 1)])
     tf = tarfile.open(tfname, 'w')
     filestoadd1 = ['%s/%s/%s/pred/%s_%04i_%s_%s' % (
-        path2s, location, varname, ncfn2, ttii, location, 
-        'interpolated_cutoff_50.txt') 
+        path2s, location, varname, ncfn2, tii, location, 
+        'interpolated_cutoff_100_nlocal_50.txt') 
         for tii in range(tti1, ti) for location in locations]
     filestoadd2 = ['%s/%s/%s/meta/%s_%04i_%s_%s' % (
-        path2s, location, varname, ncfn2, ttii, location, 
-        'metadatainterp_cutoff_50.txt') 
+        path2s, location, varname, ncfn2, tii, location, 
+        'metadatainterp_cutoff_100_nlocal_50.txt') 
         for tii in range(tti1, ti) for location in locations]
     filestoadd3 = ['%s/%s/%s/vario/%s_%04i_%s_%s' % (
-        path2s, location, varname, ncfn2, ttii, location, 
-        'variograms_cutoff_50.RData') 
+        path2s, location, varname, ncfn2, tii, location, 
+        'variograms_cutoff_100.RData') 
         for tii in range(tti1, ti) for location in locations]
     filestoadd = filestoadd1 + filestoadd2 + filestoadd3
     for f2add in filestoadd:
+        print(f2add)
         tf.add(f2add, arcname = f2add.split('/')[-1])
-        tf.close()
         print('created %s' % tfname)
     tf.close()
     print('created %s' % tfname)
