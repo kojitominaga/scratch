@@ -49,16 +49,16 @@ scratchdir = sys.argv[3]
 ## use $SCRATCH
 
 locationspathscratch = '/'.join([scratchdir, 'locations.csv'])
-shutil.copy2(locationspath, locationspathscratch)
-## maybe the following is not needed but just in case...
-shutil.copy2('/cluster/home/kojito/NORA10_11km_lat.txt', 
-             scratchdir + '/NORA_11km_lat.txt')
-shutil.copy2('/cluster/home/kojito/NORA10_11km_lon.txt', 
-             scratchdir + '/NORA_11km_lon.txt')
-shutil.copy2('/cluster/home/kojito/NORA10_11km_orog.txt', 
-             scratchdir + '/NORA_11km_orog.txt')
-shutil.copy2('/cluster/home/kojito/spatial_interpolation_abel.R', 
-             scratchdir + '/spatial_interpolation_abel.R')
+# shutil.copy2(locationspath, locationspathscratch)
+# ## maybe the following is not needed but just in case...
+# shutil.copy2('/cluster/home/kojito/NORA10_11km_lat.txt', 
+#              scratchdir + '/NORA_11km_lat.txt')
+# shutil.copy2('/cluster/home/kojito/NORA10_11km_lon.txt', 
+#              scratchdir + '/NORA_11km_lon.txt')
+# shutil.copy2('/cluster/home/kojito/NORA10_11km_orog.txt', 
+#              scratchdir + '/NORA_11km_orog.txt')
+# shutil.copy2('/cluster/home/kojito/spatial_interpolation_abel.R', 
+#              scratchdir + '/spatial_interpolation_abel.R')
 
 f = open(locationspathscratch, 'r')
 throwaway = f.readline()
@@ -239,7 +239,6 @@ else:
     for f2add in filestoadd:
         print(f2add)
         tf.add(f2add, arcname = f2add.split('/')[-1])
-        print('created %s' % tfname)
     tf.close()
     print('created %s' % tfname)
         
@@ -247,4 +246,4 @@ else:
     f = open('/'.join([path2, 'COMPLETED']), 'w')
     f.write(time.strftime('%c', time.gmtime()))
     f.close()
-    print('finished part 1 and created file COMPLETE under %s' % path1)
+    print('finished part 2 and created file COMPLETE under %s' % path2)
