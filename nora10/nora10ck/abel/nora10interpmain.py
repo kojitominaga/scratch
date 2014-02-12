@@ -104,7 +104,7 @@ else:
     
     #############################
     ## tt = r.variables['time'].shape[0]
-    tt = 3
+    tt = 110
     #############################
     
     ## 3) do or resume part1
@@ -221,20 +221,20 @@ else:
 
     ## 3.3) create tar for the last bit (n < 100) and send it to path1
     tti1 = (tt // 100) * 100 
-    tfname = '/'.join([path1, '%04i-%04i.tar' % (tti1, tt - 1)])
+    tfname = '/'.join([path2, '%04i-%04i.tar' % (tti1, tt - 1)])
     tf = tarfile.open(tfname, 'w')
     filestoadd1 = ['%s/%s/%s/pred/%s_%04i_%s_%s' % (
         path2s, location, varname, ncfn2, tii, location, 
         'interpolated_cutoff_100_nlocal_50.txt') 
-        for tii in range(tti1, ti) for location in locations]
+        for tii in range(tti1, tt) for location in locations]
     filestoadd2 = ['%s/%s/%s/meta/%s_%04i_%s_%s' % (
         path2s, location, varname, ncfn2, tii, location, 
         'metadatainterp_cutoff_100_nlocal_50.txt') 
-        for tii in range(tti1, ti) for location in locations]
+        for tii in range(tti1, tt) for location in locations]
     filestoadd3 = ['%s/%s/%s/vario/%s_%04i_%s_%s' % (
         path2s, location, varname, ncfn2, tii, location, 
         'variograms_cutoff_100.RData') 
-        for tii in range(tti1, ti) for location in locations]
+        for tii in range(tti1, tt) for location in locations]
     filestoadd = filestoadd1 + filestoadd2 + filestoadd3
     for f2add in filestoadd:
         print(f2add)
