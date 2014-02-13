@@ -4,9 +4,10 @@ import math
 
 burden = 4.0 # estimated 
 neach = 6
+tarsplitn = 10
 ntime = str(35) 
 # ntime = 'all'
-ntimeint = 365 if ntime == 'all' else int(ntime)
+ntimeint = 365 * 24 / int(H[0]) if ntime == 'all' else int(ntime)
 
 years = range(2011, 2013)
 varH = {# 'ta_2m':  '1H', 
@@ -71,8 +72,8 @@ python nora10interpmain.py /work/users/kojito/nora10/nc/%s/NORA10_%s_11km_%s_%s.
  int(os.path.splitext(os.path.basename(locfn))[0][3:]),
  int(year) % 100, 
  varname,
- math.ceil(24.0 / float(H[0]) * ntimeint * nloc * burden / 60.0 / 60.0),
- varname, H, varname, year, locfn, neach, ntime) 
+ ntimeint * nloc * burden / 60.0 / 60.0),
+ varname, H, varname, year, locfn, tarsplitn, ntime) 
  for year in years 
  for (locfn, nloc) in locdict.items()
  for (varname, H) in varH.items()]

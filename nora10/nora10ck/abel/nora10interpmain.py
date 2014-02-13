@@ -187,13 +187,13 @@ else:
     ## suffices preparation for 3.2.1 and 3.3
     suffix1 = 'interpolated_cutoff_100_nlocal_50.txt'
     suffix2 = 'metadatainterp_cutoff_100_nlocal_50.txt'
-    suffix3 = 'variograms_cutoff_50.RData'
+    suffix3 = 'variograms_cutoff_100.RData'
     ## 3.2) run as many as what is not yet done 
     for ti in range(thelasti + 1, tt): 
         cmd = 'Rscript %s --args %s %s %s %s %s %s %s' % (
             'spatial_interpolation_abel.R',
             varname, year, ti, 
-            os.path.join(path1s, '/%s_%04i' % (ncfn2, ti) + '.txt.bz2'), 
+            os.path.join(path1s, '%s_%04i' % (ncfn2, ti) + '.txt.bz2'), 
             path2s, ncfn, locationspath)
         print(cmd)
         os.system(cmd)
