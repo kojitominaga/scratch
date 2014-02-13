@@ -7,6 +7,12 @@ TODO
 ## new 2014-01-28
 I discovered a problem with the variogram model. Now I'm trying to find out the best way to choose the model. 
 
+abel/
+----
+# todo
+I might have to do something for 3.3 handling (there may not be anything left depending on the choice of tarsplitn
+
+
 freebee/
 --------
 

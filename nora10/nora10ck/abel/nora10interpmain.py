@@ -171,8 +171,9 @@ else:
     ## 2) get number of time points (hours or 3-h intervals)
     ##    ** This time from file names in path1 **
     if not 'tt' in locals():
-        tt = max([int(os.path.splitext(f)[0].split('-')[-1]) 
-                  for f in extractedtarfns])
+        tt = 1 + max([int(os.path.splitext(f)[0].split('-')[-1]) 
+                      for f in extractedtarfns])
+    print('tt %s' % tt)
     ## 3) do or resume part2
     ## 3.1) check how many have been done
     sofar2 = [f for f in os.listdir(path2) if os.path.splitext(f)[1] == '.tar']
