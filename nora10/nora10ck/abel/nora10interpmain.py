@@ -226,8 +226,8 @@ else:
             tf.close()
             print('created %s' % tfname)
 
-    ## 3.3) create tar for the last bit (n < 100) and send it to path1
-    tti1 = (tt // 100) * 100 
+    ## 3.3) create tar for the last bit (n < __tarsplitn__) and send it to path1
+    tti1 = (tt // tarsplitn) * tarsplitn 
     tfname = os.path.join(path2, '%04i-%04i.tar' % (tti1, tt - 1))
     tf = tarfile.open(tfname, 'w')
     filestoadd1 = [os.path.join(path2s, location, varname, 'pred', 
