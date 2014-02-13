@@ -1,5 +1,5 @@
 """
-usage: python nora10interpmain.py ncfilepath locations.csv scratchdir
+usage: python nora10interpmain.py ncfilepath locations.csv scratchdir tarsplitn
 
 use something like $SCRATCH for scratchdir
 """
@@ -12,8 +12,6 @@ import bz2
 import numpy as np
 import tarfile
 import time
-
-tarsplitn = 10
 
 fms = {'ta_2m':  '%.2f', 
        'ts_0m':  '%.2f', 
@@ -50,6 +48,7 @@ locationspath = sys.argv[2]
 ## use something like /cluster/home/kojito/nora10/locations/locations.csv
 scratchdir = sys.argv[3]
 ## use $SCRATCH
+tarsplitn = sys.argv[4] ## for example 10
 
 locationspathscratch = os.path.join(scratchdir, 'locations.csv')
 # shutil.copy2(locationspath, locationspathscratch)
