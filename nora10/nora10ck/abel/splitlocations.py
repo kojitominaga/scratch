@@ -1,6 +1,6 @@
 import os.path
 
-neach = 6
+neach = 1
 
 f = open('locations.csv')
 header = f.readline()

@@ -2,23 +2,23 @@
 import os
 import math
 
-burden = 4.0 # estimated 
-neach = 6
-tarsplitn = 10
-ntime = str(35) 
-# ntime = 'all'
-ntimeint = 365 * 24 / int(H[0]) if ntime == 'all' else int(ntime)
+burden = 1.1 # estimated 
+neach = 1
+tarsplitn = 100
+# ntime = str(35) 
+ntime = 'all'
 
-years = range(2011, 2013)
+
+years = range(2012, 2013)
 varH = {# 'ta_2m':  '1H', 
-        'ts_0m':  '1H', 
-        'pr':     '1H', 
-# 'psl':    '1H', 
+        # 'ts_0m':  '1H', 
+        # 'pr':     '1H', 
+        # 'psl':    '1H', 
         'ps':     '3H', 
-# 'rss':    '3H', 
-# 'rls':    '3H', 
-'wss_10m': '1H'} ######, 
-# 'hur_2m': '1H', 
+        # 'rss':    '3H', 
+        # 'rls':    '3H', 
+        'wss_10m': '1H', 
+        'hur_2m': '1H'} ######,  
 # 'albedo': '1H'}
 
 if not os.path.exists('jobscripts'):
@@ -72,7 +72,8 @@ python nora10interpmain.py /work/users/kojito/nora10/nc/%s/NORA10_%s_11km_%s_%s.
  int(os.path.splitext(os.path.basename(locfn))[0][3:]),
  int(year) % 100, 
  varname,
- ntimeint * nloc * burden / 60.0 / 60.0),
+ ((365 * 24 / int(H[0])) if ntime == 'all' else int(ntime)) 
+   * nloc * burden / 60.0,
  varname, H, varname, year, locfn, tarsplitn, ntime) 
  for year in years 
  for (locfn, nloc) in locdict.items()
