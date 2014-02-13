@@ -13,14 +13,16 @@ import numpy as np
 import tarfile
 import time
 
-fms = {'ta_2m': '%.2f', 
-       'ts_0m': '%.2f', 
-       'pr': '%.8f', 
-       'psl': '%d', 
-       'ps': '%d', 
-       'pr': '%.5g', 
-       'rss': '%.5g', 
-       'rls': '%.5g', 
+tarsplitn = 10
+
+fms = {'ta_2m':  '%.2f', 
+       'ts_0m':  '%.2f', 
+       'pr':     '%.8f', 
+       'psl':    '%d', 
+       'ps':     '%d', 
+       'pr':     '%.5g', 
+       'rss':    '%.5g', 
+       'rls':    '%.5g', 
        'wss_10m': '%.2f', 
        'hur_2m': '%.2f', 
        'albedo': '%.2f'}
@@ -119,9 +121,9 @@ else:
     for ti in range(thelasti + 1, tt):
         print(ti)
         writeout(ncpathscratch, ti, fm, path1s)  ############# computation
-        ## 3.2.1) every 100 create tar and send it to path1
-        if ti % 100 == 99:
-            ti1 = ti - 99
+        ## 3.2.1) every __tarsplitn__ create tar and send it to path1
+        if ti % tarsplitn == (tarsplitn - 1):
+            ti1 = ti - (tarsplitn - 1)
             tfname = os.path.join(path1, '%04i-%04i.tar' % (ti1, ti))
             tf = tarfile.open(tfname, 'w')
             filestoadd = [os.path.join(path1s, '%s_%04i.txt.bz2' % (ncfn2, tii)) 
@@ -131,8 +133,8 @@ else:
             tf.close()
             print('created %s' % tfname)
 
-    ## 3.3) create tar for the last bit (n < 100) and send it to path1
-    tti1 = (tt // 100) * 100 
+    ## 3.3) create tar for the last bit (n < __tarsplitn__) and send it to path1
+    tti1 = (tt // tarsplitn) * tarsplitn 
     tfname = os.path.join(path1, '%04i-%04i.tar' % (tti1, tt - 1))
     tf = tarfile.open(tfname, 'w')
     filestoadd = [os.path.join(path1s, '%s_%04i.txt.bz2' % (ncfn2, tii)) 
@@ -201,9 +203,9 @@ else:
             path2s, ncfn, locationspathscratch)
         print(cmd)
         os.system(cmd)
-        ## 3.2.1) every 100 create tar and send it to path2
-        if ti % 100 == 99:
-            ti1 = ti - 99
+        ## 3.2.1) every __tarsplitn__ create tar and send it to path2
+        if ti % tarsplitn == (tarsplitn - 1):
+            ti1 = ti - (tarsplitn - 1)
             tfname = os.path.join(path2, '%04i-%04i.tar' % (ti1, ti))
             tf = tarfile.open(tfname, 'w')
             filestoadd1 = [os.path.join(path2s, location, varname, 'pred', 
