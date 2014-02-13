@@ -1,5 +1,8 @@
 """
-usage: python nora10interpmain.py ncfilepath locations.csv scratchdir tarsplitn
+usage: python nora10interpmain.py ncfilepath locations.csv scratchdir tarsplitn ntime
+
+ntime == all means to do all hours or 3h intervals
+ntime == 120 means to do the first 120 hours or 5 days (for 1H data)
 
 use something like $SCRATCH for scratchdir
 """
@@ -18,7 +21,6 @@ fms = {'ta_2m':  '%.2f',
        'pr':     '%.8f', 
        'psl':    '%d', 
        'ps':     '%d', 
-       'pr':     '%.5g', 
        'rss':    '%.5g', 
        'rls':    '%.5g', 
        'wss_10m': '%.2f', 
@@ -44,11 +46,17 @@ def writeout(ncfpath, timei, fm, outdir):
 ncpath = sys.argv[1]  
 ## use something like /work/users/kojito/nora10/nc/__var__/netcdffilename
 ## NORA10_1H_11km_ta_2m_1959.nc
+
 locationspath = sys.argv[2]
 ## use something like /cluster/home/kojito/nora10/locations/locations.csv
+lbfn = os.path.splitext(os.path.basename(locationspath))[0] # location file base name
+
 scratchdir = sys.argv[3]
 ## use $SCRATCH
+
 tarsplitn = sys.argv[4] ## for example 10
+ntimearg = sys.argv[5] ## will handle later, see part1, 2) and variable tt
+
 
 locationspathscratch = os.path.join(scratchdir, 'locations.csv')
 # shutil.copy2(locationspath, locationspathscratch)
@@ -75,15 +83,15 @@ fm = fms[varname]
 
 ## create necessary directories if not existing yet
 pathprefix = "/work/users/kojito/nora10"
-path1 = os.path.join(pathprefix, "intermediate", varname, year)
+path1 = os.path.join(pathprefix, "intermediate", lfbn, varname, year)
 if not os.path.exists(path1): os.makedirs(path1)
-path2 = os.path.join(pathprefix, "interpolated", varname, year)
+path2 = os.path.join(pathprefix, "interpolated", lfbn, varname, year)
 if not os.path.exists(path2): os.makedirs(path2)
 path0s = os.path.join(scratchdir, "nc")
 if not os.path.exists(path0s): os.makedirs(path0s)
-path1s = os.path.join(scratchdir, "intermediate", varname, year)
+path1s = os.path.join(scratchdir, "intermediate", lfbn, varname, year)
 if not os.path.exists(path1s): os.makedirs(path1s)
-path2s = os.path.join(scratchdir, "interpolated", varname, year)
+path2s = os.path.join(scratchdir, "interpolated", lfbn, varname, year)
 if not os.path.exists(path2s): os.makedirs(path2s)
 
 ## part 1: NetCDF to "extracted"
@@ -97,12 +105,11 @@ else:
     print('... done')
     
     ## 2) get number of time points (hours or 3-h intervals)
-    r = netCDF4.Dataset(ncpathscratch)
-    
-    #############################
-    ## tt = r.variables['time'].shape[0]
-    tt = 110
-    #############################
+    if ntimearg == 'all':
+        r = netCDF4.Dataset(ncpathscratch)
+        tt = r.variables['time'].shape[0]
+    else:
+        tt = int(ntimearg)
     
     ## 3) do or resume part1
     ## 3.1) check how many have been done
