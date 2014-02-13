@@ -54,25 +54,13 @@ lbfn = os.path.splitext(os.path.basename(locationspath))[0] # location file base
 scratchdir = sys.argv[3]
 ## use $SCRATCH
 
-tarsplitn = sys.argv[4] ## for example 10
+tarsplitn = int(sys.argv[4]) ## for example 10
 ntimearg = sys.argv[5] ## will handle later, see part1, 2) and variable tt
 
-
-locationspathscratch = os.path.join(scratchdir, 'locations.csv')
-# shutil.copy2(locationspath, locationspathscratch)
-# ## maybe the following is not needed but just in case...
-# shutil.copy2('/cluster/home/kojito/NORA10_11km_lat.txt', 
-#              scratchdir + '/NORA_11km_lat.txt')
-# shutil.copy2('/cluster/home/kojito/NORA10_11km_lon.txt', 
-#              scratchdir + '/NORA_11km_lon.txt')
-# shutil.copy2('/cluster/home/kojito/NORA10_11km_orog.txt', 
-#              scratchdir + '/NORA_11km_orog.txt')
-# shutil.copy2('/cluster/home/kojito/spatial_interpolation_abel.R', 
-#              scratchdir + '/spatial_interpolation_abel.R')
-
-f = open(locationspathscratch, 'r')
+f = open(locationspath, 'r')
 throwaway = f.readline()
-locations = [l.split(',')[0] for l in f.readlines()]
+locations = [l.strip().split(',')[0] for l in f.readlines() if len(l.strip()) > 0]
+print(locations)
 f.close()
 
 ncfn = os.path.basename(ncpath)
@@ -83,15 +71,15 @@ fm = fms[varname]
 
 ## create necessary directories if not existing yet
 pathprefix = "/work/users/kojito/nora10"
-path1 = os.path.join(pathprefix, "intermediate", lfbn, varname, year)
+path1 = os.path.join(pathprefix, "intermediate", lbfn, varname, year)
 if not os.path.exists(path1): os.makedirs(path1)
-path2 = os.path.join(pathprefix, "interpolated", lfbn, varname, year)
+path2 = os.path.join(pathprefix, "interpolated", lbfn, varname, year)
 if not os.path.exists(path2): os.makedirs(path2)
 path0s = os.path.join(scratchdir, "nc")
 if not os.path.exists(path0s): os.makedirs(path0s)
-path1s = os.path.join(scratchdir, "intermediate", lfbn, varname, year)
+path1s = os.path.join(scratchdir, "intermediate", lbfn, varname, year)
 if not os.path.exists(path1s): os.makedirs(path1s)
-path2s = os.path.join(scratchdir, "interpolated", lfbn, varname, year)
+path2s = os.path.join(scratchdir, "interpolated", lbfn, varname, year)
 if not os.path.exists(path2s): os.makedirs(path2s)
 
 ## part 1: NetCDF to "extracted"
@@ -206,7 +194,7 @@ else:
             'spatial_interpolation_abel.R',
             varname, year, ti, 
             os.path.join(path1s, '/%s_%04i' % (ncfn2, ti) + '.txt.bz2'), 
-            path2s, ncfn, locationspathscratch)
+            path2s, ncfn, locationspath)
         print(cmd)
         os.system(cmd)
         ## 3.2.1) every __tarsplitn__ create tar and send it to path2
@@ -228,6 +216,7 @@ else:
                             for location in locations]
             filestoadd = filestoadd1 + filestoadd2 + filestoadd3
             for f2add in filestoadd:
+                print(f2add)
                 tf.add(f2add, arcname = os.path.basename(f2add))
             tf.close()
             print('created %s' % tfname)

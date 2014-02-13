@@ -16,7 +16,8 @@ fnames = [os.path.join('locations', 'loc%03i.csv' % i) for i in range(nsplits)]
 starts = range(0, nlines, neach)
 ends = starts[1:] + [nlines]
 
-outs = ['\n'.join([header] + lines[starts[i]:ends[i]]) for i in range(nsplits)]
+outs = [''.join([header] + lines[starts[i]:ends[i]]) for i in range(nsplits)] 
+## lines already include \n at the end
 
 for i in range(nsplits):
     f = open(fnames[i], 'w')

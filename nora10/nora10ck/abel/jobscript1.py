@@ -9,17 +9,16 @@ ntime = str(35)
 ntimeint = 365 if ntime == 'all' else int(ntime)
 
 years = range(2011, 2013)
-varH = {'ta_2m':  '1H', 
+varH = {# 'ta_2m':  '1H', 
         'ts_0m':  '1H', 
         'pr':     '1H', 
-        'psl':    '1H', 
+# 'psl':    '1H', 
         'ps':     '3H', 
-        'pr':     '1H', 
-        'rss':    '3H', 
-        'rls':    '3H', 
-        'wss_10m': '1H', 
-        'hur_2m': '1H', 
-        'albedo': '1H'}
+# 'rss':    '3H', 
+# 'rls':    '3H', 
+'wss_10m': '1H'} ######, 
+# 'hur_2m': '1H', 
+# 'albedo': '1H'}
 
 if not os.path.exists('jobscripts'):
     os.makedirs('jobscripts')
@@ -44,7 +43,7 @@ fnames = ['jobscripts/%s_%s_%s.sh' %
           for (varname, H) in varH.items()]
 contents = ['''#!/bin/bash
 
-#SBATCH --job-name=firsttrial
+#SBATCH --job-name=%s%02i%i%s
 #SBATCH --account=uio
 #SBATCH --time=%02i:00:00
 
@@ -54,6 +53,7 @@ contents = ['''#!/bin/bash
 #SBATCH --mail-type=ALL
 
 #SBATCH --mem-per-cpu=3G
+#SBATCH --qos=lowpri
 
 source /cluster/bin/jobsetup
 module load python2
@@ -67,7 +67,11 @@ cd $SCRATCH
 
 python nora10interpmain.py /work/users/kojito/nora10/nc/%s/NORA10_%s_11km_%s_%s.nc %s $SCRATCH %s %s
 ''' % 
-(math.ceil(24.0 / float(H[0]) * ntimeint * nloc * burden / 60.0 / 60.0),
+(os.path.splitext(os.path.basename(locfn))[0][0], 
+ int(os.path.splitext(os.path.basename(locfn))[0][3:]),
+ int(year) % 100, 
+ varname,
+ math.ceil(24.0 / float(H[0]) * ntimeint * nloc * burden / 60.0 / 60.0),
  varname, H, varname, year, locfn, neach, ntime) 
  for year in years 
  for (locfn, nloc) in locdict.items()
