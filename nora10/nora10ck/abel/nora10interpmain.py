@@ -2,6 +2,7 @@
 usage: python nora10interpmain.py ncfilepath locations.csv scratchdir tarsplitn ntime
 
 ntime == all means to do all hours or 3h intervals
+ntime == mean24 means to do the interpolation on daily mean
 ntime == 120 means to do the first 120 hours or 5 days (for 1H data)
 
 use something like $SCRATCH for scratchdir
@@ -27,15 +28,23 @@ fms = {'ta_2m':  '%.2f',
        'hur_2m': '%.2f', 
        'albedo': '%.2f'}
 
-def writeout(ncfpath, timei, fm, outdir):
+def writeout(ncfpath, timei, fm, outdir, interval = None):
     """write out the NORA10 results at the specified time index timei"""
     r = netCDF4.Dataset(ncfpath)
     varname = '_'.join(os.path.basename(ncfpath).split('_')[:-1][3:])
     v = r.variables[varname]
-    if v.ndim == 4:
-        out = v[timei, 0, :, :]
-    elif v.ndim == 3:
-        out = v[timei, :, :]
+    if not interval:
+        if v.ndim == 4:
+            out = v[timei, 0, :, :]
+        elif v.ndim == 3:
+            out = v[timei, :, :]
+    else:
+        iinterval = int(interval)
+        if v.ndim == 4:
+            out2 = v[(timei * iinterval):(timei * (iinterval + 1)), 0, :, :]
+        elif v.ndim == 3:
+            out2 = v[(timei * iinterval):(timei * (iinterval + 1)), :, :]
+        out = out2.mean(axis = 0) # takes daily mean 
     ncfname = os.path.basename(ncfpath)
     outfn = '%s_%04i.txt.bz2' % (os.path.splitext(ncfname)[0], timei)
     outpath = os.path.join(outdir, outfn)
@@ -49,7 +58,8 @@ ncpath = sys.argv[1]
 
 locationspath = sys.argv[2]
 ## use something like /cluster/home/kojito/nora10/locations/locations.csv
-lbfn = os.path.splitext(os.path.basename(locationspath))[0] # location file base name
+lbfn = os.path.splitext(os.path.basename(locationspath))[0] 
+## location file base name
 
 scratchdir = sys.argv[3]
 ## use $SCRATCH
@@ -71,15 +81,15 @@ fm = fms[varname]
 
 ## create necessary directories if not existing yet
 pathprefix = "/work/users/kojito/nora10"
-path1 = os.path.join(pathprefix, "intermediate", lbfn, varname, year)
+path1 = os.path.join(pathprefix, ntimearg, "intermediate", lbfn, varname, year)
 if not os.path.exists(path1): os.makedirs(path1)
-path2 = os.path.join(pathprefix, "interpolated", lbfn, varname, year)
+path2 = os.path.join(pathprefix, ntimearg, "interpolated", lbfn, varname, year)
 if not os.path.exists(path2): os.makedirs(path2)
-path0s = os.path.join(scratchdir, "nc")
+path0s = os.path.join(scratchdir, ntimearg, "nc")
 if not os.path.exists(path0s): os.makedirs(path0s)
-path1s = os.path.join(scratchdir, "intermediate", lbfn, varname, year)
+path1s = os.path.join(scratchdir, ntimearg, "intermediate", lbfn, varname, year)
 if not os.path.exists(path1s): os.makedirs(path1s)
-path2s = os.path.join(scratchdir, "interpolated", lbfn, varname, year)
+path2s = os.path.join(scratchdir, ntimearg, "interpolated", lbfn, varname, year)
 if not os.path.exists(path2s): os.makedirs(path2s)
 
 ## part 1: NetCDF to "extracted"
@@ -96,6 +106,10 @@ else:
     if ntimearg == 'all':
         r = netCDF4.Dataset(ncpathscratch)
         tt = r.variables['time'].shape[0]
+    if 'mean' in ntimearg:
+        interval = int(ntimearg[4:])
+        tt /= interval
+        flagmean = True
     else:
         tt = int(ntimearg)
     
@@ -104,7 +118,7 @@ else:
     sofar1 = [f for f in os.listdir(path1) if os.path.splitext(f)[1] == '.tar']
     if len(sofar1) > 1:
         lastii = [int(os.path.splitext(f)[0].split('-')[1]) for f in sofar1]
-        ## expecting name like 0000-0010.tar
+        ## expecting name like 0000-0009.tar
         thelasti = max(lastii)
         print('resuming from part 1: time index %i' % (thelasti + 1, ))
     else:
@@ -114,7 +128,11 @@ else:
     ## 3.2) run as many as what is not yet done
     for ti in range(thelasti + 1, tt):
         print(ti)
-        writeout(ncpathscratch, ti, fm, path1s)  ############# computation
+        if flagmean:
+            pass
+        
+        else:
+            writeout(ncpathscratch, ti, fm, path1s)  ############# computation
         ## 3.2.1) every __tarsplitn__ create tar and send it to path1
         if ti % tarsplitn == (tarsplitn - 1):
             ti1 = ti - (tarsplitn - 1)
