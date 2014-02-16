@@ -1,13 +1,14 @@
 '''allow at least 4 sec for each interpolation (probably takes only 2 to 3 sec)'''
 import os
 import math
+import sys
 
-burden = 1.1 # estimated 
+burden = 1.5 
+# estimated time in min per interpolation 
+# (i.e., per location, per time point)
+
 neach = 1
-tarsplitn = 100
-# ntime = str(35) 
-ntime = 'all'
-
+tarsplitn = 10
 
 years = range(2012, 2013)
 varH = {# 'ta_2m':  '1H', 
@@ -21,6 +22,22 @@ varH = {# 'ta_2m':  '1H',
         'hur_2m': '1H'} ######,  
 # 'albedo': '1H'}
 
+# ntime = str(35) 
+# ntime = 'all'
+# ntime = 'mean24'
+ntimedict = {'3H': 'mean8', 
+             '1H': 'mean24'}
+# ntime = 'mean8'
+if ('ntime' in locals()) and ('ntimedict' in locals()):
+    sys.exit('you cannot have both ntime and ntimedict') 
+if 'ntime' in locals():
+    if not type(ntime) == str:
+        sys.exit('ntime needs to be a string, even if it is a numeral')
+    if not ((ntime in ['all', 'mean24', 'mean8']) or ntime.isdigit()):
+        sys.exit('ntime like that is not implemented yet')
+elif 'ntimedict' not in locals():
+    sys.exit('have you forgotten ntimedict or ntime')
+            
 if not os.path.exists('jobscripts'):
     os.makedirs('jobscripts')
 
@@ -72,9 +89,12 @@ python nora10interpmain.py /work/users/kojito/nora10/nc/%s/NORA10_%s_11km_%s_%s.
  int(os.path.splitext(os.path.basename(locfn))[0][3:]),
  int(year) % 100, 
  varname,
- ((365 * 24 / int(H[0])) if ntime == 'all' else int(ntime)) 
-   * nloc * burden / 60.0,
- varname, H, varname, year, locfn, tarsplitn, ntime) 
+ {'all': (365 * 24 / int(H[0])), 'mean24': 365, 'mean8': 365}.setdefault(ntimedict[H], int(ntimedict[H]) if ntimedict[H].isdigit() else None) *
+# {'all': (365 * 24 / int(H[0])), 'mean24': 365, 'mean8': 365}.setdefault(ntime, int(ntime)) *
+  nloc * burden / 60.0,
+ varname, H, varname, year, locfn, tarsplitn, 
+ ntimedict[H]) 
+#  ntime) 
  for year in years 
  for (locfn, nloc) in locdict.items()
  for (varname, H) in varH.items()]

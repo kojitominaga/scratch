@@ -41,9 +41,9 @@ def writeout(ncfpath, timei, fm, outdir, interval = None):
     else:
         iinterval = int(interval)
         if v.ndim == 4:
-            out2 = v[(timei * iinterval):(timei * (iinterval + 1)), 0, :, :]
+            out2 = v[(timei * iinterval):((timei + 1) * iinterval), 0, :, :]
         elif v.ndim == 3:
-            out2 = v[(timei * iinterval):(timei * (iinterval + 1)), :, :]
+            out2 = v[(timei * iinterval):((timei + 1) * iinterval), :, :]
         out = out2.mean(axis = 0) # takes daily mean 
     ncfname = os.path.basename(ncfpath)
     outfn = '%s_%04i.txt.bz2' % (os.path.splitext(ncfname)[0], timei)
@@ -107,11 +107,15 @@ else:
         r = netCDF4.Dataset(ncpathscratch)
         tt = r.variables['time'].shape[0]
     if 'mean' in ntimearg:
+        r = netCDF4.Dataset(ncpathscratch)
+        tt = r.variables['time'].shape[0]
         interval = int(ntimearg[4:])
         tt /= interval
         flagmean = True
     else:
         tt = int(ntimearg)
+    print('ntimearg: ' + str(ntimearg))
+    print('tt: ' + str(tt))
     
     ## 3) do or resume part1
     ## 3.1) check how many have been done
@@ -129,8 +133,7 @@ else:
     for ti in range(thelasti + 1, tt):
         print(ti)
         if flagmean:
-            pass
-        
+            writeout(ncpathscratch, ti, fm, path1s, interval = interval)
         else:
             writeout(ncpathscratch, ti, fm, path1s)  ############# computation
         ## 3.2.1) every __tarsplitn__ create tar and send it to path1
