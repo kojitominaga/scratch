@@ -16,8 +16,10 @@ todo
 I might have to do something for 3.3 handling (there may not be anything left depending on the choice of tarsplitn
 remove non-ascii characters from locations.csv
 
+
 freebee/
 --------
+
 
 - getfromlinux11.py -> getfromlinux11.sh
 - getfromlinux11_small_data.sh
