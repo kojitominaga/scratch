@@ -16,6 +16,13 @@ abel/
 I might have to do something for 3.3 handling (there may not be anything left depending on the choice of tarsplitn
 remove non-ascii characters from locations.csv
 
+### 17 Feb 2014
+
+Noticed errors in which some tar files 0000-0009.tar etc. are created but contains no data (file size = zero). It seems to have continues after the "error". A better way to implement is 
+
+1. not to use the COMPLETE file (just check every file is __not__ empty. If any .tar file is missing, create data for those missing. 
+2. at the end of part 1, and at the end of part 2, check that the file is __not__ empty. 
+
 
 freebee/
 --------
