@@ -10,8 +10,8 @@ I discovered a problem with the variogram model. Now I'm trying to find out the 
 abel/
 ----
 
-todo
-~~~~
+### todo
+
 
 I might have to do something for 3.3 handling (there may not be anything left depending on the choice of tarsplitn
 remove non-ascii characters from locations.csv
