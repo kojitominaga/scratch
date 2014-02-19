@@ -23,6 +23,10 @@ Noticed errors in which some tar files 0000-0009.tar etc. are created but contai
 1. not to use the COMPLETE file (just check every file is __not__ empty. If any .tar file is missing, create data for those missing. 
 2. at the end of part 1, and at the end of part 2, check that the file is __not__ empty. 
 
+### 18 Feb 2014
+
+Also discovered the case where only partial files in the part 1 .tar file exists -- Job 5123272 ("l9312hur_2m"
+
 
 freebee/
 --------
