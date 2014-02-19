@@ -93,7 +93,10 @@ path2s = os.path.join(scratchdir, ntimearg, "interpolated", lbfn, varname, year)
 if not os.path.exists(path2s): os.makedirs(path2s)
 
 ## part 1: NetCDF to "extracted"
-if os.path.exists(os.path.join(path1, "COMPLETED")):
+completedexists = os.path.exists(os.path.join(path1, "COMPLETED"))
+sofar0 = [f for f in os.listdir(path1) if os.path.splitext(f)[1] == '.tar']
+sofar0empty = [os.path.getsize(os.path.join(path1, f)) for f in sofar0]
+if completedexists and not any(sofar0empty):
     print('part 1 is already finished')
 else: 
     ## 1) copy netcdf file from /work to $SCRATCH
