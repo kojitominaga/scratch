@@ -27,6 +27,10 @@ Noticed errors in which some tar files 0000-0009.tar etc. are created but contai
 
 Also discovered the case where only partial files in the part 1 .tar file exists -- Job 5123272 ("l9312hur_2m"
 
+### 20 Feb 2014
+
+Should be mostly working well. Now trying to make multiple runs in one job so that the 400-job limitiation does not become limitation. I see that there are some free available slots in abel occasionally. 
+
 
 freebee/
 --------
