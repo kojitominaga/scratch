@@ -1,27 +1,31 @@
-'''allow at least 4 sec for each interpolation (probably takes only 2 to 3 sec)'''
+'''version that handle more than one task per node'''
 import os
 import math
 import sys
 
-burden = 1.5 
+jobscriptsdir = 'jobscripts3'
+submitshname = 'submit3.sh'
+
 ntaskspernode = 3
+
+burden = 20 
 # estimated time in min per interpolation 
 # (i.e., per location, per time point)
 
 neach = 1
 tarsplitn = 10
 
-years = range(2012, 2013)
+years = range(2010, 2012)
 varH = {# 'ta_2m':  '1H', 
-        # 'ts_0m':  '1H', 
-        # 'pr':     '1H', 
-        # 'psl':    '1H', 
-        'ps':     '3H', 
-        # 'rss':    '3H', 
-        # 'rls':    '3H', 
-        'wss_10m': '1H', 
-        'hur_2m': '1H'} ######,  
-# 'albedo': '1H'}
+        'ts_0m':  '1H', 
+        'pr':     '1H'}
+#         # 'psl':    '1H', 
+#         'ps':     '3H', 
+#         # 'rss':    '3H', 
+#         # 'rls':    '3H', 
+#         'wss_10m': '1H', 
+#         'hur_2m': '1H'} ######,  
+# # 'albedo': '1H'}
 
 # ntime = str(35) 
 # ntime = 'all'
@@ -39,8 +43,7 @@ if 'ntime' in locals():
 elif 'ntimedict' not in locals():
     sys.exit('have you forgotten ntimedict or ntime')
             
-if not os.path.exists('jobscripts'):
-    os.makedirs('jobscripts')
+if not os.path.exists(jobscriptsdir): os.makedirs(jobscriptsdir)
 
 locfns = [os.path.abspath(os.path.join('locations', f))
           for f in os.listdir('locations') if os.path.splitext(f)[1] == '.csv']
@@ -53,21 +56,57 @@ for i in range(len(locfns)):
     nlocs[i] = len([line for line in lines if len(line.strip()) > 0])
     # if something is written
     f.close()
-locdict = {k: v for (k, v) in [(locfns[i], nlocs[i]) for i in range(len(locfns))]}
+locdict = dict([(locfns[i], nlocs[i]) for i in range(len(locfns))])
 
-fnames = ['jobscripts/%s_%s_%s.sh' % 
-          (os.path.splitext(os.path.basename(locfn))[0], varname, year) 
-          for year in years 
-          for (locfn, nloc) in locdict.items()
-          for (varname, H) in varH.items()]
+iii = len(years) * len(locdict) * len(varH)
+taskii1 = range(0, iii, ntaskspernode)
+taskii2 = taskii1[1:] + [iii]
+nnodes = len(taskii1)
+taskii = [range(taskii1[j], taskii2[j]) for j in range(nnodes)]
+
+jobnames = ['%s%03i%i%s' % 
+            (os.path.splitext(os.path.basename(locfn))[0][0], 
+             int(os.path.splitext(os.path.basename(locfn))[0][3:]),
+             int(year) % 100, 
+             varname) 
+            for year in years 
+            for (locfn, nloc) in locdict.items()
+            for (varname, H) in varH.items()]
+commands = ['%s %s/%s/NORA10_%s_11km_%s_%s.nc %s $SCRATCH %s %s &' % 
+            ('python nora10interpmain.py', 
+             '/work/users/kojito/nora10/nc', 
+             varname, H, varname, year, locfn, tarsplitn, ntimedict[H]) 
+            for year in years 
+            for (locfn, nloc) in locdict.items()
+            for (varname, H) in varH.items()]
+requiredhours = \
+  [{'all': (365 * 24 / int(H[0])), 
+    'mean24': 365, 
+    'mean8': 365}.setdefault(
+        ntimedict[H], 
+        int(ntimedict[H]) if ntimedict[H].isdigit() else None) *
+    nloc * burden / 60.0
+    for year in years 
+    for (locfn, nloc) in locdict.items()
+    for (varname, H) in varH.items()]
+
+requiredhourslist = [int(math.ceil(max(requiredhours[taskii1[ni]:taskii2[ni]])))
+                     for ni in range(nnodes)]
+longjobnames = [''.join(jobnames[taskii1[ni]:taskii2[ni]]) 
+                for ni in range(nnodes)]
+jobfnames = [jobscriptsdir + '/' + ljn + '.sh' for ljn in longjobnames]
+commandslist = ['\n'.join(commands[taskii1[ni]:taskii2[ni]])
+                for ni in range(nnodes)]
+
+
 contents = ['''#!/bin/bash
 
-#SBATCH --job-name=%s%02i%i%s
+#SBATCH --job-name=%s
 #SBATCH --account=uio
 #SBATCH --time=%02i:00:00
 
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks-per-node=%i
 #SBATCH --cpus-per-task=1
 #SBATCH --mail-type=ALL
 
@@ -84,37 +123,23 @@ cp /cluster/home/kojito/nora10/scripts/* $SCRATCH
 
 cd $SCRATCH
 
+%s
 ''' % 
-(os.path.splitext(os.path.basename(locfn))[0][0], 
- int(os.path.splitext(os.path.basename(locfn))[0][3:]),
- int(year) % 100, 
- varname,
- {'all': (365 * 24 / int(H[0])), 'mean24': 365, 'mean8': 365}.setdefault(ntimedict[H], int(ntimedict[H]) if ntimedict[H].isdigit() else None) *
-# {'all': (365 * 24 / int(H[0])), 'mean24': 365, 'mean8': 365}.setdefault(ntime, int(ntime)) *
-  nloc * burden / 60.0)
- for year in years 
- for (locfn, nloc) in locdict.items()
- for (varname, H) in varH.items()]
+(longjobnames[ni], 
+ requiredhourslist[ni], 
+ taskii2[ni] - taskii1[ni], 
+ commandslist[ni]) 
+for ni in range(nnodes)]
 
-['''
-python nora10interpmain.py /work/users/kojito/nora10/nc/%s/NORA10_%s_11km_%s_%s.nc %s $SCRATCH %s %s &
-'''
- varname, H, varname, year, locfn, tarsplitn, 
- ntimedict[H]) 
-#  ntime) 
- for year in years 
- for (locfn, nloc) in locdict.items()
- for (varname, H) in varH.items()]
-
-for i in range(len(fnames)):
-    fname = fnames[i]
-    content = contents[i]
-    f = open(fname, 'w')
+for ni in range(nnodes):
+    jobfname = jobfnames[ni]
+    content = contents[ni]
+    f = open(jobfname, 'w')
     f.write(content)
     f.close()
 
-f = open('submit.sh', 'w')
-out = ' & '.join(['sbatch %s' % fname for fname in fnames]) + '\n'
+f = open(submitshname, 'w')
+out = ' & '.join(['sbatch %s' % jobfname for jobfname in jobfnames]) + '\n'
 f.write(out)
 f.close()
 
