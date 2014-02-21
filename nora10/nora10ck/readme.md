@@ -54,7 +54,7 @@ This is where the extracted data at each time point (or statistics of it, see be
   - mean8: daily mean of the three-hourly data (n = 8)
   - (maybe) 1H, 3H, max24, max8, min24, min8, etc...
 
-- /work/users/kojito/nora10/intermediate/_locationname_/_varname_/_timestat_/_year_/
+- /work/users/kojito/nora10/interpolated/_locationname_/_varname_/_timestat_/_year_/
   - _iiii_-_jjjj_.tar
     - NORA10_1H_11km_ts_0m_2012_0000_Grunnaai_interpolated_cutoff_100_nlocal_50.txt
       - the interpolated data
