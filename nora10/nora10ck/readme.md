@@ -31,6 +31,42 @@ Also discovered the case where only partial files in the part 1 .tar file exists
 
 Should be mostly working well. Now trying to make multiple runs in one job so that the 400-job limitiation does not become limitation. I see that there are some free available slots in abel occasionally. 
 
+### 21 Feb 2014
+
+Reorganized the output directories.
+
+## abel directories
+
+- /work/users/kojito/nora10/nc/_varname_/
+  - _ncfname_
+  
+This is where the original .nc files are kept (45-day expiry)
+
+- /work/users/kojito/nora10/intermediate/_locationname_/_varname_/_timestat_/_year_/
+  - _iiii_-_jjjj_.tar
+    - contains for example: NORA10_1H_11km_wss_10m_2012_0002.txt.bz2
+  - COMPLETED
+
+This is where the extracted data at each time point (or statistics of it, see below) is stored
+
+- time statistics
+  - mean24: daily mean of the hourly data (n = 24)
+  - mean8: daily mean of the three-hourly data (n = 8)
+  - (maybe) 1H, 3H, max24, max8, min24, min8, etc...
+
+- /work/users/kojito/nora10/intermediate/_locationname_/_varname_/_timestat_/_year_/
+  - _iiii_-_jjjj_.tar
+    - NORA10_1H_11km_ts_0m_2012_0000_Grunnaai_interpolated_cutoff_100_nlocal_50.txt
+      - the interpolated data
+    - NORA10_1H_11km_ts_0m_2012_0000_Grunnaai_metadatainterp_cutoff_100_nlocal_50.txt
+      - stats about the interpolations
+    - NORA10_1H_11km_ts_0m_2012_0000_Grunnaai_variograms_cutoff_100.RData
+      - variogram model coefficients
+  - COMPLETED
+
+This is where the interpolate data at each time point is stored. 
+
+
 
 freebee/
 --------
