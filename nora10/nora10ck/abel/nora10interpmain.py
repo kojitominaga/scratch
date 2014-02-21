@@ -101,7 +101,7 @@ if completedexists and not any(sofar0empty):
     print('part 1 is already finished')
 else: 
     ## 1) copy netcdf file from /work to $SCRATCH
-    ncpathscratch = os.path.join(path0s, ncfn)
+    ncpathscratch = os.path.join(path0s, ncfn, lbfn, varname, year)
     print('copying NetCDF file...')
     shutil.copy2(ncpath, ncpathscratch)
     print('... done')

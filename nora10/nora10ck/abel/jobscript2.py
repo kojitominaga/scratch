@@ -16,16 +16,24 @@ neach = 1
 tarsplitn = 10
 
 years = range(2010, 2012)
-varH = {# 'ta_2m':  '1H', 
+varH = {'ta_2m':  '1H', 
         'ts_0m':  '1H', 
-        'pr':     '1H'}
-#         # 'psl':    '1H', 
-#         'ps':     '3H', 
+        'pr':     '1H',
+        'psl':    '1H', 
+        'ps':     '3H', 
+        'wss_10m': '1H', 
+        'hur_2m': '1H'} 
 #         # 'rss':    '3H', 
 #         # 'rls':    '3H', 
-#         'wss_10m': '1H', 
-#         'hur_2m': '1H'} ######,  
 # # 'albedo': '1H'}
+years = range(2012, 2013)
+varH = {# 'ta_2m':  '1H', 
+        'ts_0m':  '1H', 
+        'pr':     '1H',
+        'psl':    '1H', 
+        # 'ps':     '3H', 
+        # 'wss_10m': '1H', 
+        # 'hur_2m': '1H'} 
 
 # ntime = str(35) 
 # ntime = 'all'
