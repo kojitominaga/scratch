@@ -69,7 +69,8 @@ ntimearg = sys.argv[5] ## will handle later, see part1, 2) and variable tt
 
 f = open(locationspath, 'r')
 throwaway = f.readline()
-locations = [l.strip().split(',')[0] for l in f.readlines() if len(l.strip()) > 0]
+locations = [l.strip().split(',')[0] 
+             for l in f.readlines() if len(l.strip()) > 0]
 print(locations)
 f.close()
 

@@ -79,6 +79,27 @@ commands = ['%s %s/%s/NORA10_%s_11km_%s_%s.nc %s $SCRATCH %s %s &' %
             for year in years 
             for (locfn, nloc) in locdict.items()
             for (varname, H) in varH.items()]
+COMPLETE1 = [os.path.join('/work/users/kojito/nora10/', 
+                          ntimedict[H], 
+                          'intermediate', 
+                          os.path.splitext(os.path.basename(locfn))[0], 
+                          varname, 
+                          str(year)
+                          ) + '/COMPLETE'
+             for year in years 
+             for (locfn, nloc) in locdict.items()
+             for (varname, H) in varH.items()]
+COMPLETE2 = [os.path.join('/work/users/kojito/nora10/', 
+                          ntimedict[H], 
+                          'interpolated', 
+                          os.path.splitext(os.path.basename(locfn))[0], 
+                          varname, 
+                          str(year)
+                          ) + '/COMPLETE'
+             for year in years 
+             for (locfn, nloc) in locdict.items()
+             for (varname, H) in varH.items()]
+
 requiredhours = \
   [{'all': (365 * 24 / int(H[0])), 
     'mean24': 365, 
@@ -96,6 +117,9 @@ longjobnames = [''.join(jobnames[taskii1[ni]:taskii2[ni]])
                 for ni in range(nnodes)]
 jobfnames = [jobscriptsdir + '/' + ljn + '.sh' for ljn in longjobnames]
 commandslist = ['\n'.join(commands[taskii1[ni]:taskii2[ni]])
+                for ni in range(nnodes)]
+COMPLETElist = [' '.join(COMPLETE1[taskii1[ni]:taskii2[ni]] +
+                         COMPLETE2[taskii1[ni]:taskii2[ni]])
                 for ni in range(nnodes)]
 
 
@@ -124,11 +148,15 @@ cp /cluster/home/kojito/nora10/scripts/* $SCRATCH
 cd $SCRATCH
 
 %s
+
+python checkfiles.py %s
+
 ''' % 
 (longjobnames[ni], 
  requiredhourslist[ni], 
  taskii2[ni] - taskii1[ni], 
- commandslist[ni]) 
+ commandslist[ni], 
+ COMPLETElist[ni]) 
 for ni in range(nnodes)]
 
 for ni in range(nnodes):
