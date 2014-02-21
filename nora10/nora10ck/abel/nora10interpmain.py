@@ -86,7 +86,7 @@ path1 = os.path.join(pathprefix, ntimearg, "intermediate", lbfn, varname, year)
 if not os.path.exists(path1): os.makedirs(path1)
 path2 = os.path.join(pathprefix, ntimearg, "interpolated", lbfn, varname, year)
 if not os.path.exists(path2): os.makedirs(path2)
-path0s = os.path.join(scratchdir, ntimearg, "nc")
+path0s = os.path.join(scratchdir, ntimearg, "nc", lbfn, varname, year)
 if not os.path.exists(path0s): os.makedirs(path0s)
 path1s = os.path.join(scratchdir, ntimearg, "intermediate", lbfn, varname, year)
 if not os.path.exists(path1s): os.makedirs(path1s)
@@ -101,7 +101,7 @@ if completedexists and not any(sofar0empty):
     print('part 1 is already finished')
 else: 
     ## 1) copy netcdf file from /work to $SCRATCH
-    ncpathscratch = os.path.join(path0s, ncfn, lbfn, varname, year)
+    ncpathscratch = os.path.join(path0s, ncfn)
     print('copying NetCDF file...')
     shutil.copy2(ncpath, ncpathscratch)
     print('... done')
