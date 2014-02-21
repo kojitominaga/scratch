@@ -1,6 +1,9 @@
 ## usage: Rscript sample_variogram_abel.R --args varname year ti rawpath outdir ncfn locations.csv
 ##        ncfn actually not read - just used as part of the name for the output
 
+cat('-----\n')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat('\n')
 varname <- commandArgs(trailingOnly = TRUE)[2]
 year <- commandArgs(trailingOnly = TRUE)[3]
 ni <- as.integer(commandArgs(trailingOnly = TRUE)[4])
@@ -122,7 +125,10 @@ homog3 <- lapply(as.list(1:nlakes),
 cat(sprintf('%s %s %s: %s out %s locally homogeneous.\n',
             varname, year, ni,
             sum(unlist(locallyhomog3)),
-            length(locallyhomog3)))  
+            length(locallyhomog3)))
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat('\n')
+
 ## interpolation type 1 "simple"
 ## 1a: nearest value
 i1a <-
@@ -192,6 +198,9 @@ n10sub <- lapply(as.list(1:nlakes),
                  function(lakei) {
                    return(n10df[ranks[[lakei]] <= ncutoff, ])
                  })
+cat('starting v3\n')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat('\n')
 v3 <- lapply(as.list(1:nlakes),
              function(lakei) {
                if (locallyhomog3[[lakei]]) {
@@ -201,6 +210,9 @@ v3 <- lapply(as.list(1:nlakes),
                }
                return <- out
              })
+cat('done v3, now starting v3o\n')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat('\n')
 v3o <- lapply(as.list(1:nlakes),
               function(lakei) {
                 if (locallyhomog3[[lakei]]) {
@@ -210,6 +222,10 @@ v3o <- lapply(as.list(1:nlakes),
                 }
                 return <- out
               })
+cat('done v3o\n')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat('\n')
+
 ## fitted variograms (scopes 2 and 3)
 ## maxgamma2 <- ifelse(completelyhomog2, NA, max(v2[['gamma']]))
 ## maxgamma2o <- ifelse(completelyhomog2, NA, max(v2o[['gamma']]))
@@ -589,7 +605,8 @@ i3co.var <- unlist(lapply(as.list(1:nlakes),
                             }
                             return(out)
                           }))
-
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat('\n')
 ## finally putting the calculated values in container
 for (lakei in 1:nlakes) {
   lakename <- lakes[['name']][lakei]
@@ -710,7 +727,8 @@ for (lakei in 1:nlakes) {
   v3ol <- v3[[lakei]]
   save(list = c('v3l', 'v3ol'), file = variofn)
 }
-
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat('\n')
 
 ## for (lakei in 1:nlakes) {
 ##   dimnames(interpolated[[lakei]])[[2]] <-

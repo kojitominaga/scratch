@@ -3,19 +3,19 @@ import os
 import math
 import sys
 
-jobscriptsdir = 'jobscripts3'
-submitshname = 'submit3.sh'
+jobscriptsdir = 'jobscripts4'
+submitshname = 'submit4.sh'
 
-ntaskspernode = 3
+ntaskspernode = 8
 
-burden = 20 
+burden = 25
 # estimated time in min per interpolation 
 # (i.e., per location, per time point)
 
 neach = 1
-tarsplitn = 10
+tarsplitn = 5
 
-years = range(2010, 2012)
+years = range(2009, 2013)
 varH = {'ta_2m':  '1H', 
         'ts_0m':  '1H', 
         'pr':     '1H',
@@ -26,14 +26,6 @@ varH = {'ta_2m':  '1H',
 #         # 'rss':    '3H', 
 #         # 'rls':    '3H', 
 # # 'albedo': '1H'}
-years = range(2012, 2013)
-varH = {# 'ta_2m':  '1H', 
-        'ts_0m':  '1H', 
-        'pr':     '1H',
-        'psl':    '1H', 
-        # 'ps':     '3H', 
-        # 'wss_10m': '1H', 
-        # 'hur_2m': '1H'} 
 
 # ntime = str(35) 
 # ntime = 'all'
@@ -138,7 +130,7 @@ contents = ['''#!/bin/bash
 #SBATCH --time=%02i:00:00
 
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=1
+#SBATCH --ntasks=1
 #SBATCH --cpus-per-task=%i
 #SBATCH --mail-type=ALL
 
@@ -149,7 +141,7 @@ source /cluster/bin/jobsetup
 module load python2
 module load R
 
-cp /cluster/home/kojito/nora10/scripts/* $SCRATCH
+cp /cluster/home/kojito/nora10/scripts2/* $SCRATCH
 
 # export OMP_NUM_THREADS=1
 
