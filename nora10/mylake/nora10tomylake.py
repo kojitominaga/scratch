@@ -1,4 +1,4 @@
-'''usage: python nora10tomylake.py locationname year interpolationmethod
+'''usage: python nora10tomylake.py path locationname year interpolationmethod
 
 interpolation method defaults to the last method
 universal kriging with vgm-everything 100 in scope 50 cutoff
@@ -8,10 +8,7 @@ for the moment only single year simulation is implemented'''
 
 import os
 import sys
-
-loc = sys.argv[1]
-year = sys.argv[2] # string
-interp = int(sys.argv[3]) if sys.argv is not None else 'last'
+import tarfile
 
 varH = {'ta_2m':  '1H', 
         'ts_0m':  '1H', 
@@ -24,8 +21,7 @@ varH = {'ta_2m':  '1H',
         'rls':    '3H', 
         'albedo': '1H'}
 
-
-def takedaily(path, locationname, varname, year, interpolationmethod = 'last'):
+def temporalsequence(path, locationname, varname, year, interpolationmethod = 'last'):
     '''
     from the path that contains many .tar files such as 
     0000-0009.tar, 0010-0019.tar. 
@@ -37,7 +33,7 @@ def takedaily(path, locationname, varname, year, interpolationmethod = 'last'):
     if interpolationmethod == 'last':
         interpolationmethod = -1
     tarfs = [f for f in os.listdir(path) if os.path.splitext(f)[1] == '.tar']
-    tarfw.sort() # sort in-place
+    tarfs.sort() # sort in-place
     ntarfs = len(tarfs)
     i1 = [int(os.path.splitext(f)[0].split('-')[0]) for f in tarfs] 
     # 0, 10, 20, ...
@@ -56,3 +52,9 @@ def takedaily(path, locationname, varname, year, interpolationmethod = 'last'):
                 g.close()
     return out
             
+if __name__ == '__main__':
+    path = sys.argv[1]
+    loc = sys.argv[2]
+    year = sys.argv[3] # string
+    interp = int(sys.argv[4]) if sys.argv is not None else 'last'
+
