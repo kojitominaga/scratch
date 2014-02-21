@@ -74,11 +74,6 @@ locations = [l.strip().split(',')[0]
 print(locations)
 f.close()
 
-if not len(locations) == 1:
-    sys.exit('I have decided not to support to do more than 1 locations')
-else: 
-    lbfn = locations[0]
-
 ncfn = os.path.basename(ncpath)
 ncfn2 = os.path.splitext(ncfn)[0]
 varname = '_'.join(ncfn2.split('_')[3:-1])
@@ -87,15 +82,15 @@ fm = fms[varname]
 
 ## create necessary directories if not existing yet
 pathprefix = "/work/users/kojito/nora10"
-path1 = os.path.join(pathprefix, "intermediate", lbfn, varname, ntimearg, year)
+path1 = os.path.join(pathprefix, ntimearg, "intermediate", lbfn, varname, year)
 if not os.path.exists(path1): os.makedirs(path1)
-path2 = os.path.join(pathprefix, "interpolated", lbfn, varname, ntimearg, year)
+path2 = os.path.join(pathprefix, ntimearg, "interpolated", lbfn, varname, year)
 if not os.path.exists(path2): os.makedirs(path2)
-path0s = os.path.join(scratchdir, "nc", lbfn, varname, ntimearg, year)
+path0s = os.path.join(scratchdir, ntimearg, "nc", lbfn, varname, year)
 if not os.path.exists(path0s): os.makedirs(path0s)
-path1s = os.path.join(scratchdir, "intermediate", lbfn, varname, ntimearg, year)
+path1s = os.path.join(scratchdir, ntimearg, "intermediate", lbfn, varname, year)
 if not os.path.exists(path1s): os.makedirs(path1s)
-path2s = os.path.join(scratchdir, "interpolated", lbfn, varname, ntimearg, year)
+path2s = os.path.join(scratchdir, ntimearg, "interpolated", lbfn, varname, year)
 if not os.path.exists(path2s): os.makedirs(path2s)
 
 ## part 1: NetCDF to "extracted"
