@@ -159,16 +159,17 @@ else:
             print('created %s' % tfname)
 
     ## 3.3) create tar for the last bit (n < __tarsplitn__) and send it to path1
-    tti1 = (tt // tarsplitn) * tarsplitn 
-    tfname = os.path.join(path1, '%04i-%04i.tar' % (tti1, tt - 1))
-    tf = tarfile.open(tfname, 'w')
-    filestoadd = [os.path.join(path1s, '%s_%04i.txt.bz2' % (ncfn2, tii)) 
-                  for tii in range(tti1, tt)]
-    for f2add in filestoadd:
-        print(f2add)
-        tf.add(f2add, arcname = os.path.basename(f2add))
-    tf.close()
-    print('created %s' % tfname)
+    if not (tt % tarsplitn == 0):
+        tti1 = (tt // tarsplitn) * tarsplitn 
+        tfname = os.path.join(path1, '%04i-%04i.tar' % (tti1, tt - 1))
+        tf = tarfile.open(tfname, 'w')
+        filestoadd = [os.path.join(path1s, '%s_%04i.txt.bz2' % (ncfn2, tii)) 
+                      for tii in range(tti1, tt)]
+        for f2add in filestoadd:
+            print(f2add)
+            tf.add(f2add, arcname = os.path.basename(f2add))
+        tf.close()
+        print('created %s' % tfname)
         
     ## 3.4) make the file with the name COMPLETED
     f = open(os.path.join(path1, 'COMPLETED'), 'w')
@@ -254,27 +255,31 @@ else:
             print('created %s' % tfname)
 
     ## 3.3) create tar for the last bit (n < __tarsplitn__) and send it to path1
-    tti1 = (tt // tarsplitn) * tarsplitn 
-    tfname = os.path.join(path2, '%04i-%04i.tar' % (tti1, tt - 1))
-    tf = tarfile.open(tfname, 'w')
-    filestoadd1 = [os.path.join(path2s, location, varname, 'pred', 
-                    '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix1)) 
-                    for tii in range(tti1, tt) 
-                    for location in locations]
-    filestoadd2 = [os.path.join(path2s, location, varname, 'meta', 
-                    '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix2))
-                    for tii in range(tti1, tt) 
-                    for location in locations]
-    filestoadd3 = [os.path.join(path2s, location, varname, 'vario', 
-                    '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix3))
-                    for tii in range(tti1, tt) 
-                    for location in locations]
-    filestoadd = filestoadd1 + filestoadd2 + filestoadd3
-    for f2add in filestoadd:
-        print(f2add)
-        tf.add(f2add, arcname = os.path.basename(f2add))
-    tf.close()
-    print('created %s' % tfname)
+    if not (tt % tarsplitn == 0):
+        tti1 = (tt // tarsplitn) * tarsplitn 
+        tfname = os.path.join(path2, '%04i-%04i.tar' % (tti1, tt - 1))
+        tf = tarfile.open(tfname, 'w')
+        filestoadd1 = [os.path.join(path2s, location, varname, 'pred', 
+                                    '%s_%04i_%s_%s' % (ncfn2, tii, 
+                                                       location, suffix1)) 
+                                    for tii in range(tti1, tt) 
+                                    for location in locations]
+        filestoadd2 = [os.path.join(path2s, location, varname, 'meta', 
+                                    '%s_%04i_%s_%s' % (ncfn2, tii, 
+                                                       location, suffix2))
+                                    for tii in range(tti1, tt) 
+                                    for location in locations]
+        filestoadd3 = [os.path.join(path2s, location, varname, 'vario', 
+                                    '%s_%04i_%s_%s' % (ncfn2, tii, 
+                                                       location, suffix3))
+                                    for tii in range(tti1, tt) 
+                                    for location in locations]
+        filestoadd = filestoadd1 + filestoadd2 + filestoadd3
+        for f2add in filestoadd:
+            print(f2add)
+            tf.add(f2add, arcname = os.path.basename(f2add))
+        tf.close()
+        print('created %s' % tfname)
         
     ## 3.4) make the file with the name COMPLETED
     f = open(os.path.join(path2, 'COMPLETED'), 'w')
