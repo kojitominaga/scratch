@@ -34,13 +34,13 @@ def allinterpmethods(location, var, timestat, years):
             sys.exit('give continuous sequence of years')
     pp = [os.path.join('interpolated', location, var, timestat, str(year)) 
           for year in years]
-    p_exists = [os.path.exists(p) for p in pp[0]]
+    p_exists = [os.path.exists(p) for p in pp]
     if not all p_exists:
         sys.exit('not all years of simulations are finished')
     outfname = 'NORA10_%s_11km_%s_%s_%s_%s_%s' % (
         varH[var], var, '%s-%s' % (min(year), max(year)), timestat, location, 
         'interpolated_cutoff_100_nlocal_50.txt')
-    with open(outfname', 'w') as g:
+    with open(outfname, 'w') as g:
         for yi in range(len(pp)):
             p = pp[yi]
             year = str(years[yi])
