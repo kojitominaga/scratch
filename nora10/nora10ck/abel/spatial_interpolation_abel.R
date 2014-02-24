@@ -10,7 +10,7 @@ ni <- as.integer(commandArgs(trailingOnly = TRUE)[4])
 rawpath <- commandArgs(trailingOnly = TRUE)[5]
 outdir <- commandArgs(trailingOnly = TRUE)[6]
 ncfn <- commandArgs(trailingOnly = TRUE)[7]
-locationsfn <- commandArgs(trailingOnly = TRUE)[8]
+TODOlocationsfn <- commandArgs(trailingOnly = TRUE)[8]
 
 ncfn2 <- strsplit(ncfn, '.nc')[[1]][1]
 
@@ -26,16 +26,16 @@ signifdigit <- switch(varname,
                       'ps' = 2,
                       'ts_0m' = 2)
 
-require(intervals)
-require(sp)
-require(gstat)
+require(intervals, lib.loc = 'R')
+require(sp, lib.loc = 'R')
+require(gstat, lib.loc = 'R')
 
 nx = 248
 ny = 400
 ## below x (lon, 248) moves faster than y (lat, 400)
-lat = scan('NORA10_11km_lat.txt')
-lon = scan('NORA10_11km_lon.txt')
-orograw = scan('NORA10_11km_orog.txt')
+lat = scan('NORA10_11km_lat.txt.bz2')
+lon = scan('NORA10_11km_lon.txt.bz2')
+orograw = scan('NORA10_11km_orog.txt.bz2')
 x = rep(1:nx, times = ny)
 y = rep(1:ny, each = nx)
 
@@ -57,7 +57,7 @@ if (!('interpolated' %in% list.files('.'))) dir.create('interpolated')
 ##              ) ## index starts with 0
 
 
-require(gstat) ## for some reason I have to call this again
+require(gstat, lib.loc = 'R') ## for some reason I have to call this again
 
 nmax <- 10
 

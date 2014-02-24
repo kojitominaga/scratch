@@ -142,11 +142,20 @@ source /cluster/bin/jobsetup
 module load python2
 module load R
 
-cp /cluster/home/kojito/nora10/scripts2/* $SCRATCH
+cd $SCRATCH
+mkdir R
+
+cp /cluster/home/kojito/nora10/scripts2/*.txt.bz2 .
+cp /cluster/home/kojito/nora10/scripts2/*.R .
+cp /cluster/home/kojito/nora10/scripts2/NORA10interpmain.py .
+cp /cluster/home/kojito/nora10/scripts2/checkfiles.py .
+###########cp %s . ################## TODO
+cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/intervals R/
+cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/sp R/
+cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/gstat R/
+cp -R /cluster/software/VERSIONS/R-3.0.2/lib64/R/library/methods R/
 
 # export OMP_NUM_THREADS=1
-
-cd $SCRATCH
 
 %s
 
