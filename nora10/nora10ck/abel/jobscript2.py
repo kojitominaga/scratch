@@ -56,7 +56,8 @@ for i in range(len(locfns)):
     nlocs[i] = len([line for line in lines if len(line.strip()) > 0])
     # if something is written
     f.close()
-locdict = dict([(locfns[i], nlocs[i]) for i in range(len(locfns))])
+    locdict = dict([(locfns[i], nlocs[i]) for i in range(len(locfns))])
+    # use zip()?
 
 iii = len(years) * len(locdict) * len(varH)
 taskii1 = range(0, iii, ntaskspernode)
@@ -82,7 +83,7 @@ commands = ['%s %s/%s/NORA10_%s_11km_%s_%s.nc %s $SCRATCH %s %s &' %
 COMPLETE1 = [os.path.join('/work/users/kojito/nora10/', 
                           ntimedict[H], 
                           'intermediate', 
-                          os.path.splitext(os.path.basename(locfn))[0], 
+                          nloc, 
                           varname, 
                           str(year)
                           ) + '/COMPLETE'
@@ -92,7 +93,7 @@ COMPLETE1 = [os.path.join('/work/users/kojito/nora10/',
 COMPLETE2 = [os.path.join('/work/users/kojito/nora10/', 
                           ntimedict[H], 
                           'interpolated', 
-                          os.path.splitext(os.path.basename(locfn))[0], 
+                          nloc, 
                           varname, 
                           str(year)
                           ) + '/COMPLETE'
