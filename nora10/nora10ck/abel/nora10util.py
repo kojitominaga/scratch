@@ -16,9 +16,14 @@ varH = {'ta_2m':  '1H',
         'rss':    '3H', 
         'rls':    '3H', 
         'albedo': '1H'}
+interpnames = ('i1a', 'i1b', 'i1c', 
+               'i3an', 'i3ao', 
+               'i3bn', 'i3bo', 
+               'i3cn', 'i3co')
 
-def allinterpmethods(location, var, timestat, years):
+def bylocation(location, var, timestat, years):
     '''
+    all interpolation methods for a location
     writes a table with
     rows: time steps
     columns: interpolation methods
@@ -37,10 +42,14 @@ def allinterpmethods(location, var, timestat, years):
     p_exists = [os.path.exists(p) for p in pp]
     if not all p_exists:
         sys.exit('not all years of simulations are finished')
+        
     outfname = 'NORA10_%s_11km_%s_%s_%s_%s_%s' % (
-        varH[var], var, '%s-%s' % (min(year), max(year)), timestat, location, 
+        varH[var], var, '%s-%s' % (min(years), max(years)), timestat, location,
         'interpolated_cutoff_100_nlocal_50.txt')
+    
     with open(outfname, 'w') as g:
+        g.write(' '.join(interpnames))
+        g.write('\n')
         for yi in range(len(pp)):
             p = pp[yi]
             year = str(years[yi])
@@ -55,13 +64,36 @@ def allinterpmethods(location, var, timestat, years):
                             varH[var], var, year, j, location, 
                             'interpolated_cutoff_100_nlocal_50.txt')
                         memberf = tf.extractfile(membername)
-                        g.writelines([memberf.read().strip(), '\n'])
+                        g.write(memberf.read().strip())
+                        g.write('\n')
                         memberf.close()
-                        
                     
-        
-                    
-def allintermediates(years):
-    pass
+def byinterpmethod(var, timestat, years, 
+                   interpmethod = 'last', locations = 'all'):
+    '''
+    for the specified locations, and for the specified interp method, 
+    write a table with
+    rows: time steps
+    columns: locations
 
-def
+    years: list of years
+    '''
+    years = [int(y) for y in years]
+    years.sort()
+    if not len(set(years)) == len(years):
+        sys.exit('give unique years')
+    if not len(years) == 1 
+        if all([diff == 1 for diff in (years[1:] - years[:-1])]):
+            sys.exit('give continuous sequence of years')
+
+    interpmethod = -1 if interpmethod == 'last' else int(interpmethod)
+    locations = os.listdir('interpolated') if locations == 'all' else locations
+
+    outfname = 'NORA10_%s_11km_%s_%s_%s_interpolated_%s.txt' % (
+        varH[var], var, '%s-%s' % (min(years), max(years)), timestat,
+        interpnames[interpmethod])
+
+    with open(outfname, 'w') as g:
+        g.write(' '.join(locations))
+        g.write('\n')
+        
