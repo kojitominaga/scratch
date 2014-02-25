@@ -5,7 +5,9 @@ cat('-----\n')
 cat(format(Sys.time(), "%a %b %d %X %Y"))
 cat('\n')
 varname <- commandArgs(trailingOnly = TRUE)[2]
+cat(sprintf('in R: varname is %s\n', varname))
 year <- commandArgs(trailingOnly = TRUE)[3]
+cat(sprintf('in R: year is %s\n', year))
 
 nis <- commandArgs(trailingOnly = TRUE)[4]
 if (grep(',', nis)) {
@@ -14,13 +16,16 @@ if (grep(',', nis)) {
   nis <- int(nis)
 }
 nna <- length(nis)
+print(nis)
+print(nna)
   
 rawpaths <- commandArgs(trailingOnly = TRUE)[5]
 if (grep(',', rawpaths)) {
   rawpaths <- strsplit(rawpaths, ',')[[1]]
 } 
-rawpaths <- length(rawpaths)
 nnb <- length(rawpaths)
+print(rawpaths)
+print(nnb)
 
 if (nna != nnb) {
   stop('check your argument length')
@@ -30,7 +35,7 @@ if (nna != nnb) {
 
 outdir <- commandArgs(trailingOnly = TRUE)[6]
 ncfn <- commandArgs(trailingOnly = TRUE)[7]
-TODOlocationsfn <- commandArgs(trailingOnly = TRUE)[8]
+locationsfn <- commandArgs(trailingOnly = TRUE)[8]
 
 ncfn2 <- strsplit(ncfn, '.nc')[[1]][1]
 
@@ -112,6 +117,11 @@ metadata <- lapply(1:nlakes, function(x) rep(NA, times = nmetadata))
 
 ####### looping for individual interpolation #######
 for (theindex in 1:nn) {
+
+cat('==================\n')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' -- starting new i in main loop now\n')
+  
   rawpath <- rawpaths[theindex]
   ni <- nis[theindex]
 

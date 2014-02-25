@@ -3,12 +3,12 @@ import os
 import math
 import sys
 
-jobscriptsdir = 'jobscripts4'
-submitshname = 'submit4.sh'
+jobscriptsdir = 'jobscripts5'
+submitshname = 'submit5.sh'
 
 ntaskspernode = 8
 
-burden = 1
+burden = 3
 # estimated time in min per interpolation 
 # (i.e., per location, per time point)
 
@@ -17,8 +17,9 @@ if not neach == 1: sys.exit('neach > 1 not supported now')
 
 tarsplitn = 100
 
-years = range(2005, 2006)
-varH = {'ta_2m':  '1H'} # , 
+years = range(2004, 2005)
+varH = {'ps': '3H'}
+# varH = {'ta_2m':  '1H'} # , 
         # 'ts_0m':  '1H', 
         # 'pr':     '1H',
         # 'psl':    '1H', 
@@ -32,9 +33,10 @@ varH = {'ta_2m':  '1H'} # ,
 # ntime = str(35) 
 # ntime = 'all'
 # ntime = 'mean24'
-ntimedict = {'3H': 'mean8', 
-             '1H': 'mean24'}
-## use something like ntimedict = {'3H': 'all', '1H': 'all'} for all time points
+# ntimedict = {'3H': 'mean8', 
+#              '1H': 'mean24'}
+ntimedict = {'3H': 'all', '1H': 'all'}
+##  for all time points
 
 # ntime = 'mean8'
 if ('ntime' in locals()) and ('ntimedict' in locals()):
