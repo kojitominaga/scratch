@@ -221,65 +221,100 @@ else:
     suffix1 = 'interpolated_cutoff_100_nlocal_50.txt'
     suffix2 = 'metadatainterp_cutoff_100_nlocal_50.txt'
     suffix3 = 'variograms_cutoff_100.RData'
-    ## 3.2) run as many as what is not yet done 
-    for ti in range(thelasti + 1, tt): 
+    ## 3.2) run as many as what is not yet done
+    indices1 = range(thelasti + 1, tt, tarsplitn)
+    indices2 = indices1[1:] + [tt]
+    indiceszip = zip(indices1, indices2)
+    for indices in indiceszip:
+        tis = range(indices[0], indices[1])
+        argument_ti = ','.join([str(ti) for ti in tis])
+        argument_rawpath = \
+          ','.join([os.path.join(path1s, '%s_%04i' % (ncfn2, ti) + '.txt.bz2')
+                    for ti in tis])
         cmd = 'Rscript %s --args %s %s %s %s %s %s %s' % (
             'spatial_interpolation_abel.R',
-            varname, year, ti, 
-            os.path.join(path1s, '%s_%04i' % (ncfn2, ti) + '.txt.bz2'), 
+            varname, year, argument_ti, argument_rawpath, 
             path2s, ncfn, locationspath)
         print(cmd)
         os.system(cmd)
-        ## 3.2.1) every __tarsplitn__ create tar and send it to path2
-        if ti % tarsplitn == (tarsplitn - 1):
-            ti1 = ti - (tarsplitn - 1)
-            tfname = os.path.join(path2, '%04i-%04i.tar' % (ti1, ti))
-            tf = tarfile.open(tfname, 'w')
-            filestoadd1 = [os.path.join(path2s, location, varname, 'pred', 
-                            '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix1)) 
-                            for tii in range(ti1, ti + 1) 
-                            for location in locations]
-            filestoadd2 = [os.path.join(path2s, location, varname, 'meta', 
-                            '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix2))
-                            for tii in range(ti1, ti + 1) 
-                            for location in locations]
-            filestoadd3 = [os.path.join(path2s, location, varname, 'vario', 
-                            '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix3))
-                            for tii in range(ti1, ti + 1) 
-                            for location in locations]
-            filestoadd = filestoadd1 + filestoadd2 + filestoadd3
-            for f2add in filestoadd:
-                print(f2add)
-                tf.add(f2add, arcname = os.path.basename(f2add))
-            tf.close()
-            print('created %s' % tfname)
-
-    ## 3.3) create tar for the last bit (n < __tarsplitn__) and send it to path1
-    if not (tt % tarsplitn == 0):
-        tti1 = (tt // tarsplitn) * tarsplitn 
-        tfname = os.path.join(path2, '%04i-%04i.tar' % (tti1, tt - 1))
+        tfname = os.path.join(path2, '%04i-%04i.tar' % (indices[0], indices[1]))
+        print('...creating %s' % tfname)
         tf = tarfile.open(tfname, 'w')
-        filestoadd1 = [os.path.join(path2s, location, varname, 'pred', 
-                                    '%s_%04i_%s_%s' % (ncfn2, tii, 
-                                                       location, suffix1)) 
-                                    for tii in range(tti1, tt) 
-                                    for location in locations]
-        filestoadd2 = [os.path.join(path2s, location, varname, 'meta', 
-                                    '%s_%04i_%s_%s' % (ncfn2, tii, 
-                                                       location, suffix2))
-                                    for tii in range(tti1, tt) 
-                                    for location in locations]
-        filestoadd3 = [os.path.join(path2s, location, varname, 'vario', 
-                                    '%s_%04i_%s_%s' % (ncfn2, tii, 
-                                                       location, suffix3))
-                                    for tii in range(tti1, tt) 
-                                    for location in locations]
+        filestoadd1 = [os.path.join(path2s, 'pred', 
+                       '%s_%04i_%s_%s' % (ncfn2, ti, location, suffix1)) 
+                       for ti in tis for location in locations]
+        filestoadd2 = [os.path.join(path2s, 'meta', 
+                       '%s_%04i_%s_%s' % (ncfn2, ti, location, suffix2))
+                       for ti in tis for location in locations]
+        filestoadd3 = [os.path.join(path2s, 'vario', 
+                       '%s_%04i_%s_%s' % (ncfn2, ti, location, suffix3))
+                       for ti in tis for location in locations]
         filestoadd = filestoadd1 + filestoadd2 + filestoadd3
         for f2add in filestoadd:
             print(f2add)
             tf.add(f2add, arcname = os.path.basename(f2add))
-        tf.close()
-        print('created %s' % tfname)
+            tf.close()
+        print('...created %s' % tfname)
+
+    # ## 3.2) run as many as what is not yet done 
+    # for ti in range(thelasti + 1, tt): 
+    #     cmd = 'Rscript %s --args %s %s %s %s %s %s %s' % (
+    #         'spatial_interpolation_abel.R',
+    #         varname, year, ti, 
+    #         os.path.join(path1s, '%s_%04i' % (ncfn2, ti) + '.txt.bz2'), 
+    #         path2s, ncfn, locationspath)
+    #     print(cmd)
+    #     os.system(cmd)
+    #     ## 3.2.1) every __tarsplitn__ create tar and send it to path2
+    #     if ti % tarsplitn == (tarsplitn - 1):
+    #         ti1 = ti - (tarsplitn - 1)
+    #         tfname = os.path.join(path2, '%04i-%04i.tar' % (ti1, ti))
+    #         tf = tarfile.open(tfname, 'w')
+    #         filestoadd1 = [os.path.join(path2s, location, varname, 'pred', 
+    #                         '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix1)) 
+    #                         for tii in range(ti1, ti + 1) 
+    #                         for location in locations]
+    #         filestoadd2 = [os.path.join(path2s, location, varname, 'meta', 
+    #                         '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix2))
+    #                         for tii in range(ti1, ti + 1) 
+    #                         for location in locations]
+    #         filestoadd3 = [os.path.join(path2s, location, varname, 'vario', 
+    #                         '%s_%04i_%s_%s' % (ncfn2, tii, location, suffix3))
+    #                         for tii in range(ti1, ti + 1) 
+    #                         for location in locations]
+    #         filestoadd = filestoadd1 + filestoadd2 + filestoadd3
+    #         for f2add in filestoadd:
+    #             print(f2add)
+    #             tf.add(f2add, arcname = os.path.basename(f2add))
+    #         tf.close()
+    #         print('created %s' % tfname)
+
+    # ## 3.3) create tar for the last bit (n < __tarsplitn__) and send it to path1
+    # if not (tt % tarsplitn == 0):
+    #     tti1 = (tt // tarsplitn) * tarsplitn 
+    #     tfname = os.path.join(path2, '%04i-%04i.tar' % (tti1, tt - 1))
+    #     tf = tarfile.open(tfname, 'w')
+    #     filestoadd1 = [os.path.join(path2s, location, varname, 'pred', 
+    #                                 '%s_%04i_%s_%s' % (ncfn2, tii, 
+    #                                                    location, suffix1)) 
+    #                                 for tii in range(tti1, tt) 
+    #                                 for location in locations]
+    #     filestoadd2 = [os.path.join(path2s, location, varname, 'meta', 
+    #                                 '%s_%04i_%s_%s' % (ncfn2, tii, 
+    #                                                    location, suffix2))
+    #                                 for tii in range(tti1, tt) 
+    #                                 for location in locations]
+    #     filestoadd3 = [os.path.join(path2s, location, varname, 'vario', 
+    #                                 '%s_%04i_%s_%s' % (ncfn2, tii, 
+    #                                                    location, suffix3))
+    #                                 for tii in range(tti1, tt) 
+    #                                 for location in locations]
+    #     filestoadd = filestoadd1 + filestoadd2 + filestoadd3
+    #     for f2add in filestoadd:
+    #         print(f2add)
+    #         tf.add(f2add, arcname = os.path.basename(f2add))
+    #     tf.close()
+    #     print('created %s' % tfname)
         
     ## 3.4) make the file with the name COMPLETED
     f = open(os.path.join(path2, 'COMPLETED'), 'w')

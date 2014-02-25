@@ -8,21 +8,23 @@ submitshname = 'submit4.sh'
 
 ntaskspernode = 8
 
-burden = 25
+burden = 1
 # estimated time in min per interpolation 
 # (i.e., per location, per time point)
 
 neach = 1
-tarsplitn = 5
+if not neach == 1: sys.exit('neach > 1 not supported now')
 
-years = range(2009, 2013)
-varH = {'ta_2m':  '1H', 
-        'ts_0m':  '1H', 
-        'pr':     '1H',
-        'psl':    '1H', 
-        'ps':     '3H', 
-        'wss_10m': '1H', 
-        'hur_2m': '1H'} 
+tarsplitn = 100
+
+years = range(2007, 2008)
+varH = {'ta_2m':  '1H'} # , 
+        # 'ts_0m':  '1H', 
+        # 'pr':     '1H',
+        # 'psl':    '1H', 
+        # 'ps':     '3H', 
+        # 'wss_10m': '1H', 
+        # 'hur_2m': '1H'} 
 #         # 'rss':    '3H', 
 #         # 'rls':    '3H', 
 # # 'albedo': '1H'}
@@ -48,16 +50,26 @@ if not os.path.exists(jobscriptsdir): os.makedirs(jobscriptsdir)
 locfns = [os.path.abspath(os.path.join('locations', f))
           for f in os.listdir('locations') if os.path.splitext(f)[1] == '.csv']
 nlocs = [None] * len(locfns)
+namelocs = [None] * len(locfns)
 for i in range(len(locfns)):
     locfn = locfns[i]
     f = open(locfn, 'r')
     header = f.readline()
     lines = f.readlines()
     nlocs[i] = len([line for line in lines if len(line.strip()) > 0])
+    namelocslist = [line.strip().split(',')[0] 
+                    for line in lines if len(line.strip()) > 0]
+    if len(namelocslist) > 1:
+        sys.exit('more than one locations not supported at the moment')
+    namelocs[i] = namelocslist[0]
     # if something is written
     f.close()
-    locdict = dict([(locfns[i], nlocs[i]) for i in range(len(locfns))])
-    # use zip()?
+
+locdict = dict(zip(locfns, nlocs))
+locnamedict = dict(zip(locfns, namelocs))
+# locdict = dict([(locfns[i], nlocs[i]) for i in range(len(locfns))])
+# locnamedict = dict([(locfns[i], namelocs[i]) for i in range(len(locfns))])
+# use zip()?
 
 iii = len(years) * len(locdict) * len(varH)
 taskii1 = range(0, iii, ntaskspernode)
@@ -65,7 +77,7 @@ taskii2 = taskii1[1:] + [iii]
 nnodes = len(taskii1)
 taskii = [range(taskii1[j], taskii2[j]) for j in range(nnodes)]
 
-jobnames = ['%s%03i%i%s' % 
+jobnames = ['%s%03i%02i%s' % 
             (os.path.splitext(os.path.basename(locfn))[0][0], 
              int(os.path.splitext(os.path.basename(locfn))[0][3:]),
              int(year) % 100, 
@@ -76,27 +88,29 @@ jobnames = ['%s%03i%i%s' %
 commands = ['%s %s/%s/NORA10_%s_11km_%s_%s.nc %s $SCRATCH %s %s &' % 
             ('python nora10interpmain.py', 
              '/work/users/kojito/nora10/nc', 
-             varname, H, varname, year, locfn, tarsplitn, ntimedict[H]) 
+             varname, H, varname, year, 
+             os.path.basename(locfn),  ## local at $SCRATCH
+             tarsplitn, ntimedict[H]) 
             for year in years 
             for (locfn, nloc) in locdict.items()
             for (varname, H) in varH.items()]
 COMPLETE1 = [os.path.join('/work/users/kojito/nora10/', 
                           ntimedict[H], 
-                          'intermediate', 
-                          nloc, 
+                          'intermediate',
+                          locnamedict[locfn],
                           varname, 
-                          str(year)
-                          ) + '/COMPLETE'
+                          str(year), 
+                          'COMPLETE')
              for year in years 
              for (locfn, nloc) in locdict.items()
              for (varname, H) in varH.items()]
 COMPLETE2 = [os.path.join('/work/users/kojito/nora10/', 
                           ntimedict[H], 
                           'interpolated', 
-                          nloc, 
+                          locnamedict[locfn],
                           varname, 
-                          str(year)
-                          ) + '/COMPLETE'
+                          str(year),
+                          'COMPLETE')
              for year in years 
              for (locfn, nloc) in locdict.items()
              for (varname, H) in varH.items()]
@@ -145,11 +159,11 @@ module load R
 cd $SCRATCH
 mkdir R
 
-cp /cluster/home/kojito/nora10/scripts2/*.txt.bz2 .
-cp /cluster/home/kojito/nora10/scripts2/*.R .
-cp /cluster/home/kojito/nora10/scripts2/NORA10interpmain.py .
-cp /cluster/home/kojito/nora10/scripts2/checkfiles.py .
-###########cp %s . ################## TODO
+cp /cluster/home/kojito/nora10/scripts/*.txt.bz2 .
+cp /cluster/home/kojito/nora10/scripts/*.R .
+cp /cluster/home/kojito/nora10/scripts/nora10interpmain.py .
+cp /cluster/home/kojito/nora10/scripts/checkfiles.py .
+cp /cluster/home/kojito/nora10/scripts/locations/*.csv . 
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/intervals R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/sp R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/gstat R/

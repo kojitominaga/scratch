@@ -7,7 +7,6 @@ files = sys.argv[1:]
 finished = False
 
 while not finished:
-    time.sleep(10)
     flag = True
     print('----')
     for f in files:
@@ -16,4 +15,5 @@ while not finished:
         flag = flag and os.path.exists(f)
     if flag:
         finished = True
+    time.sleep(300)
 

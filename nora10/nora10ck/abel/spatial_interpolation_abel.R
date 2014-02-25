@@ -6,8 +6,28 @@ cat(format(Sys.time(), "%a %b %d %X %Y"))
 cat('\n')
 varname <- commandArgs(trailingOnly = TRUE)[2]
 year <- commandArgs(trailingOnly = TRUE)[3]
-ni <- as.integer(commandArgs(trailingOnly = TRUE)[4])
-rawpath <- commandArgs(trailingOnly = TRUE)[5]
+
+nis <- commandArgs(trailingOnly = TRUE)[4]
+if (grep(',', nis)) {
+  nis <- as.integer(strsplit(nis, ',')[[1]])
+} else {
+  nis <- int(nis)
+}
+nna <- length(nis)
+  
+rawpaths <- commandArgs(trailingOnly = TRUE)[5]
+if (grep(',', rawpaths)) {
+  rawpaths <- strsplit(rawpaths, ',')[[1]]
+} 
+rawpaths <- length(rawpaths)
+nnb <- length(rawpaths)
+
+if (nna != nnb) {
+  stop('check your argument length')
+} else {
+  nn <- nna
+}
+
 outdir <- commandArgs(trailingOnly = TRUE)[6]
 ncfn <- commandArgs(trailingOnly = TRUE)[7]
 TODOlocationsfn <- commandArgs(trailingOnly = TRUE)[8]
@@ -88,6 +108,18 @@ metadata <- lapply(1:nlakes, function(x) rep(NA, times = nmetadata))
 ## if (!file.exists(paste0('interpolated/vario/', varname, '/', year))) {
 ##   dir.create(paste0('interpolated/vario/', varname, '/', year))
 ## }
+
+
+####### looping for individual interpolation #######
+for (theindex in 1:nn) {
+  rawpath <- rawpaths[theindex]
+  ni <- nis[theindex]
+
+
+
+
+
+####### not indenting for now
 
 n10raw <- scan(rawpath, quiet = TRUE)
 n10df <- data.frame(lat, lon, v = n10raw, orog = orograw)
@@ -610,27 +642,36 @@ cat('\n')
 ## finally putting the calculated values in container
 for (lakei in 1:nlakes) {
   lakename <- lakes[['name']][lakei]
-  if (!file.exists(sprintf('%s/%s', outdir, lakename))) {
-    dir.create(sprintf('%s/%s', outdir, lakename))
+  ## if (!file.exists(sprintf('%s/%s', outdir, lakename))) {
+  ##   dir.create(sprintf('%s/%s', outdir, lakename))
+  ## }
+  ## if (!file.exists(sprintf('%s/%s/%s', outdir, lakename, varname))) {
+  ##   dir.create(sprintf('%s/%s/%s', outdir, lakename, varname))
+  ## }
+  ## if (!file.exists(sprintf('%s/%s/%s/pred', outdir, lakename, varname))) {
+  ##   dir.create(sprintf('%s/%s/%s/pred', outdir, lakename, varname))
+  ## }
+  ## if (!file.exists(sprintf('%s/%s/%s/meta', outdir, lakename, varname))) {
+  ##   dir.create(sprintf('%s/%s/%s/meta', outdir, lakename, varname))
+  ## }
+  ## if (!file.exists(sprintf('%s/%s/%s/vario', outdir, lakename, varname))) {
+  ##   dir.create(sprintf('%s/%s/%s/vario', outdir, lakename, varname))
+  ## }
+  if (!file.exists(sprintf('%s/pred', outdir))) {
+    dir.create(sprintf('%s/pred', outdir))
   }
-  if (!file.exists(sprintf('%s/%s/%s', outdir, lakename, varname))) {
-    dir.create(sprintf('%s/%s/%s', outdir, lakename, varname))
+  if (!file.exists(sprintf('%s/meta', outdir))) {
+    dir.create(sprintf('%s/meta', outdir))
   }
-  if (!file.exists(sprintf('%s/%s/%s/pred', outdir, lakename, varname))) {
-    dir.create(sprintf('%s/%s/%s/pred', outdir, lakename, varname))
+  if (!file.exists(sprintf('%s/vario', outdir))) {
+    dir.create(sprintf('%s/vario', outdir))
   }
-  if (!file.exists(sprintf('%s/%s/%s/meta', outdir, lakename, varname))) {
-    dir.create(sprintf('%s/%s/%s/meta', outdir, lakename, varname))
-  }
-  if (!file.exists(sprintf('%s/%s/%s/vario', outdir, lakename, varname))) {
-    dir.create(sprintf('%s/%s/%s/vario', outdir, lakename, varname))
-  }
-  predfn <- sprintf('%s/%s/%s/pred/%s_%04i_%s_interpolated_cutoff_%s_nlocal_%s.txt',
-                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff, nlocal)
-  metafn <- sprintf('%s/%s/%s/meta/%s_%04i_%s_metadatainterp_cutoff_%s_nlocal_%s.txt',
-                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff, nlocal)
-  variofn <- sprintf('%s/%s/%s/vario/%s_%04i_%s_variograms_cutoff_%s.RData',
-                    outdir, lakename, varname, ncfn2, ni, lakename, ncutoff)
+  predfn <- sprintf('%s/pred/%s_%04i_%s_interpolated_cutoff_%s_nlocal_%s.txt',
+                    outdir, ncfn2, ni, lakename, ncutoff, nlocal)
+  metafn <- sprintf('%s/meta/%s_%04i_%s_metadatainterp_cutoff_%s_nlocal_%s.txt',
+                    outdir, ncfn2, ni, lakename, ncutoff, nlocal)
+  variofn <- sprintf('%s/vario/%s_%04i_%s_variograms_cutoff_%s.RData',
+                    outdir, ncfn2, ni, lakename, ncutoff)
   interpolated <- c(i1a[lakei],
                     i1b[lakei],
                     i1c[lakei],
@@ -750,7 +791,7 @@ cat('\n')
 ##              rep(rep(c('a', 'b', 'c'), each = 2), times = 2),
 ##              rep(c('n', 'o'), times = 6), '.var')) 
   
-
+}
 
   
 
