@@ -1,11 +1,12 @@
 *.csv.gz
 *.png
 *.nc
-*.txt.bz2
+txt.bz2
 nora10/nora10ck/freebee/comsat/NSD/*
 nora10/nora10ck/freebee/*.pdf
 nora10/nora10ck/freebee/samplevariogram/*.pdf
 nora10/nora10ck/freebee/interpolated/*
+nora10/nora10ck/freebee/temp/*
 co2/comsat/*
 co2/input*
 co2/output*
