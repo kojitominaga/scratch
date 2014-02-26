@@ -111,7 +111,8 @@ else:
     print('copying NetCDF file...')
     shutil.copy2(ncpath, ncpathscratch)
     print('... done')
-    
+
+    flagmean = False
     ## 2) get number of time points (hours or 3-h intervals)
     if ntimearg == 'all':
         r = netCDF4.Dataset(ncpathscratch)
