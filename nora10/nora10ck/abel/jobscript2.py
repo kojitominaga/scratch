@@ -8,7 +8,7 @@ submitshname = 'submit4.sh'
 
 ntaskspernode = 8
 
-burden = 1
+burden = 5
 # estimated time in min per interpolation 
 # (i.e., per location, per time point)
 
@@ -17,14 +17,14 @@ if not neach == 1: sys.exit('neach > 1 not supported now')
 
 tarsplitn = 100
 
-years = range(2005, 2006)
-varH = {'ta_2m':  '1H'} # , 
-        # 'ts_0m':  '1H', 
-        # 'pr':     '1H',
-        # 'psl':    '1H', 
-        # 'ps':     '3H', 
-        # 'wss_10m': '1H', 
-        # 'hur_2m': '1H'} 
+years = range(2011, 2013)
+varH = {'ta_2m':  '1H',
+        'ts_0m':  '1H', 
+        'pr':     '1H',
+        'psl':    '1H', 
+        'ps':     '3H', 
+        'wss_10m': '1H', 
+        'hur_2m': '1H'} 
 #         # 'rss':    '3H', 
 #         # 'rls':    '3H', 
 # # 'albedo': '1H'}

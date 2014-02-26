@@ -116,7 +116,7 @@ else:
     if ntimearg == 'all':
         r = netCDF4.Dataset(ncpathscratch)
         tt = r.variables['time'].shape[0]
-    elif 'mean' in ntimearg:
+    if 'mean' in ntimearg:
         r = netCDF4.Dataset(ncpathscratch)
         tt = r.variables['time'].shape[0]
         interval = int(ntimearg[4:])
