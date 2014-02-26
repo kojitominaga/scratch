@@ -17,7 +17,7 @@ if not neach == 1: sys.exit('neach > 1 not supported now')
 
 tarsplitn = 100
 
-years = range(2004, 2005)
+years = range(2012, 2013)
 varH = {'ps': '3H'}
 # varH = {'ta_2m':  '1H'} # , 
         # 'ts_0m':  '1H', 
