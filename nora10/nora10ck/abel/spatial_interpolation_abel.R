@@ -1,13 +1,16 @@
 ## usage: Rscript sample_variogram_abel.R --args varname year ti rawpath outdir ncfn locations.csv
 ##        ncfn actually not read - just used as part of the name for the output
 
-cat('-----\n')
+cat('====\n====\n====\n====\nThis is Rscript\n')
 cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat('\n')
+cat('current working directory is:\n')
+cat(getwd())
+cat('\n====\n====\n====\n====\n')
+
 varname <- commandArgs(trailingOnly = TRUE)[2]
-cat(sprintf('in R: varname is %s\n', varname))
+cat(sprintf('[R] varname is %s\n', varname))
 year <- commandArgs(trailingOnly = TRUE)[3]
-cat(sprintf('in R: year is %s\n', year))
+cat(sprintf('[R] year is %s\n', year))
 
 nis <- commandArgs(trailingOnly = TRUE)[4]
 if (grep(',', nis)) {
@@ -49,8 +52,12 @@ if (nna != nnb) {
 }
 
 outdir <- commandArgs(trailingOnly = TRUE)[6]
+cat(sprintf('[R] outdir is %s\n', outdir))
 ncfn <- commandArgs(trailingOnly = TRUE)[7]
+cat(sprintf('[R] ncfn is %s\n', ncfn))
 locationsfn <- commandArgs(trailingOnly = TRUE)[8]
+cat(sprintf('[R] locationsfn is %s\n', locationsfn))
+
 
 ncfn2 <- strsplit(ncfn, '.nc')[[1]][1]
 
@@ -66,28 +73,51 @@ signifdigit <- switch(varname,
                       'ps' = 2,
                       'ts_0m' = 2)
 
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- R libraries\n')
 require(intervals, lib.loc = 'R')
 require(sp, lib.loc = 'R')
 require(gstat, lib.loc = 'R')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- done\n')
 
 nx = 248
 ny = 400
 ## below x (lon, 248) moves faster than y (lat, 400)
+
+cat('====\n====\n')
+
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- reading NORA10_11km_lat.txt.bz2\n')
 lat = scan('NORA10_11km_lat.txt.bz2')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- done\n')
+
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- reading NORA10_11km_lon.txt.bz2\n')
 lon = scan('NORA10_11km_lon.txt.bz2')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- done\n')
+
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- reading NORA10_11km_orog.txt.bz2\n')
 orograw = scan('NORA10_11km_orog.txt.bz2')
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- done\n')
+
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- gstat operations\n')
 x = rep(1:nx, times = ny)
 y = rep(1:ny, each = nx)
-
 llCRS <- CRS('+proj=longlat +ellps=WGS84 +datum=WGS84')
-
 orogdf = data.frame(x, y, lat, lon, orograw)
 coordinates(orogdf) <- c('lon', 'lat')
 ## promotes orodf to SpatialPointsDataFrame
 proj4string(orogdf) <- llCRS
-
 oroglat <- orogdf@coords[, 2]
 oroglon <- orogdf@coords[, 1]
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- done\n')
 
 if (!('temp' %in% list.files('.'))) dir.create('temp')
 if (!('interpolated' %in% list.files('.'))) dir.create('interpolated')
@@ -97,11 +127,18 @@ if (!('interpolated' %in% list.files('.'))) dir.create('interpolated')
 ##              ) ## index starts with 0
 
 
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- R libraries (second time)\n')
 require(gstat, lib.loc = 'R') ## for some reason I have to call this again
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- done\n')
 
-nmax <- 10
-
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- reading the locations .csv file\n')
 lakes <- read.csv(locationsfn)
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- done\n')
+
 coordinates(lakes) <- c('longitude', 'latitude')
 proj4string(lakes) <- llCRS
 
@@ -118,7 +155,13 @@ metadata <- lapply(1:nlakes, function(x) rep(NA, times = nmetadata))
 
 
 if (testingflag) {
+  cat('====\n====\n')
+  cat(format(Sys.time(), "%a %b %d %X %Y"))
+  cat(' --- reading a .txt.gz file\n')
   rawdata <- scan(rawpaths, quiet = TRUE)
+  cat(format(Sys.time(), "%a %b %d %X %Y"))
+  cat(' --- reading done\n')
+  cat('====\n====\n')
 }
 
 ####### looping for individual interpolation #######
@@ -126,7 +169,7 @@ for (theindex in 1:nn) {
 
 cat('==================\n')
 cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat(' -- starting new i in main loop now\n')
+cat(' --- starting new i in main loop now\n')
 
 if (!testingflag) {
   rawpath <- rawpaths[theindex]
@@ -173,12 +216,12 @@ homog3 <- lapply(as.list(1:nlakes),
                    ifelse(locallyhomog3[[lakei]],
                           n10df[['v']][ranks[[lakei]] == 1], NA)
                  })
-cat(sprintf('%s %s %s: %s out %s locally homogeneous.\n',
+cat(format(Sys.time(), "%a %b %d %X %Y"))
+cat(' --- ')
+cat(sprintf('[[%s %s %s: %s out %s locally homogeneous.]]\n',
             varname, year, ni,
             sum(unlist(locallyhomog3)),
             length(locallyhomog3)))
-cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat('\n')
 
 ## interpolation type 1 "simple"
 ## 1a: nearest value
@@ -241,9 +284,8 @@ n10sub <- lapply(as.list(1:nlakes),
                  function(lakei) {
                    return(n10df[ranks[[lakei]] <= ncutoff, ])
                  })
-cat('starting v3\n')
 cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat('\n')
+cat(' --- starting sample variograms\n')
 v3 <- lapply(as.list(1:nlakes),
              function(lakei) {
                if (locallyhomog3[[lakei]]) {
@@ -262,9 +304,8 @@ v3o <- lapply(as.list(1:nlakes),
                 }
                 return <- out
               })
-cat('done v3o\n')
 cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat('\n')
+cat(' --- done sample variograms\n')
 
 ## fitted variograms
 maxgamma3 <- lapply(as.list(1:nlakes),
@@ -556,7 +597,7 @@ i3co.var <- unlist(lapply(as.list(1:nlakes),
                             return(out)
                           }))
 cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat('-- krigin done \n')
+cat(' --- krigin done \n')
 ## finally putting the calculated values in container
 for (lakei in 1:nlakes) {
   lakename <- lakes[['name']][lakei]
@@ -631,11 +672,14 @@ for (lakei in 1:nlakes) {
   save(list = c('v3l', 'v3ol'), file = variofn)
 }
 cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat('-- writing output to file done, end of loop\n')
+cat(' --- writing output to file done, end of loop\n')
 
 
 }
 
-  
+cat('====\n====\n')
+cat('This is Rscript - bye!')
+cat('====\n====\n')
+
 
   

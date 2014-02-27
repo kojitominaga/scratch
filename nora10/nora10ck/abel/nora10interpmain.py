@@ -298,7 +298,7 @@ else:
             path2s, ncfn, locationspath)
         print(cmd)
         os.system(cmd)
-        tfname = os.path.join(path2, '%04i-%04i.tar' % (indices[0], indices[1]))
+        tfname = os.path.join(path2, '%04i-%04i.tar' % (indices[0], indices[1] - 1))
         print('...creating %s' % tfname)
         tf = tarfile.open(tfname, 'w')
         filestoadd1 = [os.path.join(path2s, 'pred', 
