@@ -18,12 +18,27 @@ if (grep(',', nis)) {
 nna <- length(nis)
 print(nis)
 print(nna)
-  
+
+testingflag <- FALSE
 rawpaths <- commandArgs(trailingOnly = TRUE)[5]
-if (grep(',', rawpaths)) {
+print(rawpaths)
+if (length(grep(',', rawpaths)) > 0) {
+  print('debug1')
   rawpaths <- strsplit(rawpaths, ',')[[1]]
-} 
-nnb <- length(rawpaths)
+  nnb <- length(rawpaths)
+} else if (length(grep('.txt.gz', rawpaths)) > 0) {
+  print('debug2')
+  testingflag <- TRUE
+  xx <- strsplit(rawpaths, '/', fixed = TRUE)[[1]]
+  ra <- as.integer(strsplit(strsplit(xx[length(xx)],
+                                     '.', fixed = TRUE)[[1]][1],
+                            '-', fixed = TRUE)[[1]])
+  nnb <- ra[2] - ra[1] + 1
+} else {
+  print('debug3')
+  nnb <- 1
+}
+print('debug4')
 print(rawpaths)
 print(nnb)
 
@@ -102,23 +117,32 @@ nmetadata <- 33
 metadata <- lapply(1:nlakes, function(x) rep(NA, times = nmetadata))
 
 
+if (testingflag) {
+  rawdata <- scan(rawpaths, quiet = TRUE)
+}
+
 ####### looping for individual interpolation #######
 for (theindex in 1:nn) {
 
 cat('==================\n')
 cat(format(Sys.time(), "%a %b %d %X %Y"))
 cat(' -- starting new i in main loop now\n')
-  
+
+if (!testingflag) {
   rawpath <- rawpaths[theindex]
-  ni <- nis[theindex]
+}
 
-
+ni <- nis[theindex]
 
 
 
 ####### not indenting for now
 
-n10raw <- scan(rawpath, quiet = TRUE)
+if (testingflag) {
+  n10raw <- rawdata[(1:(248 * 400)) + ((theindex - 1) * 248 * 400)]
+} else {
+  n10raw <- scan(rawpath, quiet = TRUE)
+}
 n10df <- data.frame(lat, lon, v = n10raw, orog = orograw)
 coordinates(n10df) <- c('lon', 'lat')
 ## promotes orodf to SpatialPointsDataFrame

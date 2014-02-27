@@ -13,6 +13,7 @@ import sys
 import shutil
 import netCDF4
 import bz2
+import gzip
 import numpy as np
 import tarfile
 import time
@@ -28,29 +29,40 @@ fms = {'ta_2m':  '%.2f',
        'hur_2m': '%.2f', 
        'albedo': '%.2f'}
 
-def writeout(ncfpath, timei, fm, outdir, interval = None):
-    """write out the NORA10 results at the specified time index timei"""
+testingflag = True
+
+
+def writeout(ncfpath, timei, fm, outdir, interval = None, appendfn = None):
+    """write out the NORA10 results at the specified time index timei
+    if appendfn: write plan text simply append to os.path.join(outdir, appendfn)
+    else: write a gz file in outdir
+    """
     r = netCDF4.Dataset(ncfpath)
     varname = '_'.join(os.path.basename(ncfpath).split('_')[:-1][3:])
     v = r.variables[varname]
-    if not interval:
-        if v.ndim == 4:
-            out = v[timei, 0, :, :]
-        elif v.ndim == 3:
-            out = v[timei, :, :]
-    else:
+    if interval:
         iinterval = int(interval)
         if v.ndim == 4:
             out2 = v[(timei * iinterval):((timei + 1) * iinterval), 0, :, :]
         elif v.ndim == 3:
             out2 = v[(timei * iinterval):((timei + 1) * iinterval), :, :]
         out = out2.mean(axis = 0) # takes daily mean 
-    ncfname = os.path.basename(ncfpath)
-    outfn = '%s_%04i.txt.bz2' % (os.path.splitext(ncfname)[0], timei)
-    outpath = os.path.join(outdir, outfn)
-    b = bz2.BZ2File(outpath, 'w')
-    np.savetxt(b, out, fmt = fm)
-    b.close()
+    else:
+        if v.ndim == 4:
+            out = v[timei, 0, :, :]
+        elif v.ndim == 3:
+            out = v[timei, :, :]
+    if appendfn:
+        g = gzip.GzipFile(os.path.join(outdir, appendfn), 'ab')
+        np.savetxt(g, out, fmt = fm)
+        g.close()
+    else:
+        ncfname = os.path.basename(ncfpath)
+        outfn = '%s_%04i.txt.bz2' % (os.path.splitext(ncfname)[0], timei)
+        outpath = os.path.join(outdir, outfn)
+        b = bz2.BZ2File(outpath, 'w')
+        np.savetxt(b, out, fmt = fm)
+        b.close()
 
 ncpath = sys.argv[1]  
 ## use something like /work/users/kojito/nora10/nc/__var__/netcdffilename
@@ -130,9 +142,17 @@ else:
     
     ## 3) do or resume part1
     ## 3.1) check how many have been done
-    sofar1 = [f for f in os.listdir(path1) if os.path.splitext(f)[1] == '.tar']
+    if testingflag:
+        sofar1 = [f for f in os.listdir(path1) 
+                  if os.path.splitext(f)[1] == '.gz']
+    else:
+        sofar1 = [f for f in os.listdir(path1) 
+                  if os.path.splitext(f)[1] == '.tar']
     if len(sofar1) > 1:
-        lastii = [int(os.path.splitext(f)[0].split('-')[1]) for f in sofar1]
+        if testingflag:
+            lastii = [int(f.split('.')[0].split('-')[1]) for f in sofar1]
+        else:
+            lastii = [int(os.path.splitext(f)[0].split('-')[1]) for f in sofar1]
         ## expecting name like 0000-0009.tar
         thelasti = max(lastii)
         print('resuming from part 1: time index %i' % (thelasti + 1, ))
@@ -141,36 +161,58 @@ else:
         print('starting newly from part 1')
         
     ## 3.2) run as many as what is not yet done
+    if testingflag:
+        gzfname = '%04i-%04i.txt.gz' % (
+            thelasti + 1, 
+            thelasti + tarsplitn if thelasti + tarsplitn <= tt - 1 else tt - 1)
+        print(gzfname)
     for ti in range(thelasti + 1, tt):
         print(ti)
-        if flagmean:
-            writeout(ncpathscratch, ti, fm, path1s, interval = interval)
+        if testingflag:
+            if flagmean:
+                writeout(ncpathscratch, ti, fm, path1s, interval = interval, 
+                         appendfn = os.path.join(path1s, gzfname))
+            else:
+                writeout(ncpathscratch, ti, fm, path1s, interval = None, 
+                         appendfn = os.path.join(path1s, gzfname))
+            ## every __tarsplitn__, send .txt.gz and update gzfname
+            if ti % tarsplitn == (tarsplitn - 1): 
+                shutil.copy(os.path.join(path1s, gzfname), 
+                            os.path.join(path1, gzfname))
+                gzfname = '%04i-%04i.txt.gz' % (
+                    ti + 1, 
+                    ti + tarsplitn if ti + tarsplitn <= tt - 1 else tt - 1)
+                print(gzfname)
         else:
-            writeout(ncpathscratch, ti, fm, path1s)  ############# computation
-        ## 3.2.1) every __tarsplitn__ create tar and send it to path1
-        if ti % tarsplitn == (tarsplitn - 1):
-            ti1 = ti - (tarsplitn - 1)
-            tfname = os.path.join(path1, '%04i-%04i.tar' % (ti1, ti))
+            if flagmean:
+                writeout(ncpathscratch, ti, fm, path1s, interval = interval)
+            else:
+                writeout(ncpathscratch, ti, fm, path1s)  ############# computation
+            ## 3.2.1) every __tarsplitn__ create tar and send it to path1
+            if ti % tarsplitn == (tarsplitn - 1):
+                ti1 = ti - (tarsplitn - 1)
+                tfname = os.path.join(path1, '%04i-%04i.tar' % (ti1, ti))
+                tf = tarfile.open(tfname, 'w')
+                filestoadd = [os.path.join(path1s, '%s_%04i.txt.bz2' % (ncfn2, tii)) 
+                              for tii in range(ti1, ti + 1)]
+                for f2add in filestoadd:
+                    tf.add(f2add, arcname = os.path.basename(f2add))
+                tf.close()
+                print('created %s' % tfname)
+
+    ## 3.3) create tar for the last bit (n < __tarsplitn__) and send it to path1
+    if not testingflag:
+        if not (tt % tarsplitn == 0):
+            tti1 = (tt // tarsplitn) * tarsplitn 
+            tfname = os.path.join(path1, '%04i-%04i.tar' % (tti1, tt - 1))
             tf = tarfile.open(tfname, 'w')
             filestoadd = [os.path.join(path1s, '%s_%04i.txt.bz2' % (ncfn2, tii)) 
-                          for tii in range(ti1, ti + 1)]
+                          for tii in range(tti1, tt)]
             for f2add in filestoadd:
+                print(f2add)
                 tf.add(f2add, arcname = os.path.basename(f2add))
             tf.close()
             print('created %s' % tfname)
-
-    ## 3.3) create tar for the last bit (n < __tarsplitn__) and send it to path1
-    if not (tt % tarsplitn == 0):
-        tti1 = (tt // tarsplitn) * tarsplitn 
-        tfname = os.path.join(path1, '%04i-%04i.tar' % (tti1, tt - 1))
-        tf = tarfile.open(tfname, 'w')
-        filestoadd = [os.path.join(path1s, '%s_%04i.txt.bz2' % (ncfn2, tii)) 
-                      for tii in range(tti1, tt)]
-        for f2add in filestoadd:
-            print(f2add)
-            tf.add(f2add, arcname = os.path.basename(f2add))
-        tf.close()
-        print('created %s' % tfname)
         
     ## 3.4) make the file with the name COMPLETED
     f = open(os.path.join(path1, 'COMPLETED'), 'w')
@@ -183,29 +225,41 @@ if os.path.exists(os.path.join(path2, "COMPLETED")):
     print('part 2 is already finished')
 else:
     ## 1) copy all files from path1 to $SCRATCH
-    extractedtarfns = [f for f in os.listdir(path1) 
-                       if os.path.splitext(f)[1] == '.tar']
-    print(extractedtarfns)
-    for etfn in extractedtarfns:
-        lastiintar = int(os.path.splitext(etfn)[0].split('-')[-1])
-        lastbz2fintar = os.path.join(path1s, 
-                                     '%s_%04i.txt.bz2' % (ncfn, lastiintar))
-        if not os.path.exists(lastbz2fintar):
-            ## if it's not restart and following immediately from part 1, 
-            ## these files already exist at path1s. This clause deals with 
-            ## cases for restarting and therefore still missing .txt.bz2 files
-            toopen = os.path.join(path1, etfn)
-            print(toopen)
-            tf = tarfile.open(toopen, 'r') 
-            ## 'rb' not needed though everything in it is binary
-            tf.extractall(path = path1s)
-            tf.close()
+    if testingflag:
+        gzfiles = [f for f in os.listdir(path1)
+                   if os.path.splitext(f)[1] == '.gz']
+        for gzfile in gzfiles:
+            if not os.path.exists(os.path.join(path1s, gzfile)):
+                shutil.copy(os.path.join(path1, gzfile), 
+                            os.path.join(path1s, gzfile))
+    else:
+        extractedtarfns = [f for f in os.listdir(path1) 
+                           if os.path.splitext(f)[1] == '.tar']
+        print(extractedtarfns)
+        for etfn in extractedtarfns:
+            lastiintar = int(os.path.splitext(etfn)[0].split('-')[-1])
+            lastbz2fintar = os.path.join(path1s, 
+                                         '%s_%04i.txt.bz2' % (ncfn, lastiintar))
+            if not os.path.exists(lastbz2fintar):
+                ## if it's not restart and following immediately from part 1, 
+                ## these files already exist at path1s. This clause deals with 
+                ## cases for restarting and therefore still missing .txt.bz2 files
+                toopen = os.path.join(path1, etfn)
+                print(toopen)
+                tf = tarfile.open(toopen, 'r') 
+                ## 'rb' not needed though everything in it is binary
+                tf.extractall(path = path1s)
+                tf.close()
         
     ## 2) get number of time points (hours or 3-h intervals)
     ##    ** This time from file names in path1 **
     if not 'tt' in locals():
-        tt = 1 + max([int(os.path.splitext(f)[0].split('-')[-1]) 
-                      for f in extractedtarfns])
+        if testingflag:
+            tt = 1 + max([int(f.split('.')[0].split('-')[-1]) 
+                          for f in gzfiles])
+        else:
+            tt = 1 + max([int(os.path.splitext(f)[0].split('-')[-1]) 
+                          for f in extractedtarfns])
     print('tt %s' % tt)
     ## 3) do or resume part2
     ## 3.1) check how many have been done
@@ -229,9 +283,15 @@ else:
     for indices in indiceszip:
         tis = range(indices[0], indices[1])
         argument_ti = ','.join([str(ti) for ti in tis])
-        argument_rawpath = \
-          ','.join([os.path.join(path1s, '%s_%04i' % (ncfn2, ti) + '.txt.bz2')
-                    for ti in tis])
+        if testingflag:
+            argument_rawpath = \
+              os.path.join(path1s, 
+                           '%04i-%04i.txt.gz' % (indices[0], indices[1] - 1))
+        else:
+            argument_rawpath = \
+              ','.join([os.path.join(path1s, '%s_%04i' % (ncfn2, ti) 
+                                     + '.txt.bz2')
+                        for ti in tis])
         cmd = 'Rscript %s --args %s %s %s %s %s %s %s' % (
             'spatial_interpolation_abel.R',
             varname, year, argument_ti, argument_rawpath, 
@@ -254,7 +314,7 @@ else:
         for f2add in filestoadd:
             print(f2add)
             tf.add(f2add, arcname = os.path.basename(f2add))
-            tf.close()
+        tf.close()
         print('...created %s' % tfname)
 
     # ## 3.2) run as many as what is not yet done 

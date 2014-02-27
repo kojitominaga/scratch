@@ -15,5 +15,5 @@ while not finished:
         flag = flag and os.path.exists(f)
     if flag:
         finished = True
-    time.sleep(300)
+    time.sleep(120)
 

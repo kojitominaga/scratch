@@ -6,7 +6,7 @@ import sys
 jobscriptsdir = 'jobscripts'
 submitshname = 'submit.sh'
 
-ntaskspernode = 1
+ntaskspernode = 8
 
 burden = 3
 # estimated time in min per interpolation 
@@ -15,26 +15,25 @@ burden = 3
 neach = 1
 if not neach == 1: sys.exit('neach > 1 not supported now')
 
-tarsplitn = 10
+tarsplitn = 100
 
-years = range(2011, 2013)
-varH = {'ta_2m': '1H', 'pr': '1H'}
-
+years = range(2010, 2013)
+varH = {'ta_2m': '1H',
+        'ts_0m':  '1H', 
+        'pr':     '1H',
+        'psl':    '1H', 
+        'ps':     '3H', 
+        'wss_10m': '1H', 
+        'hur_2m': '1H'} 
 # varH = {'ps': '3H'}
 # varH = {'ta_2m':  '1H'} # , 
-        # 'ts_0m':  '1H', 
-        # 'pr':     '1H',
-        # 'psl':    '1H', 
-        # 'ps':     '3H', 
-        # 'wss_10m': '1H', 
-        # 'hur_2m': '1H'} 
 #         # 'rss':    '3H', 
 #         # 'rls':    '3H', 
 # # 'albedo': '1H'}
 
 
-ntimedict = {'3H': 35, '1H': 35}
-# ntimedict = {'3H': 'mean8', '1H': 'mean24'}
+# ntimedict = {'3H': 5, '1H': 5}
+ntimedict = {'3H': 'mean8', '1H': 'mean24'}
 # ntimedict = {'3H': 'all', '1H': 'all'}
 
 if ('ntime' in locals()) and ('ntimedict' in locals()):
@@ -97,20 +96,20 @@ commands = ['%s %s/%s/NORA10_%s_11km_%s_%s.nc %s $SCRATCH %s %s &' %
             for (locfn, nloc) in locdict.items()
             for (varname, H) in varH.items()]
 COMPLETE1 = [os.path.join('/work/users/kojito/nora10/', 
-                          str(ntimedict[H]), 
                           'intermediate',
                           locnamedict[locfn],
                           varname, 
+                          str(ntimedict[H]), 
                           str(year), 
                           'COMPLETE')
              for year in years 
              for (locfn, nloc) in locdict.items()
              for (varname, H) in varH.items()]
 COMPLETE2 = [os.path.join('/work/users/kojito/nora10/', 
-                          str(ntimedict[H]), 
                           'interpolated', 
                           locnamedict[locfn],
                           varname, 
+                          str(ntimedict[H]), 
                           str(year),
                           'COMPLETE')
              for year in years 
@@ -161,11 +160,11 @@ module load R
 cd $SCRATCH
 mkdir R
 
-cp /cluster/home/kojito/nora10/scripts/*.txt.bz2 .
-cp /cluster/home/kojito/nora10/scripts/*.R .
-cp /cluster/home/kojito/nora10/scripts/nora10interpmain.py .
-cp /cluster/home/kojito/nora10/scripts/checkfiles.py .
-cp /cluster/home/kojito/nora10/scripts/locations/*.csv . 
+cp /cluster/home/kojito/nora10/scripts_new/*.txt.bz2 .
+cp /cluster/home/kojito/nora10/scripts_new/*.R .
+cp /cluster/home/kojito/nora10/scripts_new/nora10interpmain.py .
+cp /cluster/home/kojito/nora10/scripts_new/checkfiles.py .
+cp /cluster/home/kojito/nora10/scripts_new/locations/*.csv . 
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/intervals R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/sp R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/gstat R/
