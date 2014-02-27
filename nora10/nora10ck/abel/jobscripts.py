@@ -3,40 +3,40 @@ import os
 import math
 import sys
 
-jobscriptsdir = 'jobscripts4a'
-submitshname = 'submit4a.sh'
+jobscriptsdir = 'jobscripts'
+submitshname = 'submit.sh'
 
-ntaskspernode = 4
+ntaskspernode = 1
 
-burden = 5
+burden = 3
 # estimated time in min per interpolation 
 # (i.e., per location, per time point)
 
 neach = 1
 if not neach == 1: sys.exit('neach > 1 not supported now')
 
-tarsplitn = 100
+tarsplitn = 10
 
-years = range(2010, 2011)
-varH = {'ta_2m':  '1H',
-        'ts_0m':  '1H', 
-        'pr':     '1H',
-        'psl':    '1H', 
-        'ps':     '3H', 
-        'wss_10m': '1H', 
-        'hur_2m': '1H'} 
+years = range(2011, 2013)
+varH = {'ta_2m': '1H', 'pr': '1H'}
+
+# varH = {'ps': '3H'}
+# varH = {'ta_2m':  '1H'} # , 
+        # 'ts_0m':  '1H', 
+        # 'pr':     '1H',
+        # 'psl':    '1H', 
+        # 'ps':     '3H', 
+        # 'wss_10m': '1H', 
+        # 'hur_2m': '1H'} 
 #         # 'rss':    '3H', 
 #         # 'rls':    '3H', 
 # # 'albedo': '1H'}
 
-# ntime = str(35) 
-# ntime = 'all'
-# ntime = 'mean24'
-ntimedict = {'3H': 'mean8', 
-             '1H': 'mean24'}
-## use something like ntimedict = {'3H': 'all', '1H': 'all'} for all time points
 
-# ntime = 'mean8'
+ntimedict = {'3H': 35, '1H': 35}
+# ntimedict = {'3H': 'mean8', '1H': 'mean24'}
+# ntimedict = {'3H': 'all', '1H': 'all'}
+
 if ('ntime' in locals()) and ('ntimedict' in locals()):
     sys.exit('you cannot have both ntime and ntimedict') 
 if 'ntime' in locals():
@@ -97,7 +97,7 @@ commands = ['%s %s/%s/NORA10_%s_11km_%s_%s.nc %s $SCRATCH %s %s &' %
             for (locfn, nloc) in locdict.items()
             for (varname, H) in varH.items()]
 COMPLETE1 = [os.path.join('/work/users/kojito/nora10/', 
-                          ntimedict[H], 
+                          str(ntimedict[H]), 
                           'intermediate',
                           locnamedict[locfn],
                           varname, 
@@ -107,7 +107,7 @@ COMPLETE1 = [os.path.join('/work/users/kojito/nora10/',
              for (locfn, nloc) in locdict.items()
              for (varname, H) in varH.items()]
 COMPLETE2 = [os.path.join('/work/users/kojito/nora10/', 
-                          ntimedict[H], 
+                          str(ntimedict[H]), 
                           'interpolated', 
                           locnamedict[locfn],
                           varname, 
@@ -122,7 +122,7 @@ requiredhours = \
     'mean24': 365, 
     'mean8': 365}.setdefault(
         ntimedict[H], ## key
-        int(ntimedict[H]) if ntimedict[H].isdigit() else None) * ## default value
+        int(ntimedict[H]) if str(ntimedict[H]).isdigit() else None) * ## default value
     nloc * burden / 60.0
     for year in years 
     for (locfn, nloc) in locdict.items()
