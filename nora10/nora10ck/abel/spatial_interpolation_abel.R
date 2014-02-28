@@ -597,7 +597,7 @@ i3co.var <- unlist(lapply(as.list(1:nlakes),
                             return(out)
                           }))
 cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat(' --- krigin done \n')
+cat(' --- kriging done \n')
 ## finally putting the calculated values in container
 for (lakei in 1:nlakes) {
   lakename <- lakes[['name']][lakei]

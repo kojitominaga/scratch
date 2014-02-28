@@ -148,18 +148,27 @@ else:
     else:
         sofar1 = [f for f in os.listdir(path1) 
                   if os.path.splitext(f)[1] == '.tar']
-    if len(sofar1) > 1:
-        if testingflag:
-            lastii = [int(f.split('.')[0].split('-')[1]) for f in sofar1]
-        else:
-            lastii = [int(os.path.splitext(f)[0].split('-')[1]) for f in sofar1]
-        ## expecting name like 0000-0009.tar
-        thelasti = max(lastii)
-        print('resuming from part 1: time index %i' % (thelasti + 1, ))
-    else:
-        thelasti = -1
-        print('starting newly from part 1')
+
+
+    # if len(sofar1) > 1:
+    #     if testingflag:
+    #         lastii = [int(f.split('.')[0].split('-')[1]) for f in sofar1]
+    #     else:
+    #         lastii = [int(os.path.splitext(f)[0].split('-')[1]) for f in sofar1]
+    #     ## expecting name like 0000-0009.tar
+    #     thelasti = max(lastii)
+    #     print('resuming from part 1: time index %i' % (thelasti + 1, ))
+    # else:
+    #     thelasti = -1
+    #     print('starting newly from part 1')
         
+    ## temporary fix: these files may result unfinished so we should always 
+    ## do it from the beginning unless COMPLETED is seen
+    thelasti = -1
+    print('starting newly from part 1')
+
+
+    
     ## 3.2) run as many as what is not yet done
     if testingflag:
         gzfname = '%04i-%04i.txt.gz' % (
@@ -176,6 +185,9 @@ else:
                 writeout(ncpathscratch, ti, fm, path1s, interval = None, 
                          appendfn = os.path.join(path1s, gzfname))
             ## every __tarsplitn__, send .txt.gz and update gzfname
+            if ti == tt - 1:
+                shutil.copy(os.path.join(path1s, gzfname), 
+                            os.path.join(path1, gzfname))
             if ti % tarsplitn == (tarsplitn - 1): 
                 shutil.copy(os.path.join(path1s, gzfname), 
                             os.path.join(path1, gzfname))

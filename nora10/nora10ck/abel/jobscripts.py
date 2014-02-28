@@ -101,7 +101,7 @@ COMPLETE1 = [os.path.join('/work/users/kojito/nora10/',
                           varname, 
                           str(ntimedict[H]), 
                           str(year), 
-                          'COMPLETE')
+                          'COMPLETED')
              for year in years 
              for (locfn, nloc) in locdict.items()
              for (varname, H) in varH.items()]
@@ -111,7 +111,7 @@ COMPLETE2 = [os.path.join('/work/users/kojito/nora10/',
                           varname, 
                           str(ntimedict[H]), 
                           str(year),
-                          'COMPLETE')
+                          'COMPLETED')
              for year in years 
              for (locfn, nloc) in locdict.items()
              for (varname, H) in varH.items()]
@@ -160,11 +160,11 @@ module load R
 cd $SCRATCH
 mkdir R
 
-cp /cluster/home/kojito/nora10/scripts_new/*.txt.bz2 .
-cp /cluster/home/kojito/nora10/scripts_new/*.R .
-cp /cluster/home/kojito/nora10/scripts_new/nora10interpmain.py .
-cp /cluster/home/kojito/nora10/scripts_new/checkfiles.py .
-cp /cluster/home/kojito/nora10/scripts_new/locations/*.csv . 
+cp /cluster/home/kojito/nora10/scripts/*.txt.bz2 .
+cp /cluster/home/kojito/nora10/scripts/*.R .
+cp /cluster/home/kojito/nora10/scripts/nora10interpmain.py .
+cp /cluster/home/kojito/nora10/scripts/checkfiles.py .
+cp /cluster/home/kojito/nora10/scripts/locations/*.csv . 
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/intervals R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/sp R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/gstat R/
