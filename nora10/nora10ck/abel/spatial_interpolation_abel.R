@@ -71,7 +71,8 @@ signifdigit <- switch(varname,
                       'hur_2m' = 2,
                       'albedo' = 3,
                       'ps' = 2,
-                      'ts_0m' = 2)
+                      'ts_0m' = 2,
+                      'clt' = 4)
 
 cat(format(Sys.time(), "%a %b %d %X %Y"))
 cat(' --- R libraries\n')

@@ -24,12 +24,15 @@ varH = {'ta_2m': '1H',
         'psl':    '1H', 
         'ps':     '3H', 
         'wss_10m': '1H', 
-        'hur_2m': '1H'} 
+        'hur_2m': '1H'}
+# 'clt': '1H'
+# # 'albedo': '1H'}
+
+
 # varH = {'ps': '3H'}
 # varH = {'ta_2m':  '1H'} # , 
 #         # 'rss':    '3H', 
 #         # 'rls':    '3H', 
-# # 'albedo': '1H'}
 
 
 # ntimedict = {'3H': 5, '1H': 5}
