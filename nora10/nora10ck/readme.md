@@ -181,3 +181,57 @@ Interpolation methods
   - sills
   - RMSE / maxgamma
 
+Output columns
+==============
+
+## Dimension A: interpolation methods (for predicted values)
+
+1. __i1a__: value from nearest point
+2. __i1b__: mean of the nearest four points
+3. __i1c__: 2D linear interpolation (triangular plane) of the nearest three points
+4. __i3an__: inverse distance (~ 1)
+5. __i3ao__: inverse distance weighted (~ orog)
+6. __i3bn__: ordinary kriging (~ 1) using linear variogram model
+7. __i3bo__: universal kriging (~ orog) using linear variogram model
+8. __i3cn__: ordinary kriging (~ 1) using "everything" variogram model
+9. __i3co__: universal kriging (~ orog) using "everything" variogram model
+
+Here __everything__ model is an additive model of: _nugget_, _linear_, _gaussian_, _exponential_, _spherical (partial sill at 50 percent max distance)_, and _spherical (psill at 75 percent max distance). 
+
+## Dimension B: statistics etc. 
+
+1. __locallyhomog3__: was it locally homogeneous? (0 = _no_, 1 = _yes_)
+  - if yes, no kriging done -- simply the homogeneous value
+2. __maxgamma3__: max gamma (semivariance) for __sample variogram__ (call this __A__)
+3. __maxgamma3o__: max gamma for sample variogram for residual after orog (call this __B__)
+4. __maxdist3__: max distance in the variogram scope
+5. __maxdist3o__: max distance in the variogram (residual after orog) -- sorry, __same as above__
+6. __vfl3Lin__: VGM from __A__: partial sill for the linear model relative to max gamma
+6. __vfl3oLin__: VGM from __B__: partial sill for the linear model relative to max gamma
+7. __vfe3Nug__: VGM from __A__: psill for "everything" nugget, relative to max gamma
+7. __vfe3Lin__: VGM from __A__: psill for "everything" linear, relative to max gamma
+7. __vfe3Gau__: VGM from __A__: psill for "everything" gaussian, relative to max gamma
+7. __vfe3Exp__: VGM from __A__: psill for "everything" exponential, relative to max gamma
+7. __vfe3S50__: VGM from __A__: psill for "everything" spherical50, relative to max gamma
+7. __vfe3S75__: VGM from __A__: psill for "everything" spherical75, relative to max gamma
+7. __vfe3oNug__: VGM from __B__: psill for "everything" nugget, relative to max gamma
+7. __vfe3oLin__: VGM from __B__: psill for "everything" linear, relative to max gamma
+7. __vfe3oGau__: VGM from __B__: psill for "everything" gaussian, relative to max gamma
+7. __vfe3oExp__: VGM from __B__: psill for "everything" exponential, relative to max gamma
+7. __vfe3oS50__: VGM from __B__: psill for "everything" spherical50, relative to max gamma
+7. __vfe3oS75__: VGM from __B__: psill for "everything" spherical75, relative to max gamma
+20. __vfl3SSE__: VGM from __A__: SSE of the fit for the linear model
+21. __vfl3oSSE__: VGM from __B__: SSE of the fit for the linear model
+22. __vfe3SSE__: VGM from __A__: SSE of the fit for the "everything" model
+23. __vfe3oSSE__: VGM from __B__: SSE of the fit for the "everything" model
+24. __vfl3RSSE__: VGM from __A__: SSE of the fit for the linear model, relative to max gamma
+25. __vfl3oRSSE__: VGM from __B__: SSE of the fit for the linear model, relative to max gamma
+26. __vfe3RSSE__: VGM from __A__: SSE of the fit for the "everything" model, relative to max gamma
+27. __vfe3oRSSE__: VGM from __B__: SSE of the fit for the "everything" model, relative to max gamma
+28. __var3an__: variance for __i3an__ (this is _NA_, due to the nature of the interpolation)
+29. __var3ao__: variance for __i3ao__
+30. __var3bn__: variance for __i3bn__
+31. __var3bo__: variance for __i3bo__
+32. __var3cn__: variance for __i3cn__
+33. __var3co__: variance for __i3co__
+
