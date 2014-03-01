@@ -15,11 +15,45 @@ varH = {'ta_2m':  '1H',
         'hur_2m': '1H', 
         'rss':    '3H', 
         'rls':    '3H', 
-        'albedo': '1H'}
+        'albedo': '1H', 
+        'clt':    '1H'}
 interpnames = ('i1a', 'i1b', 'i1c', 
                'i3an', 'i3ao', 
                'i3bn', 'i3bo', 
                'i3cn', 'i3co')
+statsnames = ('locallyhomog3', 
+              'maxgamma3', 
+              'maxgamma3o',
+              'maxdist3', 
+              'maxdist3o', 
+              'vfl3Lin', 
+              'vfl3oLin', 
+              'vfe3Nug', 
+              'vfe3Lin', 
+              'vfe3Gau', 
+              'vfe3Exp', 
+              'vfe3S50', 
+              'vfe3S75', 
+              'vfe3oNug', 
+              'vfe3oLin', 
+              'vfe3oGau', 
+              'vfe3oExp', 
+              'vfe3oS50', 
+              'vfe3oS75', 
+              'vfl3SSE', 
+              'vfl3oSSE', 
+              'vfe3SSE', 
+              'vfe3oSSE', 
+              'vfl3RSSE', 
+              'vfl3oRSSE', 
+              'vfe3RSSE', 
+              'vfe3oRSSE', 
+              'var3an',
+              'var3ao', 
+              'var3bn', 
+              'var3bo', 
+              'var3cn', 
+              'var3co')
 
 def bylocation(location, var, timestat, years):
     '''
@@ -34,13 +68,14 @@ def bylocation(location, var, timestat, years):
     years.sort()
     if not len(set(years)) == len(years):
         sys.exit('give unique years')
-    if not len(years) == 1 
-        if all([diff == 1 for diff in (years[1:] - years[:-1])]):
+    if not len(years) == 1:
+        if not all([years[1:][e] - years[:-1][e] == 1 
+                    for e in range(len(years) - 1)]):
             sys.exit('give continuous sequence of years')
     pp = [os.path.join('interpolated', location, var, timestat, str(year)) 
           for year in years]
     p_exists = [os.path.exists(p) for p in pp]
-    if not all p_exists:
+    if not all(p_exists):
         sys.exit('not all years of simulations are finished')
         
     outfname = 'NORA10_%s_11km_%s_%s_%s_%s_%s' % (
@@ -54,7 +89,7 @@ def bylocation(location, var, timestat, years):
             p = pp[yi]
             year = str(years[yi])
             tarfs = [tarf for tarf in os.listdir(p) 
-                     if os.path.splitext(f)[1] == '.tar']
+                     if os.path.splitext(tarf)[1] == '.tar']
             tarfs.sort()
             for tarf in tarfs:
                 i1, i2 = [int(i) for i in os.path.splitext(tarf)[0].split('-')]
@@ -82,7 +117,7 @@ def byinterpmethodLocations(var, timestat, years,
     years.sort()
     if not len(set(years)) == len(years):
         sys.exit('give unique years')
-    if not len(years) == 1 
+    if not len(years) == 1:
         if all([diff == 1 for diff in (years[1:] - years[:-1])]):
             sys.exit('give continuous sequence of years')
 
@@ -139,7 +174,7 @@ def byinterpmethodVariables(location, timestat, years,
     years.sort()
     if not len(set(years)) == len(years):
         sys.exit('give unique years')
-    if not len(years) == 1 
+    if not len(years) == 1: 
         if all([diff == 1 for diff in (years[1:] - years[:-1])]):
             sys.exit('give continuous sequence of years')
 
