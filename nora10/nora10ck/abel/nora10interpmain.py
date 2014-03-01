@@ -27,7 +27,8 @@ fms = {'ta_2m':  '%.2f',
        'rls':    '%.5g', 
        'wss_10m': '%.2f', 
        'hur_2m': '%.2f', 
-       'albedo': '%.2f'}
+       'albedo': '%.2f', 
+       'clt':    '%.4f'}
 
 testingflag = True
 

@@ -17,14 +17,16 @@ if not neach == 1: sys.exit('neach > 1 not supported now')
 
 tarsplitn = 100
 
-years = range(2010, 2013)
-varH = {'ta_2m': '1H',
-        'ts_0m':  '1H', 
-        'pr':     '1H',
-        'psl':    '1H', 
-        'ps':     '3H', 
-        'wss_10m': '1H', 
-        'hur_2m': '1H'}
+year = range(2009, 2013)
+varH = {'clt': '1H', 'albedo':, '1H'}
+# years = range(2010, 2013)
+# varH = {'ta_2m': '1H',
+#         'ts_0m':  '1H', 
+#         'pr':     '1H',
+#         'psl':    '1H', 
+#         'ps':     '3H', 
+#         'wss_10m': '1H', 
+#         'hur_2m': '1H'}
 # 'clt': '1H'
 # # 'albedo': '1H'}
 
