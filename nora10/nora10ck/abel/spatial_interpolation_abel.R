@@ -669,7 +669,7 @@ for (lakei in 1:nlakes) {
   cat(metadata, file = metafn)
   cat('\n', file = metafn, append = TRUE)
   v3l <- v3[[lakei]]
-  v3ol <- v3[[lakei]]
+  v3ol <- v3o[[lakei]]
   save(list = c('v3l', 'v3ol'), file = variofn)
 }
 cat(format(Sys.time(), "%a %b %d %X %Y"))
