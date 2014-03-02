@@ -118,12 +118,14 @@ def byinterpmethodLocations(var, timestat, years,
     if not len(set(years)) == len(years):
         sys.exit('give unique years')
     if not len(years) == 1:
-        if all([diff == 1 for diff in (years[1:] - years[:-1])]):
+        if not all([years[1:][e] - years[:-1][e] == 1 
+                    for e in range(len(years) - 1)]):
             sys.exit('give continuous sequence of years')
-
     interpmethod = -1 if interpmethod == 'last' else int(interpmethod)
-    locations = os.listdir('interpolated') if locations == 'all' else locations
-
+    locations = [d for d in os.listdir('interpolated') 
+                 if os.path.isdir(os.path.join('interpolated', d))] \
+      if locations == 'all' else locations
+    
     outfname = 'NORA10_%s_11km_%s_%s_%s_interpolated_%s.txt' % (
         varH[var], var, '%s-%s' % (min(years), max(years)), timestat,
         interpnames[interpmethod])
@@ -137,10 +139,10 @@ def byinterpmethodLocations(var, timestat, years,
             for location in locations:
                 p = os.path.join('interpolated', location, var, timestat, year)
                 tarfs = [tarf for tarf in os.listdir(p)
-                         if os.path.splitext(f)[1] == '.tar']
+                         if os.path.splitext(tarf)[1] == '.tar']
                 tarfs.sort()
                 jj = max([int(os.path.splitext(tarf)[0].split('-')[1]) 
-                          for tarf in tarfs])
+                          for tarf in tarfs]) + 1
                 v = [None] * jj
                 for tarf in tarfs:
                     i1, i2 = [int(i) for i 
@@ -158,9 +160,10 @@ def byinterpmethodLocations(var, timestat, years,
             for j in range(jj):
                 g.write(' '.join([outdict[loc][j] for loc in locations]))
                 g.write('\n')
+
             
                 
-def byinterpmethodVariables(location, timestat, years, 
+def byinterpmethodVariables(location, timestat, H, years,
                             interpmethod = 'last', varnames = 'all'):
     '''
     for a specified location, and for the specified interp method, 
@@ -174,16 +177,17 @@ def byinterpmethodVariables(location, timestat, years,
     years.sort()
     if not len(set(years)) == len(years):
         sys.exit('give unique years')
-    if not len(years) == 1: 
-        if all([diff == 1 for diff in (years[1:] - years[:-1])]):
+    if not len(years) == 1:
+        if not all([years[1:][e] - years[:-1][e] == 1 
+                    for e in range(len(years) - 1)]):
             sys.exit('give continuous sequence of years')
-
     interpmethod = -1 if interpmethod == 'last' else int(interpmethod)
-    varnames = os.listdir(os.path.join('interpolated', location)) \
-      if varnames == 'all' else varnames  
-
+    varnames = [d for d in os.listdir(os.path.join('interpolated', location)) 
+                if os.path.isdir(os.path.join('interpolated', location, d))] \
+                 if varnames == 'all' else varnames
+    varnames = [var for var in varnames if varH[var] == H]
     outfname = 'NORA10_%s_11km_%s_%s_%s_interpolated_%s.txt' % (
-        varH[var], location, '%s-%s' % (min(years), max(years)), timestat,
+        H, location, '%s-%s' % (min(years), max(years)), timestat,
         interpnames[interpmethod])
 
     with open(outfname, 'w') as g:
@@ -194,11 +198,13 @@ def byinterpmethodVariables(location, timestat, years,
             outdict = {}
             for var in varnames:
                 p = os.path.join('interpolated', location, var, timestat, year)
+                if not os.path.exists(p):
+                    pass
                 tarfs = [tarf for tarf in os.listdir(p)
-                         if os.path.splitext(f)[1] == '.tar']
+                         if os.path.splitext(tarf)[1] == '.tar']
                 tarfs.sort()
                 jj = max([int(os.path.splitext(tarf)[0].split('-')[1]) 
-                          for tarf in tarfs])
+                          for tarf in tarfs]) + 1
                 v = [None] * jj
                 for tarf in tarfs:
                     i1, i2 = [int(i) for i 
