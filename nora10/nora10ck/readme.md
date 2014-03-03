@@ -246,6 +246,7 @@ For the moment I have only used _nlocal_ = 50, _cutoff_ = 100
 - __psl__: sea-level atmospheric pressure [Pa]
 - __albedo__: surface albedo [-]
 - __wss\_10m__: 10-m wind speed [m s-1]
+- __wfds\_10m__: 10-m wind direction [degree], 0 means N, 90 means E
 - __hur\_2m__: 2-m relative (check) humidity percent [-]
 - __clt__: cloud cover [-]
 - __rls__: net longwave surface heat flux, positive downward (check)
@@ -285,4 +286,19 @@ lapply(datalist, function(x) { print(summary(x)) })
 lapply(datalist[['i3co']], mean)
 ```
 
+Done so far
+===========
+
+ta_2m, ts_0m, hur_2m, wss_10m, pr, ps, psl for 2009 - 20012, daily mean only
+
+Coming up... 
+=============
+
+In order of appearance... 
+
+1. clt, albedo, rls, rss, wfds
+2. 1999 - 2008
+3. 1958 - 1998
+4. hourly or 3-hourly 
+5. port to CORDEX
 
