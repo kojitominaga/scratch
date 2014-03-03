@@ -196,7 +196,7 @@ Output columns
 8. __i3cn__: ordinary kriging (~ 1) using "everything" variogram model
 9. __i3co__: universal kriging (~ orog) using "everything" variogram model
 
-Here __everything__ model is an additive model of: _nugget_, _linear_, _gaussian_, _exponential_, _spherical (partial sill at 50 percent max distance)_, and _spherical (psill at 75 percent max distance). 
+Here __everything__ model is an additive model of: _nugget_, _linear_, _gaussian_, _exponential_, _spherical (partial sill at 50 percent max distance)_, and _spherical (psill at 75 percent max distance)_. 
 
 ## Dimension A2: statistics etc. 
 
