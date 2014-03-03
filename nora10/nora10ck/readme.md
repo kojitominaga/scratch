@@ -241,13 +241,13 @@ For the moment I have only used _nlocal_ = 50, _cutoff_ = 100
 
 - __ta\_2m__: 2-m air temperature [K]
 - __ts\_0m__: surface temperature [K]
-- __pr__: atmospheric precipitation at surface [check unit]
-- __ps__: surface atmopheric pressure 
-- __psl__: sea-level atmospheric pressure
-- __albedo__: surface albedo
+- __pr__: atmospheric precipitation at surface [kg m-2 s-1]
+- __ps__: surface atmopheric pressure [Pa]
+- __psl__: sea-level atmospheric pressure [Pa]
+- __albedo__: surface albedo [-]
 - __wss\_10m__: 10-m wind speed [m s-1]
-- __hur\_2m__: 2-m relative (check) humidity
-- __clt__: cloud cover
+- __hur\_2m__: 2-m relative (check) humidity percent [-]
+- __clt__: cloud cover [-]
 - __rls__: net longwave surface heat flux, positive downward (check)
 - __rss__: net shortwave radiation flux, positive downward (check)
 
