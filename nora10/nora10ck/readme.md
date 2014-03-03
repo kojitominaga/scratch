@@ -257,7 +257,7 @@ We can have locations as columns.
 
 ## About NORA10
 
-TODO
+Reistad M., O. Breivik, H. Haakenstad, O. J. Aarnes, B. R. Furevik and J-R Bidlo, 2011. A high-resolution hindcast of wind and waves for The North Sea, The Norwegian Sea and The Barents Sea. J. Geophys. Res., 116, C05019, doi:10.1029/2010JC006402
 
 Hints
 =====
