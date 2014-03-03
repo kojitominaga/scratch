@@ -256,3 +256,33 @@ For the moment I have only used _nlocal_ = 50, _cutoff_ = 100
 We can have locations as columns. 
 
 ## About NORA10
+
+TODO
+
+Hints
+=====
+
+Note that R can handle gzipped files (.gz) transparently. 
+
+```R
+yourdata <- read.table('yourfile.txt.gz', header = TRUE)
+```
+
+will do the reading.
+
+A bit more advanced: Let's say you want to compare pr with different interpolation methods.
+
+```R
+interpmethods <- paste('i', c('1a', '1b', '1c', 
+                              '3an', '3ao', '3bn', '3bo', '3cn', '3co'))
+filenames <- sprintf('NORA10_1H_11k_pr_2009-2012_mean24_interpolated_%s.txt.gz', 
+                 interpmethods)
+datalist <- lapply(list(filenames), read.table, header = TRUE)
+names(datalist) <- interpmethods
+## then explore
+str(datalist)
+lapply(datalist, function(x) { print(summary(x)) })
+lapply(datalist[['i3co']], mean)
+```
+
+

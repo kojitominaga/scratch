@@ -6,9 +6,9 @@ import sys
 jobscriptsdir = 'jobscripts'
 submitshname = 'submit.sh'
 
-ntaskspernode = 14
+ntaskspernode = 15
 
-burden = 3
+burden = 1.5
 # estimated time in min per interpolation 
 # (i.e., per location, per time point)
 
@@ -17,7 +17,7 @@ if not neach == 1: sys.exit('neach > 1 not supported now')
 
 tarsplitn = 100
 
-years = range(2005, 2009)
+years = range(1999, 2005)
 varH = {'clt': '1H', 
         'albedo': '1H', 
         'ta_2m': '1H',
