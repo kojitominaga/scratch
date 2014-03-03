@@ -1,11 +1,11 @@
 import os
 import datetime
-import io
+# import io
 import numpy as np
 
-outdir = 'mylake/input'
+outdir = 'mylake'
 if not os.path.exists(outdir): os.makedirs(outdir)
-affix = 'NORA10_11km'
+affix = 'NORA10_11km_interpolated'
 
 origindir = 'collated/all vars by loc by interp'
 filelist = os.listdir(origindir)
@@ -27,7 +27,8 @@ mlyear = np.array([d.year for d in dates]).reshape((ndays, 1))
 mlmonth = np.array([d.month for d in dates]).reshape((ndays, 1))
 mlday = np.array([d.day for d in dates]).reshape((ndays, 1))
 spacer = np.repeat([0], repeats = ndays).reshape((ndays, 1))
-spacer2 = np.repeat([-99999999], repeats = ndays).reshape((ndays, 1))
+spacer2 = np.repeat([-99999999], repeats = ndays).reshape((ndays, 1)) # NaN
+spacer3 = np.repeat([100], repeats = ndays).reshape((ndays, 1))
 
 for location, interpmethod, f1H, f3H in names:    
     outfname = '_'.join([affix, '-'.join([str(yearrange[0]), str(yearrange[1])]), 
@@ -42,23 +43,27 @@ for location, interpmethod, f1H, f3H in names:
     wss_10m_i = varnames1.index('wss_10m')
     pr_i = varnames1.index('pr')
     
-    # clt_i = varnames1.index('clt')
-    clt = np.repeat([0.5], repeats = ndays).reshape((ndays, 1))
+    clt_i = varnames1.index('clt')
+    # clt = np.repeat([0.5], repeats = ndays).reshape((ndays, 1))
     
     ps_i = varnames3.index('ps')
-    ta_2m, hur_2m, wss_10m, pr = \
-      np.loadtxt(os.path.join(origindir, f1H), skiprows = 1, unpack = True, 
-                 usecols = (ta_2m_i, hur_2m_i, wss_10m_i, pr_i))
-    # ta_2m, hur_2m, wss_10m, pr, clt = \
+    # ta_2m, hur_2m, wss_10m, pr = \
     #   np.loadtxt(os.path.join(origindir, f1H), skiprows = 1, unpack = True, 
-    #              usecols = (ta_2m_i, hur_2m_i, wss_10m_i, pr_i, clt_i))
+    #              usecols = (ta_2m_i, hur_2m_i, wss_10m_i, pr_i))
+    ta_2m, hur_2m, wss_10m, pr, clt = \
+      np.loadtxt(os.path.join(origindir, f1H), skiprows = 1, unpack = True, 
+                 usecols = (ta_2m_i, hur_2m_i, wss_10m_i, pr_i, clt_i))
     ps = \
       np.loadtxt(os.path.join(origindir, f3H), skiprows = 1, unpack = True,
                  usecols = (ps_i, ))
     ta_2m = ta_2m.reshape((ndays, 1)) - 273.15
     hur_2m = hur_2m.reshape((ndays, 1))
+    hur_2m = np.maximum(hur_2m, spacer)
+    hur_2m = np.minimum(hur_2m, spacer3)
     wss_10m = wss_10m.reshape((ndays, 1))
+    wss_10m = np.maximum(wss_10, spacer)
     pr = pr.reshape((ndays, 1)) * (60 * 60 * 24)
+    pr = np.maxiumum(pr, spacer)
     clt = clt.reshape((ndays, 1))
     ps = ps.reshape((ndays, 1)) * 1e-2
     np.savetxt('temp',
