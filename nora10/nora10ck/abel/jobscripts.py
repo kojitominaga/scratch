@@ -4,7 +4,7 @@ import math
 import sys
 
 jobscriptsdir = 'jobscripts'
-submitshname = 'submit.sh'
+submitshname = 'submit2.sh'
 
 ntaskspernode = 15
 
@@ -18,7 +18,7 @@ if not neach == 1: sys.exit('neach > 1 not supported now')
 tarsplitn = 100
 
 years = range(1999, 2013)
-varH = {'rls':    '1H'}
+varH = {'wfds_10m':    '1H'}
 # varH = {'clt': '1H', 
 #         'albedo': '1H', 
 #         'ta_2m': '1H',
@@ -167,11 +167,11 @@ module load R
 cd $SCRATCH
 mkdir R
 
-cp /cluster/home/kojito/nora10/scripts2/*.txt.bz2 .
-cp /cluster/home/kojito/nora10/scripts2/*.R .
-cp /cluster/home/kojito/nora10/scripts2/nora10interpmain.py .
-cp /cluster/home/kojito/nora10/scripts2/checkfiles.py .
-cp /cluster/home/kojito/nora10/scripts2/locations/*.csv . 
+cp /cluster/home/kojito/nora10/scripts3/*.txt.bz2 .
+cp /cluster/home/kojito/nora10/scripts3/*.R .
+cp /cluster/home/kojito/nora10/scripts3/nora10interpmain.py .
+cp /cluster/home/kojito/nora10/scripts3/checkfiles.py .
+cp /cluster/home/kojito/nora10/scripts3/locations/*.csv . 
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/intervals R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/sp R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/gstat R/
