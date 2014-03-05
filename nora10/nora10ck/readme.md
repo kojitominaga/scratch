@@ -289,15 +289,15 @@ lapply(datalist[['i3co']], mean)
 Done so far
 ===========
 
-ta_2m, ts_0m, hur_2m, wss_10m, pr, ps, psl for 2009 - 20012, daily mean only
+ta_2m, ts_0m, hur_2m, wss_10m, pr, ps, psl, clt, albedo for 1999 - 2012, daily mean only
 
 Coming up... 
 =============
 
 In order of appearance... 
 
-1. clt, albedo, rls, rss, wfds
-2. 1999 - 2008
+1. rls, wfds
+2. rss
 3. 1958 - 1998
 4. hourly or 3-hourly 
 5. port to CORDEX
