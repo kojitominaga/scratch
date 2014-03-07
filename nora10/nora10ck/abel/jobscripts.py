@@ -17,18 +17,18 @@ if not neach == 1: sys.exit('neach > 1 not supported now')
 
 tarsplitn = 100
 
-years = range(1999, 2013)
-varH = {'wfds_10m':    '1H'}
-# varH = {'clt': '1H', 
-#         'albedo': '1H', 
-#         'ta_2m': '1H',
-#         'ts_0m':  '1H', 
-#         'pr':     '1H',
-#         'psl':    '1H', 
-#         'ps':     '3H', 
-#         'wss_10m': '1H', 
-#         'hur_2m': '1H', 
-#         'rls':    '1H'}
+years = range(1994, 1999)
+varH = {'wfds_10m':    '1H', 
+        'clt': '1H', 
+        'albedo': '1H', 
+        'ta_2m': '1H',
+        'ts_0m':  '1H', 
+        'pr':     '1H',
+        'psl':    '1H', 
+        'ps':     '3H', 
+        'wss_10m': '1H', 
+        'hur_2m': '1H', 
+        'rls':    '1H'}
 # 'clt': '1H'
 # # 'albedo': '1H'}
 
@@ -167,11 +167,11 @@ module load R
 cd $SCRATCH
 mkdir R
 
-cp /cluster/home/kojito/nora10/scripts3/*.txt.bz2 .
-cp /cluster/home/kojito/nora10/scripts3/*.R .
-cp /cluster/home/kojito/nora10/scripts3/nora10interpmain.py .
-cp /cluster/home/kojito/nora10/scripts3/checkfiles.py .
-cp /cluster/home/kojito/nora10/scripts3/locations/*.csv . 
+cp /cluster/home/kojito/nora10/scripts4/*.txt.bz2 .
+cp /cluster/home/kojito/nora10/scripts4/*.R .
+cp /cluster/home/kojito/nora10/scripts4/nora10interpmain.py .
+cp /cluster/home/kojito/nora10/scripts4/checkfiles.py .
+cp /cluster/home/kojito/nora10/scripts4/locations/*.csv . 
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/intervals R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/sp R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/gstat R/
