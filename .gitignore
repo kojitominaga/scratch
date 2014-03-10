@@ -1,5 +1,5 @@
 *.csv.gz
-*.png
+nora10/mylake/png/*
 *.nc
 txt.bz2
 nora10/nora10ck/freebee/comsat/NSD/*
