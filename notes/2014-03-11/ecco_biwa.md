@@ -6,7 +6,7 @@ abel
 weather interpolation
 =====================
 
-spatial interpolation     | delta change method (bias correction is the key)
+spatial interpolation     | delta change method (_bias correction_ is the key)
 :-------------------------|:-------------------------------------------------
 Simple                    | More complex
 Does not correct for time | Does not correct for geography
