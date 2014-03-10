@@ -42,6 +42,10 @@ many developments       | no development (?)
 
 Would be good to get FLake to take the bathymetry into account...
 
+[MyLake on COMSAT lakes](temperature profile -- comsat field vs MyLake lots assumptions uncalibrated.pdf)
+
+
+
 abel
 ====
 
@@ -51,8 +55,8 @@ small group deomo later
 
 extra bits
 ==========
-with Frode Stordal
-------------------
+with Frode
+----------
 
 - the new postdoc will be starting within a few months hopefully. 
 - 3 by 3 km for Norway is good quality. I thought it could be useful as a quality check for NORA10
