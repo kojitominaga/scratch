@@ -17,6 +17,7 @@ while not all(checklist.values()):
     print('[checkfiles.py:%i] %i out of %i finished' % (
         count, sum(checklist.values()), len(checklist)))
     for f in checklist.keys():
+        time.sleep(0.5)
         if not checklist[f]:
             checklist[f] = os.path.exists(f)
             if checklist[f]:
