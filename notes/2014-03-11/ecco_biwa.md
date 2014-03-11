@@ -43,6 +43,7 @@ many developments       | no development (?)
 Would be good to get FLake to take the bathymetry into account...
 
 [MyLake on COMSAT lakes](temperature profile -- comsat field vs MyLake lots assumptions uncalibrated.pdf)
+[MyLake on COMSAT lakes 2](temperature profile -- comsat field vs MyLake lots assumptions uncalibrated_more.pdf)
 
 
 
