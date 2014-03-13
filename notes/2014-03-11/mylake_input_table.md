@@ -1,8 +1,11 @@
+[sample format](mylake input table.csv)
+
+
 1. Lake ID
 2. Coordinates: lat, lon (WGS84)
 3. Altitude
 4. Surface area
-5. Bathymetry (Hong): max depth and shape (A_z = A_0 * (1 - z / max_z)^c 
+5. Bathymetry (Hong): max depth and shape (A_z = A_0 * (1 - z / max_z)^c) 
 6. Runoff (Søren): [climate scenarios for Runoff] 
   1. no change
   2. B1
