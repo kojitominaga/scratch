@@ -1,5 +1,5 @@
-[sample format](mylake input table.csv)
 
+[sample format](mylake input table.csv)
 
 1. Lake ID
 2. Coordinates: lat, lon (WGS84)
