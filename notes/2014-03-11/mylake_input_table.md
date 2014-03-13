@@ -1,5 +1,6 @@
 
 [sample format](mylake input table.csv)
+[sample format with prediction error estimates](mylake input table with error estimates.csv)
 
 1. Lake ID
 2. Coordinates: lat, lon (WGS84)
