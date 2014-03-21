@@ -6,9 +6,9 @@ import sys
 jobscriptsdir = 'jobscripts'
 submitshname = 'submit2.sh'
 
-ntaskspernode = 15
+ntaskspernode = 6 * 106 * 11
 
-burden = 1.5
+burden = 10
 # estimated time in min per interpolation 
 # (i.e., per location, per time point)
 
@@ -17,19 +17,17 @@ if not neach == 1: sys.exit('neach > 1 not supported now')
 
 tarsplitn = 100
 
-years = range(1993, 2013)
-varH = {'rss': '1H'}
-# varH = {'wfds_10m':    '1H', 
-#         'clt': '1H', 
-#         'albedo': '1H', 
-#         'ta_2m': '1H',
-#         'ts_0m':  '1H', 
-#         'pr':     '1H',
-#         'psl':    '1H', 
-#         'ps':     '3H', 
-#         'wss_10m': '1H', 
-#         'hur_2m': '1H', 
-#         'rls':    '1H'}
+years = [1999, 2000, 2001, 2003, 2004, 2006]
+varH = {'wfds_10m':    '1H', 
+        'clt': '1H', 
+        'albedo': '1H', 
+        'ta_2m': '1H',
+        'ts_0m':  '1H', 
+        'pr':     '1H',
+        'psl':    '1H', 
+        'wss_10m': '1H', 
+        'hur_2m': '1H', 
+        'rls':    '1H'}
 # 'clt': '1H'
 # # 'albedo': '1H'}
 
@@ -159,7 +157,6 @@ contents = ['''#!/bin/bash
 #SBATCH --mail-type=ALL
 
 #SBATCH --mem-per-cpu=3G
-#SBATCH --qos=lowpri
 
 source /cluster/bin/jobsetup
 module load python2
@@ -168,11 +165,11 @@ module load R
 cd $SCRATCH
 mkdir R
 
-cp /cluster/home/kojito/nora10/scripts4/*.txt.bz2 .
-cp /cluster/home/kojito/nora10/scripts4/*.R .
-cp /cluster/home/kojito/nora10/scripts4/nora10interpmain.py .
-cp /cluster/home/kojito/nora10/scripts4/checkfiles.py .
-cp /cluster/home/kojito/nora10/scripts4/locations/*.csv . 
+cp /cluster/home/kojito/nora10/scripts5/*.txt.bz2 .
+cp /cluster/home/kojito/nora10/scripts5/*.R .
+cp /cluster/home/kojito/nora10/scripts5/nora10interpmain.py .
+cp /cluster/home/kojito/nora10/scripts5/checkfiles.py .
+cp /cluster/home/kojito/nora10/scripts5/locations/*.csv . 
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/intervals R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/sp R/
 cp -R /cluster/home/kojito/R/x86_64-unknown-linux-gnu-library/3.0/gstat R/
@@ -185,9 +182,9 @@ cp -R /cluster/software/VERSIONS/R-3.0.2/lib64/R/library/methods R/
 python checkfiles.py %s
 
 ''' % 
-(longjobnames[ni], 
+('REDO', 
  requiredhourslist[ni], 
- taskii2[ni] - taskii1[ni], 
+ 16, 
  commandslist[ni], 
  COMPLETElist[ni]) 
 for ni in range(nnodes)]
@@ -195,7 +192,7 @@ for ni in range(nnodes)]
 for ni in range(nnodes):
     jobfname = jobfnames[ni]
     content = contents[ni]
-    f = open(jobfname, 'w')
+    f = open('redo%02i.sh' % ni, 'w')
     f.write(content)
     f.close()
 
