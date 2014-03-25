@@ -298,7 +298,7 @@ In order of appearance...
 
 1. rls, wfds_10m
 2. rss
-3. 1958 - 1998
+3. 1958 - 1998 for lakes other than Langtjern for NIVA and Storgama
 4. hourly or 3-hourly 
 5. port to CORDEX
 
