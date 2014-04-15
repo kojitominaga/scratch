@@ -1,5 +1,7 @@
 ## usage: Rscript spinterp_cordex.R --args \
-##          lonpath latpath orogpath varpath outdir llon llat lalt
+##          lonpath latpath altpath varpath llon llat lalt resultspath
+
+dbglv <- 0 # debug.level
 
 nlocal <- 100 # number of points 
 cutoff <- 50 # max distance
@@ -14,22 +16,22 @@ boundaries <- c(15, 20, 25.8, 30, 35.2, 37.7, 42, 46, 53, 62, 71, 80, 90, 101)
 
 cat('====\nThis is Rscript\n')
 cat(format(Sys.time(), "%a %b %d %X %Y"))
-cat('current working directory is:\n')
+cat('\ncurrent working directory is:\n')
 cat(getwd())
 cat('\n====\n')
 
 lonpath <- commandArgs(trailingOnly = TRUE)[2]
 latpath <- commandArgs(trailingOnly = TRUE)[3]
-orogpath <- commandArgs(trailingOnly = TRUE)[4]
+altpath <- commandArgs(trailingOnly = TRUE)[4]
 varpath <- commandArgs(trailingOnly = TRUE)[5]
-outdir <- commandArgs(trailingOnly = TRUE)[6]
-llon <- as.numeric(commandArgs(trailingOnly = TRUE)[7])
-llat <- as.numeric(commandArgs(trailingOnly = TRUE)[8])
-lalt <- as.numeric(commandArgs(trailingOnly = TRUE)[9])
+llon <- as.numeric(commandArgs(trailingOnly = TRUE)[6])
+llat <- as.numeric(commandArgs(trailingOnly = TRUE)[7])
+lalt <- as.numeric(commandArgs(trailingOnly = TRUE)[8])
+resultspath <- commandArgs(trailingOnly = TRUE)[9]
 
 ## lonpath <- 'EUR-11/DMI/ICHEC-EC-EARTH/rcp85/r3i1p1/DMI-HIRHAM5/v1/fx/orog/near-testlocation-longitude.txt.gz'
 ## latpath <- 'EUR-11/DMI/ICHEC-EC-EARTH/rcp85/r3i1p1/DMI-HIRHAM5/v1/fx/orog/near-testlocation-latitude.txt.gz'
-## orogpath <- 'EUR-11/DMI/ICHEC-EC-EARTH/rcp85/r3i1p1/DMI-HIRHAM5/v1/fx/orog/near-testlocation-altitude.txt.gz'
+## altpath <- 'EUR-11/DMI/ICHEC-EC-EARTH/rcp85/r3i1p1/DMI-HIRHAM5/v1/fx/orog/near-testlocation-altitude.txt.gz'
 ## varpath <- 'EUR-11/DMI/ICHEC-EC-EARTH/rcp85/r3i1p1/DMI-HIRHAM5/v1/day/tas/near-testlocation-tas_EUR-11_ICHEC-EC-EARTH_rcp85_r3i1p1_DMI-HIRHAM5_v1_day_20910101-20951231.txt.gz'
 ## outdir <- '.'
 ## llon <- 10
@@ -38,12 +40,12 @@ lalt <- as.numeric(commandArgs(trailingOnly = TRUE)[9])
 
 cat(sprintf('[spinterp_cordex.R] lonpath is %s\n', lonpath))
 cat(sprintf('[spinterp_cordex.R] latpath is %s\n', latpath))
-cat(sprintf('[spinterp_cordex.R] orogpath is %s\n', orogpath))
+cat(sprintf('[spinterp_cordex.R] altpath is %s\n', altpath))
 cat(sprintf('[spinterp_cordex.R] varpath is %s\n', varpath))
-cat(sprintf('[spinterp_cordex.R] outdir is %s\n', outdir))
 cat(sprintf('[spinterp_cordex.R] llon is %s\n', llon))
 cat(sprintf('[spinterp_cordex.R] llat is %s\n', llat ))
 cat(sprintf('[spinterp_cordex.R] lalt is %s\n', lalt))
+cat(sprintf('[spinterp_cordex.R] resultspath is %s\n', resultspath))
 
 require(intervals)
 require(sp)
@@ -56,7 +58,7 @@ llCRS <- CRS('+proj=longlat +ellps=WGS84 +datum=WGS84')
 
 lon <- scan(lonpath, quiet = TRUE)
 lat <- scan(latpath, quiet = TRUE)
-alt <- scan(orogpath, quiet = TRUE)
+alt <- scan(altpath, quiet = TRUE)
 orogdf <- data.frame(lat, lon, orog = alt)
 orogdfgeo <- orogdf
 coordinates(orogdfgeo) <- c('lon', 'lat')
@@ -78,7 +80,7 @@ results <- matrix(nrow = n, ncol = ninterpmethods + nmetadata)
 ranks <- rank(spDistsN1(orogdfgeo, newloc, longlat = TRUE)) ## rank distance
 
 for (i in 1:n) {
-  cat(i) ; cat('\n')
+  if ((i %% 100) == 0) cat(sprintf('[spinterp_cordex.R] %s of %s\n', i, n))
   vi <- raw[i, ]
   r <- data.frame(orogdf, v = vi)
   coordinates(r) <- c('lon', 'lat')
@@ -152,22 +154,22 @@ for (i in 1:n) {
                            fit.sills = TRUE, fit.ranges = FALSE)
     
     ## 3an* : inverse distance
-    k3an <- krige(v ~ 1, r, newloc, nmax = nlocal)
+    k3an <- krige(v ~ 1, r, newloc, nmax = nlocal, debug.level = dbglv)
     i3an <- k3an[['var1.pred']] ; i3an.var <- k3an[['var1.var']]
     ## 3ao* : inverse distance with weighting by orog
-    k3ao <- krige(v ~ orog, r, newloc, nmax = nlocal)
+    k3ao <- krige(v ~ orog, r, newloc, nmax = nlocal, debug.level = dbglv)
     i3ao <- k3ao[['var1.pred']] ; i3ao.var <- k3ao[['var1.var']]
     ## 3bn* : kriging (linear variogram model), ordinary
-    k3bn <- krige(v ~ 1, r, newloc, vfl3, nmax = nlocal)
+    k3bn <- krige(v ~ 1, r, newloc, vfl3, nmax = nlocal, debug.level = dbglv)
     i3bn <- k3bn[['var1.pred']] ; i3bn.var <- k3bn[['var1.var']]
     ## 3bo* : kriging (linear variogram model), universal
-    k3bo <- krige(v ~ orog, r, newloc, vfl3o, nmax = nlocal)
+    k3bo <- krige(v ~ orog, r, newloc, vfl3o, nmax = nlocal, debug.level = dbglv)
     i3bo <- k3bo[['var1.pred']] ; i3bo.var <- k3bo[['var1.var']]
     ## 3cn* : kriging (complex variogram model), ordinary
-    k3cn <- krige(v ~ 1, r, newloc, vfe3, nmax = nlocal)
+    k3cn <- krige(v ~ 1, r, newloc, vfe3, nmax = nlocal, debug.level = dbglv)
     i3cn <- k3cn[['var1.pred']] ; i3cn.var <-k3cn[['var1.var']]
     ## 3co* : kriging (complex variogram model), universal
-    k3co <- krige(v ~ orog, r, newloc, vfe3o, nmax = nlocal)
+    k3co <- krige(v ~ orog, r, newloc, vfe3o, nmax = nlocal, debug.level = dbglv)
     i3co <- k3co[['var1.pred']] ; i3co.var <- k3co[['var1.var']]
   }
   
@@ -179,14 +181,17 @@ for (i in 1:n) {
       round(ifelse(rep(lh, times = 6), rep(NA, times = 6), vfe3o[['psill']]) / mgo, digits = 3), ## 6 elements
       ifelse(lh, NA, attr(vfl3, 'SSErr')), ifelse(lh, NA, attr(vfl3o, 'SSErr')),
       ifelse(lh, NA, attr(vfe3, 'SSErr')), ifelse(lh, NA, attr(vfe3o, 'SSErr')),
-      ifelse(lh, NA, round(sqrt(attr(vfl3, 'SSErr') / nrow(vfl3)) / mg, digits = 3),
-      ifelse(lh, NA, round(sqrt(attr(vfl3o, 'SSErr') / nrow(vfl3o)) / mgo, digits = 3),
-      ifelse(lh, NA, round(sqrt(attr(vfe3, 'SSErr') / nrow(vfe3)) / mg, digits = 3),
-      ifelse(lh, NA, round(sqrt(attr(vfe3o, 'SSErr') / nrow(vfe3o)) / mgo, digits = 3),
+      ifelse(lh, NA, round(sqrt(attr(vfl3, 'SSErr') / nrow(vfl3)) / mg, digits = 3)),
+      ifelse(lh, NA, round(sqrt(attr(vfl3o, 'SSErr') / nrow(vfl3o)) / mgo, digits = 3)),
+      ifelse(lh, NA, round(sqrt(attr(vfe3, 'SSErr') / nrow(vfe3)) / mg, digits = 3)),
+      ifelse(lh, NA, round(sqrt(attr(vfe3o, 'SSErr') / nrow(vfe3o)) / mgo, digits = 3)),
       i3an.var, i3ao.var, i3bn.var, i3bo.var, i3cn.var, i3co.var)
 }
 
-
+cat(sprintf('[spinterp_cordex.R] now writing the results to %s\n', resultspath))
+gzf <- gzfile(description = resultspath, open = 'w')
+write.table(results, file = gzf, row.names = FALSE, col.names = FALSE)
+close(gzf)
   
 
 

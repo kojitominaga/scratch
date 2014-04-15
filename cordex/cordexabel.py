@@ -61,14 +61,20 @@ def writegeog(orogfn, dirname, lname, llat, llon, n):
     from orography .nc file. 
     
     Writes 3 files in dirname. "near-LOCATION-altitude.txt.gz" etc. 
-    It also returns the boolean ndarray isnearby, 
-    the nearest n vertices being True'''
     
-    latfn = 'near-%s-latitude.txt.gz' % lname
+    It also returns tuple of 4 elements:
+    
+    1) the boolean ndarray isnearby, the nearest n vertices being True
+    2) latpath
+    3) lonpath
+    4) altpath
+    '''
+    
+    latfn = 'near-%s_latitude.txt.gz' % lname
     latpath = os.path.join(dirname, latfn)
-    lonfn = 'near-%s-longitude.txt.gz' % lname
+    lonfn = 'near-%s_longitude.txt.gz' % lname
     lonpath = os.path.join(dirname, lonfn)
-    altfn = 'near-%s-altitude.txt.gz' % lname
+    altfn = 'near-%s_altitude.txt.gz' % lname
     altpath = os.path.join(dirname, altfn)
     # distfn = 'near_%s-distance.txt.gz' % lname
     # distpath = os.path.join(dirname, distfn)
@@ -92,7 +98,7 @@ def writegeog(orogfn, dirname, lname, llat, llon, n):
     # np.savetxt(distpath, dist[isnearby], fmt = myfmt) 
 
     r.close()
-    return isnearby
+    return (isnearby, latpath, lonpath, altpath)
 
 
 def spinterp(ncpath, lname, llat, llon, lalt, prefix = '.', n = 500):
@@ -113,16 +119,32 @@ def spinterp(ncpath, lname, llat, llon, lalt, prefix = '.', n = 500):
     geogdir = parsefn(orogfn, prefix)[0]
     outdir, VariableName, StartTime, EndTime = parsefn(ncfn, prefix)
     if not os.path.exists(outdir): os.makedirs(outdir)
-    isnearby = writegeog(orogpath, geogdir, lname, llat, llon, n) 
-    # writes 3 .txt.gz files 
-    
-    txtgzpath = os.path.join(outdir, 'near-%s-%s.txt.gz' % (
+    print('[cordexabel.py] writing geography files...')
+    isnearby, latpath, lonpath, altpath = \
+      writegeog(orogpath, geogdir, lname, llat, llon, n)
+    # writes 3 .txt.gz files     
+    txtgzpath = os.path.join(outdir, 'near-%s_%s.txt.gz' % (
         lname, os.path.splitext(ncfn)[0]))
     r = netCDF4.Dataset(ncpath)
     v = r.variables[VariableName]
     t, y, x = v.shape
+    print('[cordexabel.py] writing variable file from the .nc file...')
     np.savetxt(txtgzpath, v[:, :, :].reshape((t, y * x))[:, isnearby], fmt = myfmt)
     r.close()
+    resultspath = os.path.join(outdir, 'interpolated', lname, 
+                               'interpolated-%s_%s.txt.gz' % (
+                                   lname, os.path.splitext(ncfn)[0]))
+    resultsdir = os.path.dirname(resultspath)
+    if not os.path.exists(resultsdir): os.makedirs(resultsdir)
+    print('[cordexabel.py] interpolating -- calling R...')
+    command = '%s \\\n%s \\\n%s \\\n%s \\\n%s \\\n%s %s %s \\\n%s' % (
+        'Rscript spinterp_cordex.R --args', 
+        lonpath, latpath, altpath, txtgzpath, llon, llat, lalt, resultspath)
+    print(command)
+    return os.system(command)
     
     
     
+## usage: Rscript spinterp_cordex.R --args \
+##          lonpath latpath orogpath varpath llon llat lalt resultspath
+
