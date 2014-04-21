@@ -1,3 +1,8 @@
+'''usage: python cordexabel.py ncpath lname llon llat prefix n
+
+with default values for prefix = . and n = 500.
+'''
+
 import os
 import sys
 import numpy as np
@@ -137,14 +142,20 @@ def spinterp(ncpath, lname, llat, llon, lalt, prefix = '.', n = 500):
     resultsdir = os.path.dirname(resultspath)
     if not os.path.exists(resultsdir): os.makedirs(resultsdir)
     print('[cordexabel.py] interpolating -- calling R...')
+    ## usage: Rscript spinterp_cordex.R --args \
+    ##        lonpath latpath orogpath varpath llon llat lalt resultspath
     command = '%s \\\n%s \\\n%s \\\n%s \\\n%s \\\n%s %s %s \\\n%s' % (
         'Rscript spinterp_cordex.R --args', 
         lonpath, latpath, altpath, txtgzpath, llon, llat, lalt, resultspath)
     print(command)
     return os.system(command)
-    
-    
-    
-## usage: Rscript spinterp_cordex.R --args \
-##          lonpath latpath orogpath varpath llon llat lalt resultspath
 
+if __name__ == '__main__':
+    a = sys.argv
+    ncpath = a[1]
+    lname = a[2]
+    llon = a[3]
+    llat = a[4]
+    prefix = '.' if len(a) <= 5 else a[5]
+    n = 500 if len(a) <= 6 else a[6]
+    spinterp(ncpath, lname, llon, llat, lalt, prefix, n)
