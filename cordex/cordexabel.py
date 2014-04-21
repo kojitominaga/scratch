@@ -2,11 +2,13 @@
 
 with default values for prefix = . and n = 500.
 '''
-
-import os
 import sys
+import os
 import numpy as np
 import netCDF4
+
+sys.path.append('/cluster/home/kojito/lib/python/site-packages')
+
 import geopy.distance
 
 myfmt = '%.8f' ## 8 significant digits, e.g., 53.80798340
@@ -156,6 +158,7 @@ if __name__ == '__main__':
     lname = a[2]
     llon = a[3]
     llat = a[4]
-    prefix = '.' if len(a) <= 5 else a[5]
-    n = 500 if len(a) <= 6 else a[6]
+    lalt = a[5]
+    prefix = '.' if len(a) <= 6 else a[6]
+    n = 500 if len(a) <= 7 else a[7]
     spinterp(ncpath, lname, llon, llat, lalt, prefix, n)
