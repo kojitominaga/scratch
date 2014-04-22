@@ -126,6 +126,19 @@ def spinterp(ncpath, lname, llat, llon, lalt, prefix = '.', n = 500):
     geogdir = parsefn(orogfn, prefix)[0]
     outdir, VariableName, StartTime, EndTime = parsefn(ncfn, prefix)
     if not os.path.exists(outdir): os.makedirs(outdir)
+    print('[cordexabel.py] orogpath is %s' % orogpath)
+    if not os.path.exists(orogpath):
+        print('[cordexabel.py] orogpath does not exist')
+        prefix = '_'.join(orogfn.split('_')[:3])
+        suffix = '_'.join(orogfn.split('_')[-3:])
+        filelist = os.listdir(ncdir)
+        alternatives = [f for f in filelist if prefix in f and suffix in f]
+        if len(alternatives) > 0:
+            print('[cordexabel.py] found %s instead' % alternatives[0])
+            orogfn = alternatives[0]
+            orogpath = os.path.join(ncdir, orogfn)
+        else: 
+            sys.exit('[cordexabel.py] ERROR: could not find the orog file')
     print('[cordexabel.py] writing geography files...')
     isnearby, latpath, lonpath, altpath = \
       writegeog(orogpath, geogdir, lname, llat, llon, n)
