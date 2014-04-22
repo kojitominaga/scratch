@@ -174,4 +174,4 @@ if __name__ == '__main__':
     lalt = a[5]
     prefix = '.' if len(a) <= 6 else a[6]
     n = 500 if len(a) <= 7 else a[7]
-    spinterp(ncpath, lname, llon, llat, lalt, prefix, n)
+    spinterp(ncpath, lname, llat, llon, lalt, prefix, n)
