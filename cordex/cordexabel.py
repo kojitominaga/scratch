@@ -238,7 +238,8 @@ def spinterp(ncpath, lname, llat, llon, lalt, prefix = '.', n = 500):
           'Rscript spinterp_cordex.R --args', 
           lonpath, latpath, altpath, txtgzpath, llon, llat, lalt, resultspath)
         print(command)
-        return os.system(command)
+        os.system(command)
+    os.unlink(txtgzpath)
 
 if __name__ == '__main__':
     a = sys.argv
