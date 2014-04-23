@@ -1,10 +1,16 @@
 import os
+import sys
+import cordexabel
+
+lname, llon, llat, lalt = sys.argv[1:5]
 
 if not os.path.exists('jobscripts'): os.makedirs('jobscripts')
 
 experiments = ['historical', 'rcp26', 'rcp45', 'rcp85']
 variables = ['tas', 'tasmin', 'tasmax', 'pr', 'ps', 'psl', 'huss', 'sfcWind', 
              'clt', 'rsds', 'rlds', 'rsus', 'rlus', 'ts']
+
+n = 500
 
 ncdir = '/work/users/kojito/cordex/nc/'
 cordexdir = '/work/users/kojito/cordex/'
@@ -27,14 +33,38 @@ mem = '4G'
 ncfiles = [f for f in os.listdir(ncdir) if os.path.splitext(f)[1] == '.nc']
 
 for e in experiments:
+    print('[createjobscripts.py] creating geography files')
+    ncpath = \
+      os.path.join(ncdir, [f for f in ncfiles if e in f and not 'orog' in f][0])
+    ## any one with the e will suffice
+    ncdir, ncfn = os.path.split(ncpath)
+    orogfn = cordexabel.getorogfn(ncfn)
+    orogpath = os.path.join(ncdir, orogfn)
+    if not os.path.exists(orogpath):
+        print('[createjobscripts.py] orogpath does not exist')
+        pref = '_'.join(orogfn.split('_')[:4])
+        suff = '_'.join(orogfn.split('_')[-3:])
+        filelist = os.listdir(ncdir)
+        alternatives = [f for f in filelist if pref in f and suff in f]
+        if len(alternatives) > 0:
+            print('[createjobscripts.py] found %s instead' % alternatives[0])
+            orogfn = alternatives[0]
+            orogpath = os.path.join(ncdir, orogfn)
+        else: 
+            sys.exit('[createjobscripts.py] ERROR: could not find the orog file')    
+    geogdir = cordexabel.parsefn(orogfn, cordexdir)[0]
+    isnearby, latpath, lonpath, altpath = \
+      cordexabel.writegeog(orogpath, geogdir, lname, llat, llon, n, 
+                           dummy = False)
     for v in variables:
-        jobname = '%s_%s' % (e[:4], v)
-        filestoprocess = [f for f in ncfiles if e in f and v in f]
+        jobname = '%s%s%s' % (e[:4], v, lname)
+        filestoprocess = [f for f in ncfiles if e in f and '%s_' % v in f]
         pythoncommands = ['python cordexabel.py %s %s %s %s %s %s %s' % (
-            os.path.join(ncdir, f), 'OsloBlindern', 
-            10.72, 59.9423, 94.0, cordexdir, 500)
+            os.path.join(ncdir, f), lname, llon, llat, lalt, cordexdir, n) 
             for f in filestoprocess]
-        with open(os.path.join('jobscripts', jobname) + '.sh', 'w') as jf:
+        pathout = os.path.join('jobscripts', jobname) + '.sh'
+        print('[createjobscripts.py] creating %s' % pathout)
+        with open(pathout, 'w') as jf:
             jf.write('#!/bin/sh\n')
             jf.write('#SBATCH --job-name=%s\n' % jobname)
             jf.write('#SBATCH --account=%s\n' % project)

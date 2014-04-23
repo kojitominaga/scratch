@@ -103,8 +103,11 @@ def writegeog(orogfn, dirname, lname, llat, llon, n, dummy = False):
     if not os.path.exists(dirname): os.makedirs(dirname)
     if not dummy:
         orog = r.variables['orog'][:, :].flatten()
+        print('[cordexabel.writegeog()] writing to %s' % lonpath)
         np.savetxt(lonpath, lon[isnearby], fmt = myfmt)
+        print('[cordexabel.writegeog()] writing to %s' % latpath)
         np.savetxt(latpath, lat[isnearby], fmt = myfmt)
+        print('[cordexabel.writegeog()] writing to %s' % altpath)
         np.savetxt(altpath, orog[isnearby], fmt = '%.2f')
         # np.savetxt(distpath, dist[isnearby], fmt = myfmt) 
 
@@ -127,23 +130,22 @@ def spinterp(ncpath, lname, llat, llon, lalt, prefix = '.', n = 500):
     ncdir, ncfn = os.path.split(ncpath)
     orogfn = getorogfn(ncfn)
     orogpath = os.path.join(ncdir, orogfn)
-    geogdir = parsefn(orogfn, prefix)[0]
     outdir, VariableName, StartTime, EndTime = parsefn(ncfn, prefix)
     if not os.path.exists(outdir): os.makedirs(outdir)
     print('[cordexabel.py] orogpath is %s' % orogpath)
     if not os.path.exists(orogpath):
         print('[cordexabel.py] orogpath does not exist')
-        prefix = '_'.join(orogfn.split('_')[:4])
-        suffix = '_'.join(orogfn.split('_')[-3:])
+        pref = '_'.join(orogfn.split('_')[:4])
+        suff = '_'.join(orogfn.split('_')[-3:])
         filelist = os.listdir(ncdir)
-        alternatives = [f for f in filelist if prefix in f and suffix in f]
+        alternatives = [f for f in filelist if pref in f and suff in f]
         if len(alternatives) > 0:
             print('[cordexabel.py] found %s instead' % alternatives[0])
             orogfn = alternatives[0]
             orogpath = os.path.join(ncdir, orogfn)
         else: 
             sys.exit('[cordexabel.py] ERROR: could not find the orog file')
-            
+    geogdir = parsefn(orogfn, prefix)[0]
     isnearby, latpath, lonpath, altpath = \
       writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = True)
 
@@ -262,10 +264,10 @@ if __name__ == '__main__':
         print('[cordexabel.py] orogpath is %s' % orogpath)
         if not os.path.exists(orogpath):
             print('[cordexabel.py] orogpath does not exist')
-            prefix = '_'.join(orogfn.split('_')[:4])
-            suffix = '_'.join(orogfn.split('_')[-3:])
+            pref = '_'.join(orogfn.split('_')[:4])
+            suff = '_'.join(orogfn.split('_')[-3:])
             filelist = os.listdir(ncdir)
-            alternatives = [f for f in filelist if prefix in f and suffix in f]
+            alternatives = [f for f in filelist if pref in f and suff in f]
             if len(alternatives) > 0:
                 print('[cordexabel.py] found %s instead' % alternatives[0])
                 orogfn = alternatives[0]
