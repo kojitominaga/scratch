@@ -41,4 +41,4 @@ Comparison of interpolation methods
 
 ### The 'i3co' methos is probably the best in terms of precision and accuracy. 
 
-See [more results here](png)
+See the link: [more results here](png) 
