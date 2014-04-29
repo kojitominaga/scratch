@@ -36,8 +36,8 @@ Comparison of interpolation methods
 
 #### Nearest vertex (i1a) vs Co-kriging method 2 (i3co)
 
-![](png/cloud cover (octas) i1a.png)
-![](png/cloud cover (octas) i3co.png)
+![](png/atm. pres. at station level (hPa) i1a.png)
+![](png/atm. pres. at station level (hPa) i3co.png)
 
 ### The 'i3co' methos is probably the best in terms of precision and accuracy. 
 
