@@ -365,3 +365,7 @@ for data, name, long_name in tasklist:
 
 
 
+        # sns.violinplot(df[interps + ['station']].dropna(axis = 0))
+        # violin plot on the monthly basis (n = 12 * n_year)
+        # andrew's curves by year/day
+        # tailer diagram
