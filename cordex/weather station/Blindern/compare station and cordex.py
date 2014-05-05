@@ -47,11 +47,6 @@ stationraw = \
 
 years = np.array([int(a.astype('S').split('-')[0]) for a in stationraw['Date']])
                               
-station = stationraw[years >= 1993, :]
-
-sdf = pd.DataFrame.from_records(station, \
-    index = pd.date_range('1993-01-01', '2012-12-31', freq = 'D'))
-
 columnnames = (
     'i1a', 'i1b', 'i1c', 'i3an', 'i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co', 
     'locallyhomog3', 'maxgamma3', 'maxgamma3o', 'maxdist3', 'maxdist3o', 
@@ -98,10 +93,12 @@ def cordex2df(varname):
     df = pd.DataFrame.from_records(structured, index = dr)
     return df
 
-stationdf = pd.DataFrame.from_records(station, 
-    index = pd.date_range('1993-01-01', '2012-12-31', freq = 'D'))
+stationrawdf = pd.DataFrame.from_records(stationraw, 
+    index = pd.date_range('1958-01-01', '2012-12-31', freq = 'D'))
 
-commondates = pd.date_range('1993-01-01', '2005-12-31', freq = 'D')
+commondates = pd.date_range('1970-01-01', '2005-12-31', freq = 'D')
+
+stationdf = stationrawdf.ix[commondates, :]
 
 tas = cordex2df('tas').ix[commondates, :]
 sfcWind = cordex2df('sfcWind').ix[commondates, :]
@@ -127,7 +124,6 @@ for data, name, long_name in tasklist:
     df = data
 
     stationv = pd.DataFrame(data = {'station': stationdf[name]})
-                        
 
     df = pd.concat([df, stationv], axis = 1)
 
@@ -135,6 +131,8 @@ for data, name, long_name in tasklist:
     # ['i1a', 'i1b', 'i1c', 'i3an', 'i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co']
 
     modified = dict()
+
+    is_outlier = pd.Series(np.repeat(False, df.shape[0]), index = df.index)
 
     for interpi in range(9):
         interp = interps[interpi]
@@ -147,7 +145,6 @@ for data, name, long_name in tasklist:
         if name == 'TAM':
             df[interp] = df[interp] - 273.15
             is_outlier = sp.stats.mstats.zscore(df[interp]).abs() > 5
-            # change if not air temperature, for example to limits (0 to 100)
         if name == 'RR':
             df[interp] = df[interp] * (60 * 60 * 24)
             is_llimit = df[interp] < 0
@@ -174,10 +171,12 @@ for data, name, long_name in tasklist:
             df.ix[is_llimit, interp] = 0
         if name == 'POM':
             df[interp] = df[interp] * 0.01
+            is_outlier = sp.stats.mstats.zscore(df[interp]).abs() > 5
         if name == 'PRM':
             df[interp] = df[interp] * 0.01
+            is_outlier = sp.stats.mstats.zscore(df[interp]).abs() > 5
             
-            
+
         mm = df[interp].values
         ## during interpolation, work with np.ndarray, not pd.DataFrame
         mm[is_outlier] = np.nan
@@ -369,3 +368,21 @@ for data, name, long_name in tasklist:
         # violin plot on the monthly basis (n = 12 * n_year)
         # andrew's curves by year/day
         # tailer diagram
+
+stds = df.dropna(axis = 0)[interps].std()
+rs = df.dropna(axis = 0)[interps].\
+  apply(lambda x: np.corrcoef(df.dropna(axis = 0)['station'].flatten(), 
+                              x.flatten())[0, 1], raw = True)
+
+td = TaylorDiagram(df['station'].std(), label = 'obs.')
+for i in range(9):
+    td.add_sample(stds[i], rs[i], label = list(df.columns[:9])[i], 
+                  marker='s', ls='')
+contours = td.add_contours()
+plt.clabel(contours, inline = 1, fontsize = 10, fmt = '%.1f')
+
+plt.legend(td.samplePoints,
+           [p.get_label() for p in td.samplePoints],
+           numpoints = 1, prop = dict(size = 'small'), loc = 'upper right')
+plt.show()
+
