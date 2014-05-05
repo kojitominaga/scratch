@@ -9,6 +9,8 @@ import pandas as pd
 import seaborn as sns
 sns.set_style('whitegrid')
 
+import taylorDiagram.TaylorDiagram as TaylorDiagram
+
 n_stats = 42
 
 def runningmean(x, N):
@@ -26,7 +28,11 @@ def missingorzero(x):
         out = np.nan
     else:
         out = float(xs)
-    return(out)
+    return out
+
+def boolconverter(x):
+    out = False if x == '0' else True
+    return out 
 
 stationraw = \
   np.genfromtxt('Dognverdier_(for_dognintervall).txt', 
@@ -81,7 +87,10 @@ def cordex2df(varname):
         start, end = fname.strip().split('.txt.gz')[0].split('_')[-1].split('-')
         this_dr = pd.date_range(start, end)
         p = os.path.join(d, fname)
-        this_structured = np.genfromtxt(p, dtype = datatype, names = columnnames)
+        this_structured = np.genfromtxt(p, dtype = datatype, 
+                                        names = columnnames, 
+                                        missing_values = 'NA', 
+                                        converters = {9: boolconverter})
         rii = 0
         date_is_in = dr.isin(this_dr)
         for ri in range(len(structured)):
@@ -89,8 +98,12 @@ def cordex2df(varname):
                 structured[np.arange(len(structured))[ri]] = \
                 this_structured[np.arange(len(this_structured))[rii]]
                 rii += 1
+        print(varname, start, end, date_is_in.sum(), this_structured.shape, 
+              this_structured['locallyhomog3'].sum())
     
     df = pd.DataFrame.from_records(structured, index = dr)
+    print(df)
+    print(df.values.shape)
     return df
 
 stationrawdf = pd.DataFrame.from_records(stationraw, 
@@ -119,6 +132,8 @@ tasklist = [(tas, 'TAM', 'air temperature (degree C)'),
 # tasklist = [(ta, 'TAM', 'air temperature (degree C)'), 
 #             (hur, 'UUM', 'relative humidity (percent)'), 
 
+datadict = dict()
+
 for data, name, long_name in tasklist:
 
     df = data
@@ -141,17 +156,25 @@ for data, name, long_name in tasklist:
         n_llimit = 0
         n_ulimit = 0
     
+        var_exists = interp in ['i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co']
+        if var_exists:
+            bias = 'b' + interp[1:]
+
         #### data manipulation 
         if name == 'TAM':
             df[interp] = df[interp] - 273.15
             is_outlier = sp.stats.mstats.zscore(df[interp]).abs() > 5
         if name == 'RR':
             df[interp] = df[interp] * (60 * 60 * 24)
+            if var_exists:
+                df[var] = df[var] * (60 * 60 * 24 * 60 * 60 * 24)
             is_llimit = df[interp] < 0
             n_llimit = is_llimit.sum()
             df.ix[is_llimit, interp] = 0
         if name == 'NNM':
             df[interp] = df[interp] * 8
+            if var_exists:
+                df[var] = df[var] * 8 * 8
             is_llimit = df[interp] < 0
             n_llimit = is_llimit.sum()
             df.ix[is_llimit, interp] = 0
@@ -171,9 +194,13 @@ for data, name, long_name in tasklist:
             df.ix[is_llimit, interp] = 0
         if name == 'POM':
             df[interp] = df[interp] * 0.01
+            if var_exists:
+                df[var] = df[var] * 0.01 * 0.01
             is_outlier = sp.stats.mstats.zscore(df[interp]).abs() > 5
         if name == 'PRM':
             df[interp] = df[interp] * 0.01
+            if var_exists:
+                df[var] = df[var] * 0.01 * 0.01
             is_outlier = sp.stats.mstats.zscore(df[interp]).abs() > 5
             
 
@@ -188,11 +215,12 @@ for data, name, long_name in tasklist:
 
         modified[interp] = (n_outliers, n_llimit, n_ulimit)
 
-        bias = 'b' + interp[1:]
         df[bias] = df[interp] - df['station'] # bias
-        var_exists = interp in ['i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co']
         if var_exists:
             var = 'var' + interp[1:]
+            df[var][df['locallyhomog3']] = 0
+            negativevar = df[var] < 0
+            df.ix[negativevar, var] = 0
             interpupper = 'iu' + interp[1:]
             interplower = 'il' + interp[1:]
             biasupper = 'bu' + interp[1:]
@@ -210,6 +238,8 @@ for data, name, long_name in tasklist:
          and (not 'u' in e) and (not 'l' in e)]]).max().max()
         b_limit = [-1.0 * b_reach, b_reach]
 
+    datadict[name] = df
+
     for interpi in range(9):
         interp = interps[interpi]
         
@@ -220,17 +250,6 @@ for data, name, long_name in tasklist:
         bias = 'b' + interp[1:]
 
         var_exists = interp in ['i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co']
-
-        if var_exists:
-            var = 'var' + interp[1:]
-            interpupper = 'iu' + interp[1:]
-            interplower = 'il' + interp[1:]
-            biasupper = 'bu' + interp[1:]
-            biaslower = 'bl' + interp[1:]
-            df[interpupper] = df[interp] + 2 * np.sqrt(df[var])
-            df[interplower] = df[interp] - 2 * np.sqrt(df[var])
-            df[biasupper] = df[bias] + 2 * np.sqrt(df[var])
-            df[biaslower] = df[bias] - 2 * np.sqrt(df[var])
     
         m = df[interp]
         m2y = df.ix[:730, interp]
