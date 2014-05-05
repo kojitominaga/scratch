@@ -15,3 +15,4 @@ co2/phreeqc-2.18.3/*
 *.pyc
 *.txt.gz
 */test*.csv
+cordex/*/*/png/*.png
