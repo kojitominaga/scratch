@@ -9,7 +9,7 @@ import pandas as pd
 import seaborn as sns
 sns.set_style('whitegrid')
 
-import taylorDiagram.TaylorDiagram as TaylorDiagram
+import taylorDiagram
 
 n_stats = 42
 
@@ -158,7 +158,7 @@ for data, name, long_name in tasklist:
     
         var_exists = interp in ['i3ao', 'i3bn', 'i3bo', 'i3cn', 'i3co']
         if var_exists:
-            bias = 'b' + interp[1:]
+            var = 'var' + interp[1:]
 
         #### data manipulation 
         if name == 'TAM':
@@ -215,9 +215,9 @@ for data, name, long_name in tasklist:
 
         modified[interp] = (n_outliers, n_llimit, n_ulimit)
 
+        bias = 'b' + interp[1:]
         df[bias] = df[interp] - df['station'] # bias
         if var_exists:
-            var = 'var' + interp[1:]
             df[var][df['locallyhomog3']] = 0
             negativevar = df[var] < 0
             df.ix[negativevar, var] = 0
@@ -388,20 +388,128 @@ for data, name, long_name in tasklist:
         # andrew's curves by year/day
         # tailer diagram
 
-stds = df.dropna(axis = 0)[interps].std()
-rs = df.dropna(axis = 0)[interps].\
-  apply(lambda x: np.corrcoef(df.dropna(axis = 0)['station'].flatten(), 
-                              x.flatten())[0, 1], raw = True)
+plt.cla()
 
-td = TaylorDiagram(df['station'].std(), label = 'obs.')
-for i in range(9):
-    td.add_sample(stds[i], rs[i], label = list(df.columns[:9])[i], 
-                  marker='s', ls='')
-contours = td.add_contours()
-plt.clabel(contours, inline = 1, fontsize = 10, fmt = '%.1f')
 
-plt.legend(td.samplePoints,
-           [p.get_label() for p in td.samplePoints],
-           numpoints = 1, prop = dict(size = 'small'), loc = 'upper right')
-plt.show()
+def customTD(df, fig, rect, title):
+    '''plot custom made Taylor Diagram. df is the DataFrame with names
+    interps + ['station']'''
+    d = df[interps + ['station']].dropna()
+    stds = d.std()
+    rs = d.apply(lambda x: 
+                 np.corrcoef(d['station'].flatten(), x.flatten())[0, 1],
+                 raw = True)
+    td = taylorDiagram.TaylorDiagram(stds['station'], label = 'obs.', 
+                                     fig = fig, rect = rect)
+    for i in range(9):
+        interp = interps[i]
+        td.add_sample(stds[interp], rs[interp], label = interp, 
+                      marker = 's', ls = '')
+    td._ax.set_title(title)
+    contours = td.add_contours()
+    plt.clabel(contours, inline = 1, fontsize = 10, fmt = '%.1f')
+    # plt.legend(td.samplePoints, 
+    #            [p.get_label() for p in td.samplePoints], 
+    #            numpoints = 1, prop = dict(size = 'small'), loc = 'upper right')
+
+def customTD2(df, interp, fig, rect, title):
+    '''take the monthly summary, with normalised std'''
+    month = df.index.month
+    pal = sns.color_palette('coolwarm', 12)[3:] + \
+      sns.color_palette('coolwarm', 12)[:3] 
+    td = taylorDiagram.TaylorDiagram(1.0, label = 'obs.', 
+                                     fig = fig, rect = rect)
+    for i, mi in enumerate(range(1, 13)):
+        dfm = df.ix[month == mi, [interp, 'station']]
+        std = dfm.std()
+        r = np.corrcoef(dfm[interp].flatten(), dfm['station'].flatten())[0, 1]
+        td.add_sample(std[interp] / std['station'], r, label = str(mi), 
+                      marker = 's', ls = '', color = pal[i])
+    td._ax.set_title(title)
+    contours = td.add_contours()
+    plt.clabel(contours, inline = 1, fontsize = 10, fmt = '%.1f')        
+    plt.legend(td.samplePoints, 
+               [p.get_label() for p in td.samplePoints], 
+               numpoints = 1, prop = dict(size = 'small'), 
+               bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
+
+    
+fig = plt.figure(figsize = (11 * 1.5, 7 * 1.5))
+gs = gridspec.GridSpec(2, 3, wspace = 0.5, hspace = 0.5)
+customTD2(datadict['TAM'], 'i3co', fig, gridspec.SubplotSpec(gs, 0),
+          'Air Temperature')
+customTD2(datadict['NNM'], 'i3co', fig, gridspec.SubplotSpec(gs, 1),
+          'Cloud Cover')
+customTD2(datadict['FFM'], 'i3co', fig, gridspec.SubplotSpec(gs, 2),
+          'Wind Speed')
+customTD2(datadict['RR'], 'i3co', fig, gridspec.SubplotSpec(gs, 3),
+          'Precipitation')
+customTD2(datadict['POM'], 'i3co', fig, gridspec.SubplotSpec(gs, 4),
+          'Air Pres. Station')
+customTD2(datadict['PRM'], 'i3co', fig, gridspec.SubplotSpec(gs, 5),
+          'Air Pres. Sea')
+fig.savefig('Taylor Diagrams (NRMSE).png')
+
+
+tasklist = [(tas, 'TAM', 'air temperature (degree C)'),
+            (sfcWind, 'FFM', 'wind speed (m s-1)'),
+            (pr, 'RR', 'precipitation (mm)'), 
+            (clt, 'NNM', 'cloud cover (octas)'), 
+            (ps, 'POM', 'atm. pres. at station level (hPa)'), 
+            (psl, 'PRM', 'atm. pres. at sea level (hPa)')]
+
+    
+plt.cla()    
+df = datadict['TAM']
+i = d.index
+fig = plt.figure(figsize = (11 * 1.8, 7 * 1.8))
+gs = gridspec.GridSpec(3, 5, wspace = 0.5, hspace = 0.2)
+customTD(df, fig, gridspec.SubplotSpec(gs, 0), 'whole year')
+for mi in range(1, 13):
+    customTD(df[i.month == mi], fig, gridspec.SubplotSpec(gs, mi), str(mi))
+fig.savefig('test.png')
+
+
+
+def meanbias(x, y):
+    return x.mean() - y.mean()
+
+sns.jointplot('i3co', 'station', datadict['TAM'][month == 1], stat_func=meanbias)
+
+def monthlykdes(df, interp, fig, fname, name):
+    month = df.index.month
+    gs = gridspec.GridSpec(6, 2, hspace = 0, wspace = 0.5)
+    for i, ss in enumerate(gs):
+        m = [1, 7, 2, 8, 3, 9, 4, 10, 5, 11, 6, 12][i]
+        ax = fig.add_subplot(ss)
+        sns.kdeplot(df.ix[month == m, 'station'].values, 
+                      shade = True, label = 'obs.')
+        sns.kdeplot(df.ix[month == m, interp].values, 
+                      shade = True, label = interp)
+        stats = '%s, bias %.1f\n sd obs. %.1f\n sd mod %.1f' % (
+            'JFMAMJJASOND'[m - 1], 
+            df.ix[month == m, interp].mean() - df.ix[month == m, 'station'].mean(),
+            df.ix[month == m, 'station'].std(),
+            df.ix[month == m, interp].std())
+        print stats
+        ax.set_ylabel(stats)
+    minx = min([ax.get_xlim()[0] for ax in fig.axes])
+    maxx = max([ax.get_xlim()[1] for ax in fig.axes])
+    miny = min([ax.get_ylim()[0] for ax in fig.axes])
+    maxy = max([ax.get_ylim()[1] for ax in fig.axes])
+    for i, ax in enumerate(fig.axes):
+        nyticks = len(ax.yaxis.get_ticklabels())
+        ax.yaxis.set_ticklabels([''] * nyticks)
+        ax.set_xlim(minx, maxx)
+        ax.set_ylim(miny, maxy)
+        if i < 10:
+            nxticks = len(ax.xaxis.get_ticklabels())
+            ax.xaxis.set_ticklabels([''] * nxticks)
+            
+    # gs.tight_layout(fig)
+    fig.suptitle(name)
+    fig.savefig(fname)
+
+fig = plt.figure(figsize = (7, 11))
+monthlykdes(datadict['TAM'], 'i3co', fig, 'test3.png', 'Air Temperature')
 
