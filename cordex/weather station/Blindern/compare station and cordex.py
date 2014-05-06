@@ -423,7 +423,8 @@ def customTD2(df, interp, fig, rect, title):
         dfm = df.ix[month == mi, [interp, 'station']]
         std = dfm.std()
         r = np.corrcoef(dfm[interp].flatten(), dfm['station'].flatten())[0, 1]
-        td.add_sample(std[interp] / std['station'], r, label = str(mi), 
+        td.add_sample(std[interp] / std['station'], r, 
+                      label = 'JFMAMJJASOND'[i], 
                       marker = 's', ls = '', color = pal[i])
     td._ax.set_title(title)
     contours = td.add_contours()
@@ -476,9 +477,12 @@ def meanbias(x, y):
 
 sns.jointplot('i3co', 'station', datadict['TAM'][month == 1], stat_func=meanbias)
 
-def monthlykdes(df, interp, fig, fname, name):
+def monthlykdes(df, interp, fig, fname, name, logtrans = False):
     month = df.index.month
     gs = gridspec.GridSpec(6, 2, hspace = 0, wspace = 0.5)
+    if logtrans:
+        df['station'] = np.log10(df['station'] + 0.01)
+        df[interp] = np.log10(df[interp] + 0.01)
     for i, ss in enumerate(gs):
         m = [1, 7, 2, 8, 3, 9, 4, 10, 5, 11, 6, 12][i]
         ax = fig.add_subplot(ss)
@@ -507,9 +511,22 @@ def monthlykdes(df, interp, fig, fname, name):
             ax.xaxis.set_ticklabels([''] * nxticks)
             
     # gs.tight_layout(fig)
-    fig.suptitle(name)
+    if logtrans:
+        fig.suptitle(name + ' log10(x + 0.01)')
+    else:
+        fig.suptitle(name)
     fig.savefig(fname)
-
+    
+plt.cla()
 fig = plt.figure(figsize = (7, 11))
-monthlykdes(datadict['TAM'], 'i3co', fig, 'test3.png', 'Air Temperature')
-
+monthlykdes(datadict['TAM'], 'i3co', fig, 'Monthly KDE Air Temperature.png', 'Air Temperature')
+fig = plt.figure(figsize = (7, 11))
+monthlykdes(datadict['FFM'], 'i3co', fig, 'Monthly KDE Wind Speed.png', 'Wind Speed')
+fig = plt.figure(figsize = (7, 11))
+monthlykdes(datadict['RR'], 'i3co', fig, 'Monthly KDE Precipitation', 'Precipitation', logtrans = True)
+fig = plt.figure(figsize = (7, 11))
+monthlykdes(datadict['NNM'], 'i3co', fig, 'Monthly KDE Cloud Cover', 'Cloud Cover')
+fig = plt.figure(figsize = (7, 11))
+monthlykdes(datadict['POM'], 'i3co', fig, 'Monthly KDE Air Pres Station', 'Air Pressure Station')
+fig = plt.figure(figsize = (7, 11))
+monthlykdes(datadict['POM'], 'i3co', fig, 'Monthly KDE Air Pres Sea', 'Air Pressure Sea')
