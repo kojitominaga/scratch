@@ -1,6 +1,22 @@
 '''usage: python nora10abel.py ncpath orogpath lname llon llat lalt prefix n onlygeog
 
 with default values for prefix = . and n = 500.
+
+examples
+========
+-bash-4.1$ python nora10abel.py /work/users/kojito/nora10/nc/pr/NORA10_1H_11km_pr_1981.nc /work/users/kojito/nora10/nc/orog/NORA10_11km_orog.nc test5 10 60 100 . 500 True
+[nora10abel.py] creating geog files only
+[nora10abel.writegeog()] writing to /work/users/kojito/nora10/nc/orog/near-test5_longitude.txt.gz
+[nora10abel.writegeog()] writing to /work/users/kojito/nora10/nc/orog/near-test5_latitude.txt.gz
+[nora10abel.writegeog()] writing to /work/users/kojito/nora10/nc/orog/near-test5_altitude.txt.gz
+-bash-4.1$ python nora10abel.py /work/users/kojito/nora10/nc/pr/NORA10_1H_11km_pr_1981.nc /work/users/kojito/nora10/nc/orog/NORA10_11km_orog.nc test5 10 60 100
+[nora10abel.py] writing variable file from the .nc file...
+[nora10abel.py] interpolating -- calling R...
+Rscript spinterp_cordex.R --args \
+...snip
+
+The point here is that the longitude, latitude and altitude files need to be created only once and should not be overwritten all the time
+
 '''
 import sys
 import os
@@ -84,7 +100,7 @@ def spinterp(ncpath, orogpath, lname, llat, llon, lalt,
     outdir = '.'
     geogdir = os.path.dirname(orogpath)
     isnearby, latpath, lonpath, altpath = \
-      writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = False)
+      writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = True)
     # writes 3 .txt.gz files     
     txtgzpath = os.path.join(outdir, 'near-%s_%s.txt.gz' % (
         lname, os.path.splitext(ncfn)[0]))
@@ -135,28 +151,12 @@ if __name__ == '__main__':
     n = 500 if len(a) <= 8 else int(a[8])
     onlygeog = False if len(a) <= 9 else bool(a[9])
     if onlygeog:
-        print('not implemented yet!')
-        # print('[nora10abel.py] creating geog files only')
-        # ncdir, ncfn = os.path.split(ncpath)
-        # orogfn = getorogfn(ncfn)
-        # orogpath = os.path.join(ncdir, orogfn)
-        # geogdir = parsefn(orogfn, prefix)[0]
-        # outdir, VariableName, StartTime, EndTime = parsefn(ncfn, prefix)
-        # if not os.path.exists(outdir): os.makedirs(outdir)
-        # print('[nora10abel.py] orogpath is %s' % orogpath)
-        # if not os.path.exists(orogpath):
-        #     print('[nora10abel.py] orogpath does not exist')
-        #     pref = '_'.join(orogfn.split('_')[:4])
-        #     suff = '_'.join(orogfn.split('_')[-3:])
-        #     filelist = os.listdir(ncdir)
-        #     alternatives = [f for f in filelist if pref in f and suff in f]
-        #     if len(alternatives) > 0:
-        #         print('[nora10abel.py] found %s instead' % alternatives[0])
-        #         orogfn = alternatives[0]
-        #         orogpath = os.path.join(ncdir, orogfn)
-        #     else: 
-        #         sys.exit('[nora10abel.py] ERROR: could not find the orog file')
-        # isnearby, latpath, lonpath, altpath = \
-        #   writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = False)
+        print('[nora10abel.py] creating geog files only')
+        ncdir, ncfn = os.path.split(ncpath)
+        VariableName = '_'.join(ncfn.split('_')[3:-1])
+        outdir = '.'
+        geogdir = os.path.dirname(orogpath)
+        isnearby, latpath, lonpath, altpath = \
+          writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = False)
     else:
         spinterp(ncpath, orogpath, lname, llat, llon, lalt, prefix, n)
