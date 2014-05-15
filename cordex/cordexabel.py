@@ -1,4 +1,4 @@
-'''usage: python cordexabel.py ncpath lname llon llat prefix n onlygeog
+'''usage: python cordexabel.py ncpath lname llon llat lalt prefix n onlygeog
 
 with default values for prefix = . and n = 500.
 '''
