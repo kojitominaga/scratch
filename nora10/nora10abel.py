@@ -1,4 +1,4 @@
-'''usage: python cordexabel.py ncpath lname llon llat prefix n onlygeog
+'''usage: python cordexabel.py ncpath orogpath lname llon llat prefix n onlygeog
 
 with default values for prefix = . and n = 500.
 '''
@@ -16,56 +16,6 @@ import geopy.distance
 
 myfmt = '%.8f' ## 8 significant digits, e.g., 53.80798340
 nstats = 42
-
-# with open('RCMModelName.txt') as f:
-#     RCMlist = [l.rstrip().split()[:2] for l in f.readlines() if not l[0] == '#']
-#     RCMdict = dict(RCMlist)
-
-# def parsefn(fn, prefix = '.'):
-#     '''parses the cordex file name and returns 
-#     (the directory directory path, VariableName, StartTime, EndTime)
-#     StartTime and EndTime are None if Frequency is not day'''
-    
-#     assert fn[-3:] == '.nc', 'the file name has to have .nc'
-#     elements = fn.strip()[:-3].split('_')
-#     VariableName = elements[0]
-#     Domain = elements[1]
-#     GCMModelName = elements[2]
-#     CMIP5ExperimentName = elements[3]
-#     CMIP5EnsembleMember = elements[4]
-#     RCMModelName = elements[5]
-#     try:
-#         Institute = RCMdict[RCMModelName]
-#     except KeyError:
-#         sys.exit('RCM Model name not found')
-#     RCMVersionID = elements[6]
-#     Frequency = elements[7]
-#     StartTime = None
-#     EndTime = None
-#     if Frequency == 'day':
-#         StartTime, EndTime = elements[8].split('-')
-#     dirpath = os.path.join(prefix, Domain, Institute, GCMModelName, 
-#                            CMIP5ExperimentName, CMIP5EnsembleMember, 
-#                            RCMModelName, RCMVersionID, Frequency, VariableName)
-#     return (dirpath, VariableName, StartTime, EndTime)
-
-
-# def getorogfn(fn):
-#     '''returns the corresponding orography .nc file name'''
-    
-#     assert fn[-3:] == '.nc', 'the file name has to have .nc'
-#     elements = fn.strip()[:-3].split('_')
-#     # VariableName = 'orog'
-#     # Domain = elements[1]
-#     # GCMModelName = elements[2]
-#     # CMIP5ExperimentName = elements[3]
-#     # CMIP5EnsembleMember = elements[4]
-#     # RCMModelName = elements[5]
-#     # RCMVersionID = elements[6]
-#     # Frequency = 'fx'
-#     orogfn = '_'.join(['orog'] + elements[1:7] + ['fx']) + '.nc'
-#     return orogfn
-
 
 def writegeog(orogfn, dirname, lname, llat, llon, n, dummy = False):
     '''extracts geographical information (longitude, latitude, altitude)
@@ -130,30 +80,8 @@ def spinterp(ncpath, orogpath, lname, llat, llon, lalt,
     It will create necessary directories.'''
 
     ncdir, ncfn = os.path.split(ncpath)
-
-    # orogfn = getorogfn(ncfn)
-    # orogpath = os.path.join(ncdir, orogfn)
-    # outdir, VariableName, StartTime, EndTime = parsefn(ncfn, prefix)
-
     VariableName = '_'.join(ncfn.split('_')[3:-1])
-    
     outdir = '.'
-
-    # if not os.path.exists(outdir): os.makedirs(outdir)
-    # print('[nora10abel.py] orogpath is %s' % orogpath)
-    # if not os.path.exists(orogpath):
-    #     print('[nora10abel.py] orogpath does not exist')
-    #     pref = '_'.join(orogfn.split('_')[:4])
-    #     suff = '_'.join(orogfn.split('_')[-3:])
-    #     filelist = os.listdir(ncdir)
-    #     alternatives = [f for f in filelist if pref in f and suff in f]
-    #     if len(alternatives) > 0:
-    #         print('[nora10abel.py] found %s instead' % alternatives[0])
-    #         orogfn = alternatives[0]
-    #         orogpath = os.path.join(ncdir, orogfn)
-    #     else: 
-    #         sys.exit('[nora10abel.py] ERROR: could not find the orog file')
-
     geogdir = os.path.dirname(orogpath)
     isnearby, latpath, lonpath, altpath = \
       writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = False)
@@ -198,35 +126,37 @@ def spinterp(ncpath, orogpath, lname, llat, llon, lalt,
 if __name__ == '__main__':
     a = sys.argv
     ncpath = a[1]
-    lname = a[2]
-    llon = a[3]
-    llat = a[4]
-    lalt = a[5]
-    prefix = '.' if len(a) <= 6 else a[6]
-    n = 500 if len(a) <= 7 else int(a[7])
-    onlygeog = False if len(a) <= 8 else bool(a[8])
+    orogpath = a[2]
+    lname = a[3]
+    llon = a[4]
+    llat = a[5]
+    lalt = a[6]
+    prefix = '.' if len(a) <= 7 else a[7]
+    n = 500 if len(a) <= 8 else int(a[8])
+    onlygeog = False if len(a) <= 9 else bool(a[9])
     if onlygeog:
-        print('[nora10abel.py] creating geog files only')
-        ncdir, ncfn = os.path.split(ncpath)
-        orogfn = getorogfn(ncfn)
-        orogpath = os.path.join(ncdir, orogfn)
-        geogdir = parsefn(orogfn, prefix)[0]
-        outdir, VariableName, StartTime, EndTime = parsefn(ncfn, prefix)
-        if not os.path.exists(outdir): os.makedirs(outdir)
-        print('[nora10abel.py] orogpath is %s' % orogpath)
-        if not os.path.exists(orogpath):
-            print('[nora10abel.py] orogpath does not exist')
-            pref = '_'.join(orogfn.split('_')[:4])
-            suff = '_'.join(orogfn.split('_')[-3:])
-            filelist = os.listdir(ncdir)
-            alternatives = [f for f in filelist if pref in f and suff in f]
-            if len(alternatives) > 0:
-                print('[nora10abel.py] found %s instead' % alternatives[0])
-                orogfn = alternatives[0]
-                orogpath = os.path.join(ncdir, orogfn)
-            else: 
-                sys.exit('[nora10abel.py] ERROR: could not find the orog file')
-        isnearby, latpath, lonpath, altpath = \
-          writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = False)
+        print('not implemented yet!')
+        # print('[nora10abel.py] creating geog files only')
+        # ncdir, ncfn = os.path.split(ncpath)
+        # orogfn = getorogfn(ncfn)
+        # orogpath = os.path.join(ncdir, orogfn)
+        # geogdir = parsefn(orogfn, prefix)[0]
+        # outdir, VariableName, StartTime, EndTime = parsefn(ncfn, prefix)
+        # if not os.path.exists(outdir): os.makedirs(outdir)
+        # print('[nora10abel.py] orogpath is %s' % orogpath)
+        # if not os.path.exists(orogpath):
+        #     print('[nora10abel.py] orogpath does not exist')
+        #     pref = '_'.join(orogfn.split('_')[:4])
+        #     suff = '_'.join(orogfn.split('_')[-3:])
+        #     filelist = os.listdir(ncdir)
+        #     alternatives = [f for f in filelist if pref in f and suff in f]
+        #     if len(alternatives) > 0:
+        #         print('[nora10abel.py] found %s instead' % alternatives[0])
+        #         orogfn = alternatives[0]
+        #         orogpath = os.path.join(ncdir, orogfn)
+        #     else: 
+        #         sys.exit('[nora10abel.py] ERROR: could not find the orog file')
+        # isnearby, latpath, lonpath, altpath = \
+        #   writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = False)
     else:
-        spinterp(ncpath, lname, llat, llon, lalt, prefix, n)
+        spinterp(ncpath, orogpath, lname, llat, llon, lalt, prefix, n)
