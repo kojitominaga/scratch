@@ -104,11 +104,11 @@ def writegeog(orogfn, dirname, lname, llat, llon, n, dummy = False):
     if not os.path.exists(dirname): os.makedirs(dirname)
     if not dummy:
         orog = r.variables['orog'][:, :].flatten()
-        print('[cordexabel.writegeog()] writing to %s' % lonpath)
+        print('[nora10abel.writegeog()] writing to %s' % lonpath)
         np.savetxt(lonpath, lon[isnearby], fmt = myfmt)
-        print('[cordexabel.writegeog()] writing to %s' % latpath)
+        print('[nora10abel.writegeog()] writing to %s' % latpath)
         np.savetxt(latpath, lat[isnearby], fmt = myfmt)
-        print('[cordexabel.writegeog()] writing to %s' % altpath)
+        print('[nora10abel.writegeog()] writing to %s' % altpath)
         np.savetxt(altpath, orog[isnearby], fmt = '%.2f')
         # np.savetxt(distpath, dist[isnearby], fmt = myfmt) 
 
@@ -140,19 +140,19 @@ def spinterp(ncpath, orogpath, lname, llat, llon, lalt,
     outdir = '.'
 
     # if not os.path.exists(outdir): os.makedirs(outdir)
-    # print('[cordexabel.py] orogpath is %s' % orogpath)
+    # print('[nora10abel.py] orogpath is %s' % orogpath)
     # if not os.path.exists(orogpath):
-    #     print('[cordexabel.py] orogpath does not exist')
+    #     print('[nora10abel.py] orogpath does not exist')
     #     pref = '_'.join(orogfn.split('_')[:4])
     #     suff = '_'.join(orogfn.split('_')[-3:])
     #     filelist = os.listdir(ncdir)
     #     alternatives = [f for f in filelist if pref in f and suff in f]
     #     if len(alternatives) > 0:
-    #         print('[cordexabel.py] found %s instead' % alternatives[0])
+    #         print('[nora10abel.py] found %s instead' % alternatives[0])
     #         orogfn = alternatives[0]
     #         orogpath = os.path.join(ncdir, orogfn)
     #     else: 
-    #         sys.exit('[cordexabel.py] ERROR: could not find the orog file')
+    #         sys.exit('[nora10abel.py] ERROR: could not find the orog file')
 
     geogdir = os.path.dirname(orogpath)
     isnearby, latpath, lonpath, altpath = \
@@ -163,11 +163,12 @@ def spinterp(ncpath, orogpath, lname, llat, llon, lalt,
     r = netCDF4.Dataset(ncpath)
     v = r.variables[VariableName]
     t, y, x = v.shape
-    print('[cordexabel.py] writing variable file from the .nc file...')
+    print('[nora10abel.py] writing variable file from the .nc file...')
     
     timeres = int(ncfn.split('_')[1][0])
     new = v[:, :, :].reshape((t, y * x))[:, isnearby]
-    newdf = pd.DataFrame(new, index = np.repeat(np.arange(t / timeres), timeres))
+    newdf = pd.DataFrame(new, index = np.repeat(np.arange(t / (24 / timeres)), 
+                                                (24 / timeres)))
     dailymean = newdf.groupby(newdf.index).mean().values
     
     np.savetxt(txtgzpath, dailymean, fmt = myfmt)
@@ -184,7 +185,7 @@ def spinterp(ncpath, orogpath, lname, llat, llon, lalt,
     if not os.path.exists(resultsdir): os.makedirs(resultsdir)
         
     if do_interp_flag:
-        print('[cordexabel.py] interpolating -- calling R...')
+        print('[nora10abel.py] interpolating -- calling R...')
         ## usage: Rscript spinterp_cordex.R --args \
         ##        lonpath latpath orogpath varpath llon llat lalt resultspath
         command = '%s \\\n%s \\\n%s \\\n%s \\\n%s \\\n%s %s %s \\\n%s' % (
@@ -205,26 +206,26 @@ if __name__ == '__main__':
     n = 500 if len(a) <= 7 else int(a[7])
     onlygeog = False if len(a) <= 8 else bool(a[8])
     if onlygeog:
-        print('[cordexabel.py] creating geog files only')
+        print('[nora10abel.py] creating geog files only')
         ncdir, ncfn = os.path.split(ncpath)
         orogfn = getorogfn(ncfn)
         orogpath = os.path.join(ncdir, orogfn)
         geogdir = parsefn(orogfn, prefix)[0]
         outdir, VariableName, StartTime, EndTime = parsefn(ncfn, prefix)
         if not os.path.exists(outdir): os.makedirs(outdir)
-        print('[cordexabel.py] orogpath is %s' % orogpath)
+        print('[nora10abel.py] orogpath is %s' % orogpath)
         if not os.path.exists(orogpath):
-            print('[cordexabel.py] orogpath does not exist')
+            print('[nora10abel.py] orogpath does not exist')
             pref = '_'.join(orogfn.split('_')[:4])
             suff = '_'.join(orogfn.split('_')[-3:])
             filelist = os.listdir(ncdir)
             alternatives = [f for f in filelist if pref in f and suff in f]
             if len(alternatives) > 0:
-                print('[cordexabel.py] found %s instead' % alternatives[0])
+                print('[nora10abel.py] found %s instead' % alternatives[0])
                 orogfn = alternatives[0]
                 orogpath = os.path.join(ncdir, orogfn)
             else: 
-                sys.exit('[cordexabel.py] ERROR: could not find the orog file')
+                sys.exit('[nora10abel.py] ERROR: could not find the orog file')
         isnearby, latpath, lonpath, altpath = \
           writegeog(orogpath, geogdir, lname, llat, llon, n, dummy = False)
     else:
