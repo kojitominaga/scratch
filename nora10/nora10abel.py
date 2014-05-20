@@ -106,7 +106,11 @@ def spinterp(ncpath, orogpath, lname, llat, llon, lalt,
         lname, os.path.splitext(ncfn)[0]))
     r = netCDF4.Dataset(ncpath)
     v = r.variables[VariableName]
-    t, y, x = v.shape
+    shape = v.shape
+    if len(shape) == 3:
+        t, y, x = v.shape
+    elif len(shape) == 4:
+        t, height, y, x = shape
     print('[nora10abel.py] writing variable file from the .nc file...')
     
     timeres = int(ncfn.split('_')[1][0])
