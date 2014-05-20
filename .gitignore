@@ -16,3 +16,4 @@ co2/phreeqc-2.18.3/*
 *.txt.gz
 */test*.csv
 cordex/*/*/png/*.png
+smallhelps/*/SwedishBathymetry/*/*
