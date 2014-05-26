@@ -4,7 +4,7 @@ require(foreign)
 
 utm33n <- CRS('+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs')
 
-lakenames <- list.files('SwedishBathymetry')]
+lakenames <- list.files('SwedishBathymetry')
 paths <- paste0('SwedishBathymetry/', lakenames, '/', lakenames, 'mod.dbf')
 dirs <- paste0('SwedishBathymetry/', lakenames)
 layers <- paste0(lakenames, 'mod')
@@ -71,7 +71,8 @@ for (li in 1:length(p.list.valid)) {
                cumsumarea=rev(cumsum(rev(thisdf[['area']]))),
                cumsumfraction=rev(cumsum(rev(thisdf[['fractionalarea']]))),
                intervals.string=row.names(thisdf),
-               oneminusZdmdivZmaxdm=1 - (thisdf[['dm']] / max(thisdf[['dm']]))
+               oneminusZdmdivZmaxdm=1 - (thisdf[['dm']] / max(thisdf[['dm']])),
+               oneminusZdivZmax=1 - (thisdf[['d1']] / max(thisdf[['d2']]))
                )
   fractionlist[[li]] <- thisdf
   names(fractionlist)[li] <- names(arealists)[li]
