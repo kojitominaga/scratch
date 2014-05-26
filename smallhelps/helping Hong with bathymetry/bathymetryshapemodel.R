@@ -15,14 +15,14 @@ for (namei in 1:length(lakenames)) {
     next
     b[namei] <- NA
   }
-  model1 <- lm(log10(fractionalarea) ~ log10(oneminusZdmdivZmaxdm + smallnumber),
+  model1 <- lm(log10(cumsumfraction) ~ log10(oneminusZdmdivZmaxdm + smallnumber),
                data = sub)
-  model2 <- lm(log10(fractionalarea) ~ log10(oneminusZdmdivZmaxdm),
+  model2 <- lm(log10(cumsumfraction) ~ log10(oneminusZdmdivZmaxdm),
                data = sub[-nrow(sub), ])
   plot(log10(sub[['oneminusZdmdivZmaxdm']] + smallnumber),
-       log10(sub[['fractionalarea']]),
-       xlab = 'Az/A0',
-       ylab = '1 - dz/dz(max)',
+       log10(sub[['cumsumfraction']]),
+       xlab = 'log10(Az/A0), cumulative',
+       ylab = 'log10(1 - dz/dz(max))',
        main = lakenames[namei],
        pch = 19, 
        col = ifelse(1:nrow(sub) == nrow(sub), 'blue', 'darkgray'))
