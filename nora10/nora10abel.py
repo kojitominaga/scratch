@@ -55,9 +55,10 @@ def writegeog(orogfn, dirname, lname, llat, llon, n, dummy = False):
     altpath = os.path.join(dirname, altfn)
     # distfn = 'near_%s-distance.txt.gz' % lname
     # distpath = os.path.join(dirname, distfn)
-    r = netCDF4.Dataset(orogfn)
-    lon = r.variables['lon'][:, :].flatten()
-    lat = r.variables['lat'][:, :].flatten()
+    r2 = netCDF4.Dataset('NORA10_11km_LATLON.nc')
+    lon = r2.variables['lon'][:, :].flatten()
+    lat = r2.variables['lat'][:, :].flatten()
+    r2.close()
     dist = np.array([geopy.distance.great_circle((llat, llon), (la, lo)).km
                      for lo, la in zip(lon.tolist(), lat.tolist())])
     
@@ -69,7 +70,9 @@ def writegeog(orogfn, dirname, lname, llat, llon, n, dummy = False):
     
     if not os.path.exists(dirname): os.makedirs(dirname)
     if not dummy:
+        r = netCDF4.Dataset(orogfn)
         orog = r.variables['orog'][:, :].flatten()
+        r.close()
         print('[nora10abel.writegeog()] writing to %s' % lonpath)
         np.savetxt(lonpath, lon[isnearby], fmt = myfmt)
         print('[nora10abel.writegeog()] writing to %s' % latpath)
@@ -78,7 +81,6 @@ def writegeog(orogfn, dirname, lname, llat, llon, n, dummy = False):
         np.savetxt(altpath, orog[isnearby], fmt = '%.2f')
         # np.savetxt(distpath, dist[isnearby], fmt = myfmt) 
 
-    r.close()
     return (isnearby, latpath, lonpath, altpath)
 
 
