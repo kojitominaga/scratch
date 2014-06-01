@@ -28,9 +28,8 @@ mem = '6G'
 
 ncfiles = ['%s%s.nc' % (ncpathprefix, y) for y in years]
 
-# pythoncommandinitial = 'python nora10abel.py %s %s %s %s %s %s . 500 True' % (
-#     ncfiles[0], orogfn, lname, llon, llat, lalt)
-pythoncommandinitial = ''
+pythoncommandinitial = 'python nora10abel.py %s %s %s %s %s %s . 500 True' % (
+    ncfiles[0], orogfn, lname, llon, llat, lalt)
 pythoncommands = ['python nora10abel.py %s %s %s %s %s %s' % (
     f, orogfn, lname, llon, llat, lalt) for f in ncfiles]
 
