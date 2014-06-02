@@ -1,7 +1,8 @@
-Preliminary assessment of interpolation methods from NORA10
+Updated (June 2014) assessment of interpolation methods from NORA10
 ===========================================================
 
-done against the weather station Blindern in Oslo
+done against the weather station Blindern in Oslo. NEW -- it looks
+better in all variables if i3co is used. 
 
 Variables
 ---------
@@ -10,7 +11,7 @@ Variables
 
 ![](png/air temperature (degree C) i3co.png)
 
-Good overall. 
+Good overall. NEW -- much better than the assessment in April
 
 ### Precipitation
 
