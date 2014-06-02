@@ -26,6 +26,18 @@ def missingorzero(x):
         out = float(xs)
     return(out)
 
+columnnames = ('i1a', 'i1b', 'i1c', 'i3an', 'i3ao', 'i3bn', 
+               'i3bo', 'i3cn', 'i3co', 'locallyhomog3', 
+               'maxgamma3', 'maxgamma3o', 'maxdist3', 'maxdist3o', 
+               'vfl3Lin', 'vfl3oLin',
+               'vfe3Nug', 'vfe3Lin', 'vfe3Gau', 'vfe3Exp', 
+               'vfe3S50', 'vfe3S75', 
+               'vfe3oNug', 'vfe3oLin', 'vfe3oGau', 'vfe3oExp', 
+               'vfe3oS50', 'vfe3oS75', 
+               'vfl3SSE', 'vfl3oSSE', 'vfe3SSE', 'vfe3oSSE', 
+               'vfl3RSSE', 'vfl3oRSSE', 'vfe3RSSE', 'vfe3oRSSE', 
+               'var3an', 'var3ao', 'var3bn', 'var3bo', 'var3cn', 'var3co')
+
 stationraw = \
   np.genfromtxt('Dognverdier_(for_dognintervall).txt', 
                 dtype = 'i4,<M8[D],f8,f8,f8,f8,f8,f8,f8,f8', 
@@ -45,33 +57,54 @@ stationraw = \
 
 years = np.array([int(a.astype('S').split('-')[0]) for a in stationraw['Date']])
                               
-station = stationraw[years >= 1993, :]
+station = stationraw[years >= 1958, :]
 
 sdf = pd.DataFrame.from_records(station, \
-    index = pd.date_range('1993-01-01', '2012-12-31', freq = 'D'))
+    index = pd.date_range('1958-01-01', '2012-12-31', freq = 'D'))
 
-ta = np.genfromtxt('NORA10_old/NORA10_1H_11km_ta_2m_1993-2012_mean24_' + 
-                   'OsloBlindern_interpolated_cutoff_100_nlocal_50.txt.gz', 
-                   dtype = 'f8', names = True)
-hur = np.genfromtxt('NORA10_old/NORA10_1H_11km_hur_2m_1993-2012_mean24_' + 
-                   'OsloBlindern_interpolated_cutoff_100_nlocal_50.txt.gz', 
-                   dtype = 'f8', names = True)
-wss = np.genfromtxt('NORA10_old/NORA10_1H_11km_wss_10m_1993-2012_mean24_' + 
-                   'OsloBlindern_interpolated_cutoff_100_nlocal_50.txt.gz', 
-                   dtype = 'f8', names = True)
-clt = np.genfromtxt('NORA10_old/NORA10_1H_11km_clt_1993-2012_mean24_' + 
-                   'OsloBlindern_interpolated_cutoff_100_nlocal_50.txt.gz', 
-                   dtype = 'f8', names = True)
-pr = np.genfromtxt('NORA10_old/NORA10_1H_11km_pr_1993-2012_mean24_' + 
-                   'OsloBlindern_interpolated_cutoff_100_nlocal_50.txt.gz', 
-                   dtype = 'f8', names = True)
-ps = np.genfromtxt('NORA10_old/NORA10_3H_11km_ps_1993-2012_mean8_' + 
-                   'OsloBlindern_interpolated_cutoff_100_nlocal_50.txt.gz', 
-                   dtype = 'f8', names = True)
+def multipleyears(paths):
+    thislist = [np.genfromtxt(path, dtype = 'f8', names = columnnames)
+                for path in paths]
+    return np.concatenate(thislist, axis = 0)
 
+fnameroot = 'interpolated-OsloBlindern_NORA10_1H_11km_ta_2m'
+paths = [os.path.join('..', '..', '..', 'interpolated', 'OsloBlindern', 
+                        '%s_%s.txt.gz' % (fnameroot, year))
+         for year in range(1958, 2013)]
+ta = multipleyears(paths)
+
+fnameroot = 'interpolated-OsloBlindern_NORA10_1H_11km_hur_2m'
+paths = [os.path.join('..', '..', '..', 'interpolated', 'OsloBlindern', 
+                        '%s_%s.txt.gz' % (fnameroot, year))
+         for year in range(1958, 2013)]
+hur = multipleyears(paths)
+
+fnameroot = 'interpolated-OsloBlindern_NORA10_1H_11km_wss_10m'
+paths = [os.path.join('..', '..', '..', 'interpolated', 'OsloBlindern', 
+                        '%s_%s.txt.gz' % (fnameroot, year))
+         for year in range(1958, 2013)]
+wss = multipleyears(paths)
+
+fnameroot = 'interpolated-OsloBlindern_NORA10_1H_11km_clt'
+paths = [os.path.join('..', '..', '..', 'interpolated', 'OsloBlindern', 
+                        '%s_%s.txt.gz' % (fnameroot, year))
+         for year in range(1958, 2013)]
+clt = multipleyears(paths)
+
+fnameroot = 'interpolated-OsloBlindern_NORA10_1H_11km_pr'
+paths = [os.path.join('..', '..', '..', 'interpolated', 'OsloBlindern', 
+                        '%s_%s.txt.gz' % (fnameroot, year))
+         for year in range(1958, 2013)]
+pr = multipleyears(paths)
+
+fnameroot = 'interpolated-OsloBlindern_NORA10_3H_11km_ps'
+paths = [os.path.join('..', '..', '..', 'interpolated', 'OsloBlindern', 
+                        '%s_%s.txt.gz' % (fnameroot, year))
+         for year in range(1958, 2013)]
+ps = multipleyears(paths)
 
 stationdf = pd.DataFrame.from_records(station, 
-    index = pd.date_range('1993-01-01', '2012-12-31', freq = 'D'))
+    index = pd.date_range('1958-01-01', '2012-12-31', freq = 'D'))
 
 tasklist = [(ta, 'TAM', 'air temperature (degree C)'), 
             (pr, 'RR', 'precipitation (mm)'), 
@@ -83,10 +116,10 @@ tasklist = [(ta, 'TAM', 'air temperature (degree C)'),
 for data, name, long_name in tasklist:
 
     df = pd.DataFrame.from_records(data, 
-        index = pd.date_range('1993-01-01', '2012-12-31', freq = 'D'))
+        index = pd.date_range('1958-01-01', '2012-12-31', freq = 'D'))
 
     stationv = pd.DataFrame(data = {'station': stationdf[name]}, 
-        index = pd.date_range('1993-01-01', '2012-12-31', freq = 'D'))
+        index = pd.date_range('1958-01-01', '2012-12-31', freq = 'D'))
                         
 
     df = pd.concat([df, stationv], axis = 1)
@@ -308,7 +341,7 @@ for data, name, long_name in tasklist:
         else:
             ax32.set_xlabel('bias')
         ax33.set_xlabel('bias vs obs.')
-        plt.suptitle('%s %s NORA10 at Blindern 1993-2012\nmean bias (%.1f) RMSE (%.1f) monthly mean RMSE (%.1f) outlier count (%i)' % (
+        plt.suptitle('%s %s NORA10 at Blindern 1958-2012\nmean bias (%.1f) RMSE (%.1f) monthly mean RMSE (%.1f) outlier count (%i)' % (
             long_name,
             interp, 
             m.mean() - o.mean(), 
