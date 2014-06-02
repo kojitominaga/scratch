@@ -12,12 +12,25 @@ start = '2007'
 end = '2012' ## including the end
 orog = '/work/users/kojito/nora10/nc/orog/NORA10_11km_orog_new3.nc'
 
-for name, lat, lon, alt in g:
-    scriptfname = '%s_ta.sh' % name
-    c = '%s %s %s %s %s %s/ta_2m/NORA10_1H_11km_ta_2m_ %s %s %s %s' % (
-        cmda, name, lon, lat, alt, ncdir, start, end, orog, scriptfname)
+def customsubmit(varname, timeres, name, lat, lon, alt, initial = False):
+    cm = cmda if initial else cmd
+    scriptfname = '%s_%s.sh' % (name, varname)
+    c = '%s %s %s %s %s %s/%s/NORA10_%s_11km_%s_ %s %s %s %s' % (
+        cm, name, lon, lat, alt, ncdir, varname, timeres, varname, 
+        start, end, orog, scriptfname)
     os.system(c)
-    os.system('submit %s' % scriptfname)
-    print(c)
+    os.system('submit %s' % scriptfname)    
+
+for name, lat, lon, alt in g:
+    # customsubmit('ta_2m', '1H', name, lat, lon, alt, initial=True)
+    customsubmit('pr', '1H', name, lat, lon, alt)
+    customsubmit('wss_10m', '1H', name, lat, lon, alt)
+    customsubmit('hur_2m', '1H', name, lat, lon, alt)
+    customsubmit('ps', '3H', name, lat, lon, alt)
+    customsubmit('clt', '1H', name, lat, lon, alt)
+    # customsubmit('albedo', '1H', name, lat, lon, alt)
+    # customsubmit('rls', '1H', name, lat, lon, alt)
+    # customsubmit('rss', '1H', name, lat, lon, alt)
+
 
         
