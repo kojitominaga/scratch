@@ -195,16 +195,17 @@ def byinterpmethodVariables(location, timestat, H, years,
         if not all([years[1:][e] - years[:-1][e] == 1 
                     for e in range(len(years) - 1)]):
             sys.exit('give continuous sequence of years')
-    interpmethod = -1 if interpmethod == 'last' else int(interpmethod)
-    varnames = [d for d in os.listdir(os.path.join('interpolated', location)) 
-                if os.path.isdir(os.path.join('interpolated', location, d))] \
-                 if varnames == 'all' else varnames
-    varnames = [var for var in varnames if varH[var] == H]
+    interpmethod = 8 if interpmethod == 'last' else int(interpmethod)
+    varnames = set(['_'.join(f.split('_')[4:-1])
+                    for f in os.listdir(os.path.join('interpolated', 
+                                                     location))
+                    if f[-7:] == '.txt.gz']) if varnames == 'all' else varnames
     outfname = 'NORA10_%s_11km_%s_%s_%s_%s_interpolated_%s.txt.gz' % (
         H, '-'.join(varnames), location, 
         '%s-%s' % (min(years), max(years)), timestat,
         interpnames[interpmethod]) 
     outpath = os.path.join(outdir, outfname)
+    print(varnames)
 
     with gzip.GzipFile(outpath, 'w') as g:
         g.write(' '.join(varnames))
@@ -213,29 +214,14 @@ def byinterpmethodVariables(location, timestat, H, years,
             year = str(year)
             outdict = {}
             for var in varnames:
-                p = os.path.join('interpolated', location, var, timestat, year)
-                if not os.path.exists(p):
-                    pass
-                tarfs = [tarf for tarf in os.listdir(p)
-                         if os.path.splitext(tarf)[1] == '.tar']
-                tarfs.sort()
-                jj = max([int(os.path.splitext(tarf)[0].split('-')[1]) 
-                          for tarf in tarfs]) + 1
-                v = [None] * jj
-                for tarf in tarfs:
-                    i1, i2 = [int(i) for i 
-                              in os.path.splitext(tarf)[0].split('-')]
-                    with tarfile.open(os.path.join(p, tarf)) as tf:
-                        for j in range(i1, i2 + 1):
-                            membername = 'NORA10_%s_11km_%s_%s_%04i_%s_%s' % (
-                                varH[var], var, year, j, location, 
-                                'interpolated_cutoff_100_nlocal_50.txt')
-                            memberf = tf.extractfile(membername)
-                            v[j] = memberf.read().strip().split()[interpmethod]
-                            memberf.close()
+                txtgzfn = 'interpolated-%s_NORA10_%s_11km_%s_%s.txt.gz' % (
+                    location, varH[var], var, year)
+                txtgzpath = os.path.join('interpolated', location, txtgzfn)
+                print(txtgzpath)
+                with gzip.GzipFile(txtgzpath) as txtgzf:
+                    v = [l.split()[interpmethod] for l in txtgzf.readlines()]
                 outdict[var] = v
-            ## jj is still alive and I use it here
-            for j in range(jj):
+            for j in range(len(v)):
                 g.write(' '.join([outdict[var][j] for var in varnames]))
                 g.write('\n')
             
