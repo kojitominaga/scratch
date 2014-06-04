@@ -22,3 +22,5 @@ nora10/stationcomparison/*/*/*.txt.gz
 nora10/mylake_inputs/*/*/*.mlinput
 utilities/R\ and\ NetCDF/*.nc
 utilities/R\ and\ NetCDF/*.csv
+nora10/comsat/*
+nora10/comsat/*/*
