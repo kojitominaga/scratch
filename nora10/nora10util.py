@@ -178,7 +178,7 @@ def byinterpmethodLocations(var, timestat, years,
                 
 def byinterpmethodVariables(location, timestat, H, years,
                             interpmethod = 'last', varnames = 'all',
-                            outdir = '.'):
+                            outdir = '.', prefix = ''):
     '''
     for a specified location, and for the specified interp method, 
     write a table with
@@ -197,7 +197,7 @@ def byinterpmethodVariables(location, timestat, H, years,
             sys.exit('give continuous sequence of years')
     interpmethod = 8 if interpmethod == 'last' else int(interpmethod)
     varnames = set(['_'.join(f.split('_')[4:-1])
-                    for f in os.listdir(os.path.join('interpolated', 
+                    for f in os.listdir(os.path.join(prefix, 'interpolated', 
                                                      location))
                     if f[-7:] == '.txt.gz']) if varnames == 'all' else varnames
     outfname = 'NORA10_%s_11km_%s_%s_%s_%s_interpolated_%s.txt.gz' % (
@@ -216,7 +216,7 @@ def byinterpmethodVariables(location, timestat, H, years,
             for var in varnames:
                 txtgzfn = 'interpolated-%s_NORA10_%s_11km_%s_%s.txt.gz' % (
                     location, varH[var], var, year)
-                txtgzpath = os.path.join('interpolated', location, txtgzfn)
+                txtgzpath = os.path.join(prefix, 'interpolated', location, txtgzfn)
                 print(txtgzpath)
                 with gzip.GzipFile(txtgzpath) as txtgzf:
                     v = [l.split()[interpmethod] for l in txtgzf.readlines()]
