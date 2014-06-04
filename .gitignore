@@ -20,3 +20,4 @@ smallhelps/*/SwedishBathymetry/*/*
 nora10/stationcomparison/*/*/Dognverdier_(for_dognintervall).txt
 nora10/stationcomparison/*/*/*.txt.gz
 nora10/mylake_inputs/*/*/*.mlinput
+utilities/R\ and\ NetCDF/*.nc
