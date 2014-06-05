@@ -3,9 +3,11 @@ import os
 import numpy as np
 import datetime
 
-comsatdirs = [d for d in os.listdir('../mylake_inputs/') if 'COMSAT' in d]
+comsatdirs = [d for d in os.listdir('../mylake_inputs/')
+              if ('COMSAT' in d) and 
+              (not 'COMSAT453' in d) and (not 'COMSAT482' in d)]
 outputfns = \
-  [os.path.join('..', 'mylake_inputs', d, 'i3co', 
+  [os.path.join('..', 'mylake_outputs', d, 'i3co', 
                 '%s_%s_%s' % ('NORA10_11km_interpolated_2007-2012', 
                               d, 'i3co_1.5fielddepth_cone_18secchi_Minnesota'),
                 'Tzt.txt')
@@ -15,12 +17,15 @@ dates = [datetime.date(2007, 1, 1) + datetime.timedelta(i)
          for i in range(ndays)]
 with open('spring turnover dates 2011 COMSAT.txt', 'w') as f:
     for lake_name, filename in zip(comsatdirs, outputfns):
+        print(lake_name)
         if not os.path.exists(filename):
+            print('hmmm')
             continue
         Tzt = np.genfromtxt(filename)
         is_warm = (Tzt > 3.98).all(axis = 1)
         is_2011 = (365 * 4 < np.arange(ndays)) & (np.arange(ndays) < 365 * 5)
         spr_turnover = dates[min(np.arange(ndays)[is_warm & is_2011])]
+        print(spr_turnover)
         f.write(' '.join([lake_name, spr_turnover.isoformat()]))
         f.write('\n')
 
