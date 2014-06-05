@@ -6,7 +6,7 @@ import os
 import seaborn as sns
 import fit
 
-n = 3
+n = 10
 
 def plotfitstats(p1a, p2a, p1d, p2d, rmsda, biasa, title, fname):
     '''image plot for rmsda with contour lines of bias'''
@@ -51,14 +51,14 @@ with open('cmdarguments.txt', 'rU') as f:
 
 rmsddict = dict()
 biasdict = dict()
-for id in cmddict.keys():
+for ii, id in enumerate(cmddict.keys()):
     margs_part = cmddict[id]
     lakename = 'COMSAT%s' % id
-    print lakename
+    print ii, lakename
     if os.path.exists(os.path.join('png', '%s.png' % lakename)):
         continue
-    if id in ['453', '326', '277']:
-        continue
+    # if id in ['453', '326', '277']:
+    #     continue
     fn = 'testing_2014-06-04/%s/COMSAT_field_%04d-%02d-%02d.txt' % (
         lakename, int(margs_part[6]), int(margs_part[7]), int(margs_part[8]))
     comsatprofile = np.genfromtxt(fn, usecols = 1)
