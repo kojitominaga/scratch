@@ -57,7 +57,7 @@ for id in cmddict.keys():
     print lakename
     if os.path.exists(os.path.join('png', '%s.png' % lakename)):
         continue
-    if id == '453':
+    if id in ['453', '326', '277']:
         continue
     fn = 'testing_2014-06-04/%s/COMSAT_field_%04d-%02d-%02d.txt' % (
         lakename, int(margs_part[6]), int(margs_part[7]), int(margs_part[8]))
