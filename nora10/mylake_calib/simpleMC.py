@@ -6,6 +6,8 @@ import os
 import seaborn as sns
 import fit
 
+n = 3
+
 def plotfitstats(p1a, p2a, p1d, p2d, rmsda, biasa, title, fname):
     '''image plot for rmsda with contour lines of bias'''
     sns.set_style('white', {'image.cmap': 'Greens'})
@@ -47,7 +49,6 @@ with open('cmdarguments.txt', 'rU') as f:
     cmddict = {l.strip().split()[0]: l.strip().split()[1:] 
                for l in f.readlines()}
 
-n = 20
 rmsddict = dict()
 biasdict = dict()
 for id in cmddict.keys():
@@ -58,7 +59,7 @@ for id in cmddict.keys():
         continue
     if id == '453':
         continue
-    fn = 'testing_2014-03-18/%s/COMSAT_field_%04d-%02d-%02d.txt' % (
+    fn = 'testing_2014-06-04/%s/COMSAT_field_%04d-%02d-%02d.txt' % (
         lakename, int(margs_part[6]), int(margs_part[7]), int(margs_part[8]))
     comsatprofile = np.genfromtxt(fn, usecols = 1)
     p1d, p2d = finddefaults(margs_part[0])
@@ -134,7 +135,7 @@ for id in cmddict.keys():
     margs_part = cmddict[id]
     lakename = 'COMSAT%s' % id
     print lakename
-    fn = 'testing_2014-03-18/%s/COMSAT_field_%04d-%02d-%02d.txt' % (
+    fn = 'testing_2014-06-04/%s/COMSAT_field_%04d-%02d-%02d.txt' % (
         lakename, int(margs_part[6]), int(margs_part[7]), int(margs_part[8]))
     comsatprofile = np.genfromtxt(fn, usecols = 1)
 

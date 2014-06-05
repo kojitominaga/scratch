@@ -31,7 +31,7 @@ lake_ids2 = set(spr_turnover['Lake'])
 
 lake_ids = lake_ids1.intersection(lake_ids2)
 
-testingdirname = 'testing_2014-03-18'
+testingdirname = 'testing_2014-06-04'
 if not os.path.exists(testingdirname): os.makedirs(testingdirname)
 
 with open('cmdarguments.txt', 'w') as g:
@@ -59,20 +59,20 @@ with open('cmdarguments.txt', 'w') as g:
                 f.write('\n')
 
         ## 2) mlinput for the necessary dates
-        mldir = os.path.join('..', 'mylake', lakename)
+        mldir = os.path.join('..', 'mylake_inputs', lakename)
         inputfileold = os.path.join(mldir, 'i3co', 
                                     '%s_%s_%s' % (
-                                        'NORA10_11km_interpolated_2009-2012', 
+                                        'NORA10_11km_interpolated_2007-2012', 
                                         lakename, 'i3co.mlinput'))        
         inputfilenew = os.path.join(mldir, 'i3co', 
                                     '%s_%s_%s' % (
-                                        'NORA10_11km_interpolated_2009-2012', 
+                                        'NORA10_11km_interpolated_2007-2012', 
                                         lakename, 'i3co.mlinput.short'))
         turnover64 = spr_turnover['SprTurnDate'][spr_turnover['Lake'] == l][0]
         turnoverstr = turnover64.astype('str')
         sy, sm, sd = [int(e) for e in turnoverstr.split('-')]
         ey, em, ed = [int(e) for e in thedate.isoformat().split('-')]
-        day1 = datetime.date(2009, 1, 1)
+        day1 = datetime.date(2007, 1, 1)
         startdate = datetime.date(sy, sm, sd)
         skip = (startdate - day1).days 
         enddate = datetime.date(ey, em, ed)
