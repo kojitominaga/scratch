@@ -6,7 +6,7 @@ import os
 import seaborn as sns
 import fit
 
-n = 10
+n = 2
 
 def plotfitstats(p1a, p2a, p1d, p2d, rmsda, biasa, title, fname):
     '''image plot for rmsda with contour lines of bias'''
@@ -125,6 +125,10 @@ df = pd.DataFrame.from_records(structured, index = 'id')
 def decodelatin9(x):
     return x.decode('latin9')
 
+fielddata = pd.DataFrame.from_csv('../comsat/NSD/COMSAT 2011 field.data.txt', 
+                                  sep = ' ', encoding = 'latin9', 
+                                  parse_dates = False, index_col = 1)
+
 for id in cmddict.keys():
     iid = int(id)
     _, name, date, start, end, st_d, zo_d, se_d, lat, lon = fielddata.ix[iid]
@@ -175,9 +179,7 @@ for i, id in enumerate(cmddict.keys()):
     fname = 'csv/%s.csv' % lakename
     simulations[iid].to_csv(fname)
 
-fielddata = pd.DataFrame.from_csv('../comsat/NSD/COMSAT 2011 field.data.txt', 
-                                  sep = ' ', encoding = 'latin9', 
-                                  parse_dates = False, index_col = 1)
+
 # plt.cla()
 # fig1 = plt.figure(figsize = (11, 7))
 # gs1 = gridspec.GridSpec(3, 7)
