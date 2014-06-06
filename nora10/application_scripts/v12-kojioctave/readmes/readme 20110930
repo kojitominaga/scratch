@@ -1,3 +1,0 @@
-making it okay also for Matlab
-
-e.g., dlmread function now has range 'B3..D48' instead of 'B3:D48'

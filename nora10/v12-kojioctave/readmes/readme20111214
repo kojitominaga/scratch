@@ -1,1 +1,0 @@
-fixed not closing opened file added fclose(f)
