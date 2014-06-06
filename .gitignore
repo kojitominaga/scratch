@@ -32,3 +32,5 @@ nora10/mylake_calib/png/*
 nora10/mylake_calib/png\ copy/*
 nora10/v12-kojioctave/
 nora10/application_scripts/v12-kojioctave/
+nora10/mylake_calib/csv_*/*
+nora10/mylake_calib/png_*/*
