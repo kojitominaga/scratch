@@ -6,7 +6,7 @@ import os
 import seaborn as sns
 import fit
 
-n = 2
+n = 30
 
 def plotfitstats(p1a, p2a, p1d, p2d, rmsda, biasa, title, fname):
     '''image plot for rmsda with contour lines of bias'''
@@ -157,11 +157,11 @@ for id in cmddict.keys():
     df.ix[iid, 'min_abs_bias'] = min_abs_bias[id]
 
     rmsd, bias, ml_default = \
-        fit(margs_part + [p1, p2], comsatprofile)
+        fit.fit(margs_part + [p1, p2], comsatprofile)
     rmsd, bias, ml_min_rmsd = \
-        fit(margs_part + [p1_min_rmsd, p2_min_rmsd], comsatprofile)
+        fit.fit(margs_part + [p1_min_rmsd, p2_min_rmsd], comsatprofile)
     rmsd, bias, ml_min_abs_bias = \
-        fit(margs_part + [p1_min_abs_bias, p2_min_abs_bias], comsatprofile)
+        fit.fit(margs_part + [p1_min_abs_bias, p2_min_abs_bias], comsatprofile)
 
     mldf = pd.DataFrame.from_dict({'observation': comsatprofile, 
                                    'default': ml_default, 
@@ -203,15 +203,16 @@ for i, id in enumerate(cmddict.keys()):
     _, name, date, start, end, st_d, zo_d, se_d, lat, lon = fielddata.ix[iid]
     this_df = simulations[iid]
     d = this_df.index
-    ax.plot(this_df['observation'], d, '-k', label = 'obs. (instantaneous)')
-    ax.plot(this_df['default'], d, '-', label = 'ML default (daily mean)')
-    ax.plot(this_df['min_rmsd'], d, '-', label = 'ML min RMSE (daily mean)')
+    ax.plot(this_df['observation'], d, '-k', label = 'obs. (ins.)')
+    ax.plot(this_df['default'], d, '-', label = 'default')
+    ax.plot(this_df['min_rmsd'], d, '-', 
+            label = 'RMSE %.1f' % df.ix[iid, 'min_rmsd'])
     ax.plot(this_df['min_abs_bias'], d, '-', 
-            label = 'ML min abs bias (daily mean)')
+            label = 'absbias %.1f' % df.ix[iid, 'min_abs_bias'])
     label1 = '%s (%s)' % (name, id)
     label2 = '%s (%s-%s)' % (date, start, end)
-    # ax.legend(loc = 0)
-    ax.set_label('\n'.join([label1, label2]))
+    ax.legend(loc = 4, fontsize = 6) # lower right 
+    ax.set_title('\n'.join([label1, label2]), fontdict = {'fontsize': 7})
     ax.set_xlim(4.0, 24.0)
     ax.set_ylim(0.0, 15.0)
     ax.invert_yaxis()
@@ -222,18 +223,15 @@ for i, id in enumerate(cmddict.keys()):
         nyticks = len(ax.xaxis.get_ticklabels())
         ax.xaxis.set_ticklabels([''] * nyticks)
     if i == 20:
-        fig.savefig('png/MyLake vs. Observation 1.png')
+        fig.savefig('png/MyLake vs. Observation 1.png', dpi = 300)
         fig = plt.figure(figsize = (11, 7))
         gs = gridspec.GridSpec(3, 7)
     if i == 41:
-        fig.savefig('png/MyLake vs. Observation 2.png')
+        fig.savefig('png/MyLake vs. Observation 2.png', dpi = 300)
         fig = plt.figure(figsize = (11, 7))
         gs = gridspec.GridSpec(3, 7)
     if i == 62:
-        fig.savefig('png/MyLake vs. Observation 3.png')
+        fig.savefig('png/MyLake vs. Observation 3.png', dpi = 300)
         fig = plt.figure(figsize = (11, 7))
         gs = gridspec.GridSpec(3, 7)
-fig.savefig('png/MyLake vs. Observation 4.png')
-
-# for figi, fig in enumerate([fig1, fig2, fig3, fig4]):
-#     fig.savefig('png/MyLake vs. Observation %d.png' % figi)
+fig.savefig('png/MyLake vs. Observation 4.png', dpi = 300)
