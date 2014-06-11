@@ -29,8 +29,9 @@ for name, lat, lon, alt in g:
     # customsubmit('ps', '3H', name, lat, lon, alt)
     # customsubmit('clt', '1H', name, lat, lon, alt)
     # customsubmit('albedo', '1H', name, lat, lon, alt)
-    customsubmit('rls', '1H', name, lat, lon, alt)
+    # customsubmit('rls', '1H', name, lat, lon, alt)
     # customsubmit('rss', '1H', name, lat, lon, alt)
+    customsubmit('ts_0m', '1H', name, lat, lon, alt)
 
 
         
