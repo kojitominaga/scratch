@@ -25,4 +25,17 @@ out += '\n'
 out += '\n'.join([' '.join(map(str, [e] + counts[e])) for e in counts.keys()])
 out += '\n'
 
+counts2 = {}
+for year in range(1957, 2015):
+    fns = os.listdir(os.path.join(d, 'gwb_ascii_%s' % year))
+    counts2[year] = [len([f for f in fns if v in f and '.gz' in f]) 
+                    for v in vars]
+
+out2 = ' '.join(['year'] + vars)
+out2 += '\n'
+out2 += '\n'.join([' '.join(map(str, [e] + counts2[e])) for e in counts2.keys()])
+out2 += '\n'
+
+    
+
     
