@@ -59,18 +59,18 @@ myRAG <- function (file, return.header = TRUE, print = 0, nodata.values = c(),
 
 
 
-year <- as.integer(commandArgs(trailingOnly = TRUE)[2])
+year <- as.integer(commandArgs(trailingOnly = TRUE)[1])
+cat('year is ') ; cat(sprintf('%s', year)) ; cat('\n')
 
 
 dir <- sprintf('/work/users/kojito/senorge/gwb_ascii_%s', year)
 dates <- seq(from=as.Date(sprintf('%s-01-01', year)),
              to=as.Date(ifelse(year == 2014,
                sprintf('%s-06-10', year),
-               sprintf('%s-01-02', year))),
-               # sprintf('%s-12-31', year))),
+               sprintf('%s-12-31', year))),
              by='day')
 
-nbf.sub <- readOGR('/work/users/kojito/senorge/catchments', 'nbf.sub')
+nbf.sub <- readOGR('catchments', 'nbf.sub')
 nbf.sub.data <- slot(nbf.sub, 'data')
 
 vars <- c('eva', 'frd', 'gwt', 'is', 'os', 'q', 'rr',
