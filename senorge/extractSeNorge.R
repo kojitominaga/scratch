@@ -1,4 +1,4 @@
-## Rscript extractSeNorge --args year
+## Rscript extractSeNorge.R --args year
 
 require(raster)
 require(rgdal)
@@ -95,6 +95,54 @@ for (vi in 1:length(vars)) {
       flag <- TRUE
     }
     if ((d == as.Date('2005-10-22')) & (var == 'frd')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-12-22')) & (var == 'frd')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-01-15')) & (var == 'gwt')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-06-18')) & (var == 'gwt')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-08-27')) & (var == 'gwt')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-12-11')) & (var == 'gwt')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-12-15')) & (var == 'gwt')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-06-23')) & (var == 'rr')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-02-06')) & (var == 'sd')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-02-26')) & (var == 'sd')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-10-26')) & (var == 'sd')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-12-22')) & (var == 'sd')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-03-23')) & (var == 'smd')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-04-14')) & (var == 'smd')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-05-10')) & (var == 'os')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-10-01')) & (var == 'is')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-09-24')) & (var == 'tm')) {
       flag <- TRUE
     }
     if (flag) {
