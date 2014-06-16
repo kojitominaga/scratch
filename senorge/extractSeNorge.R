@@ -82,21 +82,42 @@ dimnames(out) <- list(format(dates), vars, nbf.sub[['vatn_lnr']])
 for (vi in 1:length(vars)) {
   var <- vars[vi]
   for (di in 1:length(dates)) {
+    flag <- FALSE
     d <- dates[di]
     fn <- sprintf('%s/gwb_%s_%s.asc.gz', dir, var, format(d, '%Y_%m_%d'))
+    if ((d == as.Date('2012-08-06')) & (var == 'swe')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-01-24')) & (var == 'eva')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-02-17')) & (var == 'eva')) {
+      flag <- TRUE
+    }
+    if ((d == as.Date('2005-10-22')) & (var == 'frd')) {
+      flag <- TRUE
+    }
+    if (flag) {
+      out[di, vi, ] <- NA
+      next
+    }
     cat(fn) ; cat('\n')
-    f <- gzfile(fn, open='r')
-    a <- myRAG(f)
-    close(f)
-    h <- a[['header']]
-    ra <- raster(a[['data']],
-                 xmn=h[['xllcorner']],
-                 ymn=h[['yllcorner']],
-                 xmx=(h[['xllcorner']] + h[['cellsize']] * h[['ncols']]),
-                 ymx=(h[['yllcorner']] + h[['cellsize']] * h[['nrows']]),
-                 crs=CRS("+proj=utm +zone=33 +datum=WGS84 +units=m +no_defs"))
-    ex <- extract(ra, nbf.sub, small=TRUE, fun=mean, na.rm=TRUE)
-    out[di, vi, ] <- ex
+    if (file.exists(fn)) {
+      f <- gzfile(fn, open='r')
+      a <- myRAG(f)
+      close(f)
+      h <- a[['header']]
+      ra <- raster(a[['data']],
+                   xmn=h[['xllcorner']],
+                   ymn=h[['yllcorner']],
+                   xmx=(h[['xllcorner']] + h[['cellsize']] * h[['ncols']]),
+                   ymx=(h[['yllcorner']] + h[['cellsize']] * h[['nrows']]),
+                   crs=CRS("+proj=utm +zone=33 +datum=WGS84 +units=m +no_defs"))
+      ex <- extract(ra, nbf.sub, small=TRUE, fun=mean, na.rm=TRUE)
+      out[di, vi, ] <- ex
+    } else {
+      out[di, vi, ] <- NA
+    }
   }
 }
 save(out, file=sprintf('%s.RData', year))
