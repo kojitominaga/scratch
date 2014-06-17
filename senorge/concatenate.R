@@ -1,6 +1,6 @@
 require(abind)
 
-fnames <- as.list(paste0(1957:2004, '.RData'))
+fnames <- as.list(paste0(1957:2013, '.RData'))
 byyear <- lapply(fnames, function(x) {load(x) ; return(out)})
 byyear[['along']] <- 1
 concatenated <- do.call(abind, byyear)
@@ -48,6 +48,21 @@ for (varname in varnames) {
   write.table(as.data.frame(annualmeans[[varname]]), f)
   close(f)
 }
+
+## example for getting monthly means
+month <- as.integer(format(date, "%m"))
+fullyears <- date < as.Date('2014-01-01') ## year 2014 is not complete
+c2 <- flattened2[fullyears, ]
+month2 <- month[fullyears]
+monthlymeans <- lapply(as.list(c2)[1:13], tapply,
+                       list(month2, c2[['vatn_lnr']]), mean, na.rm=TRUE)
+for (varname in varnames) {
+  f <- gzfile(sprintf('%s monthly means (be careful with columns).txt.gz',
+                      varname), 'w')
+  write.table(as.data.frame(monthlymeans[[varname]]), f)
+  close(f)
+}
+
 
 ## example for getting annual means in the multidimensional array
 date3 <- as.Date(dimnames(concatenated)[[1]])
