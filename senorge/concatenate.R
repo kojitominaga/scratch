@@ -42,10 +42,13 @@ date2 <- date[fullyears]
 year2 <- year[fullyears]
 annualmeans <- lapply(as.list(c2)[1:13], tapply,
                       list(year2, c2[['vatn_lnr']]), mean, na.rm=TRUE)
+
 for (varname in varnames) {
   f <- gzfile(sprintf('%s annual means (be careful with columns).txt.gz',
                       varname), 'w')
   write.table(as.data.frame(annualmeans[[varname]]), f)
+  write.csv(as.data.frame(annualmeans[[varname]]),
+            sprintf('%s annual.csv', varname))
   close(f)
 }
 
@@ -60,6 +63,8 @@ for (varname in varnames) {
   f <- gzfile(sprintf('%s monthly means (be careful with columns).txt.gz',
                       varname), 'w')
   write.table(as.data.frame(monthlymeans[[varname]]), f)
+  write.csv(as.data.frame(monthlymeans[[varname]]),
+            sprintf('%s montly.csv', varname))
   close(f)
 }
 
