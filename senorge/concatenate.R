@@ -68,6 +68,27 @@ for (varname in varnames) {
   close(f)
 }
 
+## example for getting month-year means
+yearmonth <- format(date, "%Y-%m")
+fullyears <- date < as.Date('2014-01-01') ## year 2014 is not complete
+c2 <- flattened2[fullyears, ]
+yearmonth2 <- yearmonth[fullyears]
+ym <- unique(yearmonth2)
+ymy <- unlist(lapply(strsplit(ym, '-'), function(x) { x[1] }))
+ymm <- unlist(lapply(strsplit(ym, '-'), function(x) { x[2] }))
+yearmonthlymeans <- lapply(as.list(c2)[1:13], tapply,
+                           list(yearmonth2, c2[['vatn_lnr']]), mean, na.rm=TRUE)
+for (varname in varnames) {
+  f <- gzfile(sprintf('%s year-monthly means (be careful with columns).txt.gz',
+                      varname), 'w')
+  write.table(data.frame(year = ymy, month = ymm, yearmonth = ym,
+                         as.data.frame(yearmonthlymeans[[varname]])), f)
+  close(f)
+  write.csv(data.frame(year = ymy, month = ymm, yearmonth = ym,
+                       as.data.frame(yearmonthlymeans[[varname]])),
+            sprintf('%s year-monthly.csv', varname))
+}
+
 
 ## example for getting annual means in the multidimensional array
 date3 <- as.Date(dimnames(concatenated)[[1]])
