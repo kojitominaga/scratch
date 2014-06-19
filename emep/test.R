@@ -41,7 +41,23 @@ sdep <- ts95NOutm33n
 ## use fv1 variogram model
 
 k1 <- krige(value ~ 1, sdep, newdata = catchpoints, model = fv1)
+catchpoints@data <- data.frame(catchpoints@data, k1@data)
+writeOGR(catchpoints, 'other shapefiles',
+         'total S dep EMEP 1995 careless KT centroids',
+         'ESRI Shapefile')
+write.csv(catchpoints@data,
+          file = 'csv/total S dep EMEP 1995 careless KT centroids.csv')
+
 k2 <- krige(value ~ 1, sdep, newdata = catchpolygons, model = fv1)
+catchpolygons@data <- data.frame(catchpolygons@data, k2@data)
+writeOGR(catchpolygons, 'other shapefiles',
+         'total S dep EMEP 1995 careless KT',
+         'ESRI Shapefile')
+write.csv(catchpolygons@data,
+          file = 'csv/total S dep EMEP 1995 careless KT.csv')
+
+
+
 
 
 
