@@ -6,60 +6,6 @@ require(RSAGA)
 require(sp)
 require(rgeos)
 
-myRAG <- function (file, return.header = TRUE, print = 0, nodata.values = c(), 
-    at.once = TRUE, na.strings = "NA") 
-{
-    if (is.character(file)) {
-        file = default.file.extension(file, ".asc")
-        con = file(file, open = "r")
-        on.exit(close(con), add = TRUE)
-    }
-    else {
-        con = file
-        if (!isOpen(file, "read")) 
-            stop("'file' must be a file name or a connection opened for reading")
-    }
-    hdr = read.ascii.grid.header(con)
-    if (at.once) {
-        data = scan(con, quiet = TRUE, na.strings = na.strings)
-        ## data = scan(con, nlines = hdr$nrows, quiet = TRUE, na.strings = na.strings)
-        data = matrix(data, ncol = hdr$ncols, nrow = hdr$nrows, 
-            byrow = TRUE)
-        na = is.na(data) | (data == hdr$nodata_value)
-        for (na.val in nodata.values) na = na | (data == na.val)
-        if (any(na)) 
-            data[na] = NA
-    }
-    else {
-        data = matrix(NA, ncol = hdr$ncols, nrow = hdr$nrows)
-        for (i in 1:hdr$nrows) {
-            if (print == 2) 
-                cat(i, " ", ifelse(round(i/20) == i/20, "\n", 
-                  ""))
-            if (print == 1) 
-                if (round(i/100) == i/100) 
-                  cat(i, " ", ifelse(round(i/1000) == i/1000, 
-                    "\n", ""))
-            x = scan(con, nlines = 1, quiet = TRUE, na.strings = na.strings)
-            na = is.na(x) | (x == hdr$nodata_value)
-            for (na.val in nodata.values) na = na | (x == na.val)
-            if (any(na)) 
-                x[na] = NA
-            data[i, ] = x
-        }
-    }
-    if (print == 2) 
-        cat("\nDone!\n")
-    if (print == 1) 
-        cat("\n")
-    if (return.header) 
-        data = list(header = hdr, data = data)
-    invisible(data)
-}
-
-
-
-
 year <- as.integer(commandArgs(trailingOnly = TRUE)[1])
 cat('year is ') ; cat(sprintf('%s', year)) ; cat('\n')
 
