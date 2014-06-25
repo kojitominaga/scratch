@@ -1,0 +1,17 @@
+Linear:
+- total ox. sulphur
+- dry ox. sulphur
+- wet ox. sulphur
+- total ox. nitrogen
+- wet ox. nitrogen
+
+Exponential:
+- total red. nitrogen
+- dry red. nitrogen
+- precipitation
+
+Not sure (uses Exponential):
+- dry ox. nitrogen
+- wet red. nitrogen
+
+

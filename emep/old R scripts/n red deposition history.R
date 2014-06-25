@@ -8,8 +8,7 @@ wgs84 <- '+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs'
 utm33n <- '+proj=utm +zone=33 +ellps=WGS84 +datum=WGS84 +units=m +no_defs'
 ## utm does not work with polar points! frame it to exclude polar points
 
-emep <- read.table('data/webdabData136036.txt.gz', skip = 2,
-                   header = FALSE, sep = ';')
+emep <- read.table('data/N.txt.gz', skip = 2, header = FALSE, sep = ';')
 names(emep) <- c('V1', 'year', 'V3', 'variable', 'i', 'j', 'unit', 'value')
 
 years <- unique(emep[['year']])
@@ -19,7 +18,7 @@ sdeplist <- list()
 for (yi in 1:length(years)) {
   y <- years[yi]
   cat(y) ; cat('\n')
-  ysub <- subset(emep, (year == y) & (variable == 'total ox. nitrogen'))
+  ysub <- subset(emep, (year == y) & (variable == 'total red. nitrogen'))
   coordinates(ysub) <- ~i + j
   proj4string(ysub) <- emepgrid
   subgeo <- spTransform(ysub, CRS(wgs84))
@@ -33,7 +32,7 @@ for (yi in 1:length(years)) {
 }
 names(vlist) <- years
 
-pdf('variograms (many pages) n ox.pdf')
+pdf('variograms (many pages) n red.pdf')
 for (yi in 1:length(years)) {
   y <- years[yi]
   print(plot(vlist[[yi]], ylab = sprintf('variogram %s', y)))
@@ -85,9 +84,9 @@ for (yi in 1:length(years)) {
 
 catchpoints@data <- do.call(cbind,
                             list(catchpoints@data, kpointlist))
-write.csv(catchpoints@data, file = 'csv/n ox dep all years centroid.csv')
+write.csv(catchpoints@data, file = 'csv/n red dep all years centroid.csv')
 catchpolygons@data <- do.call(cbind,
-                              list(catchpolygons@data, kpointlist))
-write.csv(catchpolygons@data, file = 'csv/n ox dep all years.csv')  
+                              list(catchpolygons@data, kpolygonlist))
+write.csv(catchpolygons@data, file = 'csv/n red dep all years.csv')  
 
 
