@@ -39,3 +39,9 @@ emep/catchments
 emep/data
 emep/dem
 emep/other\ shapefiles/
+cv/*.bst
+cv/*.log
+cv/*.blg
+cv/*.dvi
+cv/*.synctex.gz
+cv/*.aux
