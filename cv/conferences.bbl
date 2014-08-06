@@ -1,0 +1,76 @@
+\begin{thebibliography}{1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\bibAnnoteFile}[1]{%
+  \IfFileExists{#1}{\begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ \input{#1}\end{quotation}}{}}
+\providecommand{\bibAnnote}[2]{%
+  \begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ #2\end{quotation}}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{couture_linking_2013}
+Couture RM, Shafei B, Markelov I, Tominaga K, Starrfelt J, et~al. (2013)
+  Linking the benthic cycling of p to its surface water dynamics in lakes.
+\newblock Uppsala, Sweden.
+\newblock 7th International Phosphorus Workshop ({IPW}7).
+\bibAnnoteFile{couture_linking_2013}
+
+\bibitem{tominaga_future_2012}
+Tominaga K, Finstad AG, Kaste {\O}, Andersen T (2012) Future climate change
+  impact on lakes in fennoscandia: A dynamic mechanistic approach.
+\newblock Otsu, Shiga, Japan.
+\newblock 2012 {ASLO} Aquatic Sciences Meeting.
+\bibAnnoteFile{tominaga_future_2012}
+
+\bibitem{tominaga_ensemble_2010}
+Tominaga K (2010) Ensemble model framework for lake ecosystem modelling - case
+  study from acidification modelling.
+\newblock Silkeborg, Denmark.
+\newblock Lake Ecosystem Modelling Workshop.
+\bibAnnoteFile{tominaga_ensemble_2010}
+
+\bibitem{tominaga_modelling_2009}
+Tominaga K, Aherne J, Watmough SA, Alveteg M, Cosby BJ, et~al. (2009) Modelling
+  acidification recovery at long-term monitoring sites: a multi-model
+  evaluation.
+\newblock Helsinki, Finland.
+\newblock 6th International Symposium on Ecosystem Behaviour {BIOGEOMON} 2009.
+\bibAnnoteFile{tominaga_modelling_2009}
+
+\bibitem{tominaga_predicting_2009}
+Tominaga K, Aherne J, Watmough SA, Alveteg M, Cosby BJ, et~al. (2009)
+  Predicting future soil and stream chemistry using an ensemble of
+  acidification models at hubbard brook.
+\newblock Lincoln, New Hampshire, {USA}.
+\newblock 46th Annual Hubbard Brook Cooperators' Meeting.
+\bibAnnoteFile{tominaga_predicting_2009}
+
+\bibitem{tominaga_evaluation_2008}
+Tominaga K, Aherne J, Watmough SA, Alveteg M, Cosby BJ, et~al. (2008)
+  Evaluation of process-oriented acidification models at hubbard brook.
+\newblock Durham, New Hampshire, {USA}.
+\newblock Northeastern Ecosystem Research Cooperative Conference.
+\bibAnnoteFile{tominaga_evaluation_2008}
+
+\bibitem{tominaga_modelling_2008}
+Tominaga K, Aherne J, Watmough SA (2008) Modelling the chemistry of soil and
+  surface water at hubbard brook, new hampshire, {USA}.
+\newblock Gananoque, Ontario, Canada.
+\newblock 22nd Annual Gananoque Conference on Environmental Science and
+  Engineering.
+\bibAnnoteFile{tominaga_modelling_2008}
+
+\bibitem{tominaga_survival_2007}
+Tominaga K, Watmough SA (2007) Survival analysis of hardwood trees in southern
+  ontario.
+\newblock Gananoque, Ontario, Canada.
+\newblock 21st Annual Gananoque Conference on Environmental Science and
+  Engineering.
+\bibAnnoteFile{tominaga_survival_2007}
+
+\end{thebibliography}

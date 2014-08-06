@@ -1,0 +1,56 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[margin=2cm]{geometry}
+% \usepackage{mdwlist}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+% \pagestyle{empty}
+\setlength{\tabcolsep}{0em}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{fouriernc}
+
+\usepackage{multibib}
+\newcites{theses}{Theses}
+\newcites{articles}{Peer-reviewed Journal Articles}
+\newcites{conferences}{Conference Presentations (Selection)}
+
+% from http://texblog.org/2012/04/25/writing-a-cv-in-latex/
+\usepackage{array, xcolor}
+\definecolor{lightgray}{gray}{0.8}
+\newcolumntype{L}{>{\raggedleft}p{0.14\textwidth}}
+\newcolumntype{R}{p{0.8\textwidth}}
+\newcommand\VRule{\color{lightgray}\vrule width 2.0pt}
+
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.2}
+
+\begin{document}
+
+\fontencoding{T1}\selectfont
+
+
+\begin{center}
+{\LARGE \textbf{Koji Tominaga}}
+\\
+Centre for Ecological and Evolutionary Synthesis (CEES)\\
+Department of Biosciences, University of Oslo\\
+P.O. Box 1066 Blindern\ \ \textbullet
+\ \ 0316 Oslo\ \ \textbullet 
+\ \ Norway
+\\
+koji.tominaga@ibv.uio.no
+\end{center}
+
+\hrule
+\vspace{-0.4em}
+
+\input{education}
+\input{exchanges}
+\input{work}
+\input{publications}
+\input{achievements}
+\input{computing}
+\input{misc}
+
+\end{document}

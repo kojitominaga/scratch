@@ -1,0 +1,56 @@
+\begin{thebibliography}{1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\bibAnnoteFile}[1]{%
+  \IfFileExists{#1}{\begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ \input{#1}\end{quotation}}{}}
+\providecommand{\bibAnnote}[2]{%
+  \begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ #2\end{quotation}}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{couture_modelling_2014}
+Couture RM, Tominaga K, Starrfelt J, Moe SJ, Kaste {\O}, et~al. (2014)
+  Modelling phosphorus loading and algal blooms in a nordic agricultural
+  catchment-lake system under changing land-use and climate.
+\newblock Environ Sci: Processes Impacts 16: 1588--1599.
+\bibAnnoteFile{couture_modelling_2014}
+
+\bibitem{trolle_community-based_2012}
+Trolle D, Hamilton DP, Hipsey MR, Bolding K, Bruggeman J, et~al. (2012) A
+  community-based framework for aquatic ecosystem models.
+\newblock Hydrobiologia 683: 25--34.
+\bibAnnoteFile{trolle_community-based_2012}
+
+\bibitem{tominaga_predicting_2010}
+Tominaga K, Aherne J, Watmough SA, Alveteg M, Cosby BJ, et~al. (2010)
+  Predicting acidification recovery at the hubbard brook experimental forest,
+  new hampshire: Evaluation of four models.
+\newblock Environ Sci Technol 44: 9003--9009.
+\bibAnnoteFile{tominaga_predicting_2010}
+
+\bibitem{mooij_challenges_2010}
+Mooij WM, Trolle D, Jeppesen E, Arhonditsis G, Belolipetsky PV, et~al. (2010)
+  Challenges and opportunities for integrating lake ecosystem modelling
+  approaches.
+\newblock Aquat Ecol 44: 633--667.
+\bibAnnoteFile{mooij_challenges_2010}
+
+\bibitem{tominaga_voyage_2009}
+Tominaga K, Aherne J, Watmough S, Alveteg M, Cosby B, et~al. (2009) Voyage
+  without constellation: evaluating the performance of three uncalibrated
+  process-oriented models.
+\newblock Hydrol Res 40: 261--272.
+\bibAnnoteFile{tominaga_voyage_2009}
+
+\bibitem{tominaga_predicting_2008}
+Tominaga K, Watmough S, Aherne J (2008) Predicting tree survival in ontario
+  sugar maple (acer saccharum) forests based on crown condition.
+\newblock Can J Forest Res 38: 1730--1741.
+\bibAnnoteFile{tominaga_predicting_2008}
+
+\end{thebibliography}
