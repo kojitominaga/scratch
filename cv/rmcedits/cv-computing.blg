@@ -1,0 +1,50 @@
+This is BibTeX, Version 0.99d (TeX Live 2013)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: cv-computing.aux
+The style file: plos2009.bst
+Database file #1: koji.bib
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--empty booktitle in tominaga_future_2012
+Warning--empty pages in tominaga_future_2012
+You've used 5 entries,
+            2441 wiz_defined-function locations,
+            578 strings with 5962 characters,
+and the built_in function-call counts, 4714 in all, are:
+= -- 423
+> -- 92
+< -- 0
++ -- 46
+- -- 23
+* -- 395
+:= -- 562
+add.period$ -- 11
+call.type$ -- 5
+change.case$ -- 6
+chr.to.int$ -- 0
+cite$ -- 12
+duplicate$ -- 467
+empty$ -- 483
+format.name$ -- 27
+if$ -- 1036
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 60
+newline$ -- 41
+num.names$ -- 5
+pop$ -- 82
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 52
+stack$ -- 0
+substring$ -- 652
+swap$ -- 115
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 2
+while$ -- 34
+width$ -- 6
+write$ -- 71
+(There were 2 warnings)

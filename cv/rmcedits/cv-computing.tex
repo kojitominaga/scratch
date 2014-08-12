@@ -1,0 +1,85 @@
+\documentclass[10pt, a4paper]{article}
+\usepackage[margin=2cm]{geometry}
+% \usepackage{mdwlist}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\pagestyle{empty}
+\setlength{\tabcolsep}{0em}
+\usepackage{hyperref}
+\usepackage[T1]{fontenc}
+\usepackage{fouriernc}
+
+% \usepackage{multibib}
+% \newcites{theses}{Theses}
+% \newcites{invited}{Invited Talk}
+% \newcites{articles}{Peer-reviewed Journal Articles}
+% \newcites{conferences}{Conference and Seminar Presentations}
+
+% from http://texblog.org/2012/04/25/writing-a-cv-in-latex/
+\usepackage{array, xcolor}
+\definecolor{lightgray}{gray}{0.8}
+\newcolumntype{L}{>{\raggedleft}p{0.14\textwidth}}
+\newcolumntype{R}{p{0.8\textwidth}}
+\newcommand\VRule{\color{lightgray}\vrule width 2.0pt}
+
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.1}
+
+\usepackage{titlesec}
+\titleformat*{\section}{\large\bfseries}
+
+\renewcommand{\refname}{Relevant Communications}
+
+\begin{document}
+
+\fontencoding{T1}\selectfont
+
+
+\begin{center}
+{\LARGE \textbf{Koji Tominaga}}
+\\
+Centre for Ecological and Evolutionary Synthesis (CEES)\\
+Department of Biosciences, University of Oslo\\
+P.O. Box 1066 Blindern\ \ \textbullet
+\ \ 0316 Oslo\ \ \textbullet 
+\ \ Norway
+\\
+koji.tominaga@ibv.uio.no
+\end{center}
+
+\hrule
+\vspace{-0.4em}
+
+\section*{Summary}
+I am an environmental scientist with a specialisation in scientific high-performance computing. My application fields to date have been \textbf{climate change},
+\textbf{anthropogenic pollution}, \textbf{biogeochemistry}, and \textbf{freshwater
+systems}. My interests in computing and numerical methods include
+\textbf{machine learning}, \textbf{parameter estimation}, \textbf{quantification of modelling
+uncertainty} and \textbf{data visualisation}. Highlights in HPC experiences:
+\begin{itemize}
+  \itemsep-0.1em
+  \item Environmental model implementation on \textbf{3 HPC platforms} (Notur/Norstore, Sharcnet, Amazon EC2),
+  \item Management of terabyte data arrays, and 
+  \item Expert skills in \textbf{Unix,} \textbf{Python} and \textbf{R} languages.
+\end{itemize}
+
+\input{education}
+\input{exchanges}
+\input{work}
+
+\nocite{couture_modelling_2014}
+\nocite{tominaga_lake_2013}
+\nocite{tominaga_future_2012}
+\nocite{tominaga_predicting_2010}
+\nocite{tominaga_voyage_2009-1}
+\bibliographystyle{plos2009}
+\bibliography{koji}
+\flushleft In total, I have 6 peer-reviewed publications showcasing the uses of HPC methods, approximately 30 conference abstracts, 4 times peer-reviewer contributions, and attended numerous international scientific meetings in 13 countries.
+
+\end{document}
+
+
+
+
+

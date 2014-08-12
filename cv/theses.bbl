@@ -14,18 +14,18 @@
 \providecommand{\eprint}[2][]{\url{#2}}
 
 \bibitem{tominaga_lake_2013}
-Tominaga K (2013) Lake Modelling: an interdisciplinary context.
+\textbf{Tominaga K} (2013) Lake Modelling: an interdisciplinary context.
 \newblock {PhD} thesis, University of Oslo, Oslo, Norway.
 \bibAnnoteFile{tominaga_lake_2013}
 
 \bibitem{tominaga_uncertainty_2009}
-Tominaga K (2009) Uncertainty evaluation of four dynamic acidification models:
+\textbf{Tominaga K} (2009) Uncertainty evaluation of four dynamic acidification models:
   {MAGIC}, {PnET}-{BGC}, {SAFE} and {VSD}.
 \newblock {MSc} thesis, Trent University, Peterborough, Ontario, Canada.
 \bibAnnoteFile{tominaga_uncertainty_2009}
 
 \bibitem{tominaga_monitoring_2007}
-Tominaga K (2007) Monitoring of hardwood forest health in south-central
+\textbf{Tominaga K} (2007) Monitoring of hardwood forest health in south-central
   Ontario, Canada: survival analysis and remote sensing analysis.
 \newblock {BSc} honours thesis, Trent University, Peterborough, Ontario,
   Canada.

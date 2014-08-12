@@ -14,41 +14,48 @@
 \providecommand{\eprint}[2][]{\url{#2}}
 
 \bibitem{couture_modelling_2014}
-Couture RM, Tominaga K, Starrfelt J, Moe SJ, Kaste {\O}, et~al. (2014)
+Couture RM, \textbf{Tominaga K}, Starrfelt J, Moe SJ, Kaste {\O}, Wright RF (2014)
   Modelling phosphorus loading and algal blooms in a nordic agricultural
   catchment-lake system under changing land-use and climate.
 \newblock Environ Sci: Processes Impacts 16: 1588--1599.
 \bibAnnoteFile{couture_modelling_2014}
 
 \bibitem{trolle_community-based_2012}
-Trolle D, Hamilton DP, Hipsey MR, Bolding K, Bruggeman J, et~al. (2012) A
-  community-based framework for aquatic ecosystem models.
+Trolle D, Hamilton DP, Hipsey MR, Bolding K, Bruggeman J, Mooij WM, Janse JH,
+  Nielsen A, Jeppesen E, Elliott JA, Makler-Pick V, Petzoldt T, Rinke K, Flindt
+  MR, Arhonditsis GB, Gal G, Bjerring R, \textbf{Tominaga K}, Hoen J, Downing AS,
+  Marques DM, Fragoso CR, Sondergaard M, Hanson PC (2012) A community-based
+  framework for aquatic ecosystem models.
 \newblock Hydrobiologia 683: 25--34.
 \bibAnnoteFile{trolle_community-based_2012}
 
 \bibitem{tominaga_predicting_2010}
-Tominaga K, Aherne J, Watmough SA, Alveteg M, Cosby BJ, et~al. (2010)
-  Predicting acidification recovery at the hubbard brook experimental forest,
-  new hampshire: Evaluation of four models.
+\textbf{Tominaga K}, Aherne J, Watmough SA, Alveteg M, Cosby BJ, Driscoll CT, Posch M,
+  Pourmokhtarian A (2010) Predicting acidification recovery at the hubbard
+  brook experimental forest, new hampshire: Evaluation of four models.
 \newblock Environ Sci Technol 44: 9003--9009.
 \bibAnnoteFile{tominaga_predicting_2010}
 
 \bibitem{mooij_challenges_2010}
-Mooij WM, Trolle D, Jeppesen E, Arhonditsis G, Belolipetsky PV, et~al. (2010)
-  Challenges and opportunities for integrating lake ecosystem modelling
+Mooij WM, Trolle D, Jeppesen E, Arhonditsis G, Belolipetsky PV, Chitamwebwa
+  DBR, Degermendzhy AG, DeAngelis DL, Domis LNDS, Downing AS, Elliott JA,
+  Fragoso CR, Gaedke U, Genova SN, Gulati RD, Hakanson L, Hamilton DP, Hipsey
+  MR, 't~Hoen J, Huelsmann S, Los FH, Makler-Pick V, Petzoldt T, Prokopkin IG,
+  Rinke K, Schep SA, \textbf{Tominaga K}, Van~Dam AA, Van~Nes EH, Wells SA, Janse JH
+  (2010) Challenges and opportunities for integrating lake ecosystem modelling
   approaches.
 \newblock Aquat Ecol 44: 633--667.
 \bibAnnoteFile{mooij_challenges_2010}
 
 \bibitem{tominaga_voyage_2009}
-Tominaga K, Aherne J, Watmough S, Alveteg M, Cosby B, et~al. (2009) Voyage
-  without constellation: evaluating the performance of three uncalibrated
-  process-oriented models.
-\newblock Hydrol Res 40: 261--272.
+\textbf{Tominaga K}, Aherne J, Watmough SA, Alveteg M, Cosby BJ, Driscoll CT, Posch M
+  (2009) Voyage without constellation: evaluating the performance of three
+  uncalibrated process-oriented models.
+\newblock Hydrol Res 40: 261.
 \bibAnnoteFile{tominaga_voyage_2009}
 
 \bibitem{tominaga_predicting_2008}
-Tominaga K, Watmough S, Aherne J (2008) Predicting tree survival in ontario
+\textbf{Tominaga K}, Watmough S, Aherne J (2008) Predicting tree survival in ontario
   sugar maple (acer saccharum) forests based on crown condition.
 \newblock Can J Forest Res 38: 1730--1741.
 \bibAnnoteFile{tominaga_predicting_2008}
