@@ -45,3 +45,4 @@ cv/*.blg
 cv/*.dvi
 cv/*.synctex.gz
 cv/*.aux
+comsat/data
