@@ -39,33 +39,40 @@ for (ri in 1:nrow(comsat)) {
   fetch90 <- getfetch(thislake, 270)
   fetch120 <- getfetch(thislake, 240)
   fetch150 <- getfetch(thislake, 210)
-  thislake@data <- data.frame(thislake@data,
-                              fetch0=fetch0[['maxlength']],
-                              fetch30=fetch30[['maxlength']],
-                              fetch60=fetch60[['maxlength']],
-                              fetch90=fetch90[['maxlength']],
-                              fetch120=fetch120[['maxlength']],
-                              fetch150=fetch150[['maxlength']])
+  thislake@data <- data.frame(fetch0=round(fetch0[['maxlength']]),
+                              fetch30=round(fetch30[['maxlength']]),
+                              fetch60=round(fetch60[['maxlength']]),
+                              fetch90=round(fetch90[['maxlength']]),
+                              fetch120=round(fetch120[['maxlength']]),
+                              fetch150=round(fetch150[['maxlength']]),
+                              thislake@data)
   name <- thislake@data[['comsat.Lake']]
   writeOGR(spTransform(thislake, geographical),
            sprintf('fetch/%s.geojson', name),
            'comsat', 'GeoJSON')
-  spl <- SpatialLines(list(fetch0[['maxline']],
-                           unlist(elide(SpatialLines(list(fetch30[['maxline']])),
-                                        rotate=30)@lines),
-                           unlist(elide(SpatialLines(list(fetch60[['maxline']])),
-                                        rotate=60)@lines),
-                           unlist(elide(SpatialLines(list(fetch90[['maxline']])),
-                                        rotate=90)@lines),
-                           unlist(elide(SpatialLines(list(fetch120[['maxline']])),
-                                        rotate=120)@lines),
-                           unlist(elide(SpatialLines(list(fetch150[['maxline']])),
-                                        rotate=150)@lines),
-                      proj4string=utm33n)
-  writeOGR(spTransform(spl, geographical),
-           sprintf('fetch/%s_fetchlines.geojson', name),
-           'comsat', 'GeoJSON')
 }
+
+  ## spl <- rbind(SpatialLines(list(fetch0[['maxline']])),
+  ##                elide(SpatialLines(list(fetch30[['maxline']])),
+  ##                      rotate=30),
+  ##                elide(SpatialLines(list(fetch60[['maxline']])),
+  ##                      rotate=60),
+  ##                elide(SpatialLines(list(fetch90[['maxline']])),
+  ##                      rotate=90),
+  ##                elide(SpatialLines(list(fetch120[['maxline']])),
+  ##                      rotate=120),
+  ##                elide(SpatialLines(list(fetch150[['maxline']])),
+  ##                      rotate=150))
+  ## proj4string(spl) <- utm33n
+  ## sldf <-
+  ##   SpatialLinesDataFrame(spl,
+  ##                         data=data.frame(fetchangle=c(0, 30, 60,
+  ##                                           90, 120, 150)),
+  ##                         match.ID=FALSE)
+  ## writeOGR(spTransform(sldf, geographical),
+  ##          sprintf('fetch/%s_fetchlines.geojson', name),
+  ##          'comsat', 'GeoJSON')
+
 
 ## for (ri in 1:nrow(comsat)) {
 ##   thislake <- comsat[ri, ]
