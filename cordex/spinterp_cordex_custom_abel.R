@@ -89,10 +89,10 @@ names(target1)[4] <- 'orog'
 target2 <- spTransform(readOGR('shp', 'regin_elevation'), utm33n)
 names(target2)[36] <- 'orog'
 
-outputp1 <- matrix(NA, nrow=nrow(target1), ncol=dim(vall)[3])
-outputp2 <- matrix(NA, nrow=nrow(target2), ncol=dim(vall)[3])
-outputv1 <- matrix(NA, nrow=nrow(target1), ncol=dim(vall)[3])
-outputv2 <- matrix(NA, nrow=nrow(target2), ncol=dim(vall)[3])
+outputp1 <- matrix(NA, nrow=nrow(target1), ncol=dim(vall)[1])
+outputp2 <- matrix(NA, nrow=nrow(target2), ncol=dim(vall)[1])
+outputv1 <- matrix(NA, nrow=nrow(target1), ncol=dim(vall)[1])
+outputv2 <- matrix(NA, nrow=nrow(target2), ncol=dim(vall)[1])
 
 for (vi in 1:(dim(vall)[1])) {
   cat(sprintf('%s\n', vi))
