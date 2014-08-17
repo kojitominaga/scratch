@@ -48,7 +48,7 @@ if (any(varname == c('mrros', 'pr', 'tas')) &
   vv <- dim(vallorig)[3]
   vvi <- rep(1:(vv / 12), each = 12)
   valla <- apply(vallorig, 1:2, tapply, vvi, mean)
-  if (length(dim(vall)) == 2) {
+  if (length(dim(valla)) == 2) {
     vall <- array(NA, dim = c(1, dim(vallorig)[1], dim(vallorig)[2]))
     vall[1, , ] <- valla
   } else {
