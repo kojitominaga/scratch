@@ -46,3 +46,5 @@ cv/*.dvi
 cv/*.synctex.gz
 cv/*.aux
 comsat/data
+cordex/ncAugustSoren
+cordex/shp
