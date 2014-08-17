@@ -36,7 +36,44 @@ orog <- get.var.ncdf(orognc, 'orog')
 close.ncdf(orognc)
 
 nc <- open.ncdf(ncf)
-vall <- get.var.ncdf(nc, varname)
+vallorig <- get.var.ncdf(nc, varname)
+if (grepl('194912', ncf)) {
+  vallorig <- vallorig[ , , -1]
+}
+##if ((grepl('mrros|pr|tas', ncf)) & !(grepl('tasmin|tasmax', ncf))) {
+  ## if any([s in ncf for s in ['mrros', 'pr', 'tas']]) and
+  ## not any([s in ncf for s in ['tasmin', 'tasmax']])
+if (any(varname == c('mrros', 'pr', 'tas')) &
+    all(varname != c('tasmin', 'tasmax'))) {
+  vv <- dim(vallorig)[3]
+  vvi <- rep(1:(vv / 12), each = 12)
+  valla <- apply(vallorig, 1:2, tapply, vvi, mean)
+  if (length(dim(vall)) == 2) {
+    vall <- array(NA, dim = c(1, dim(vallorig)[1], dim(vallorig)[2]))
+    vall[1, , ] <- valla
+  } else {
+    vall <- valla
+  }
+} else if (varname == 'tasmin') {
+  vvi <- c(TRUE, TRUE, TRUE, FALSE, FALSE, FALSE,
+           FALSE, FALSE, FALSE, FALSE, FALSE, TRUE)
+  valla <- vallorig[ , , vvi]
+  vall <- array(NA, dim = c(dim(vallorig)[3] * 4 / 12,
+                      dim(vallorig)[1], dim(vallorig)[2]))
+  for (vi in 1:(dim(vall)[1])) {
+    vall[vi, , ] <- valla[ , , vi]
+  }
+} else if (varname == 'tasmax') {
+  vvi <- c(FALSE, FALSE, FALSE, FALSE, FALSE, TRUE,
+           TRUE, TRUE, TRUE, FALSE, FALSE, FALSE)
+  valla <- vallorig[ , , vvi]
+  vall <- array(NA, dim = c(dim(vallorig)[3] * 4 / 12,
+                      dim(vallorig)[1], dim(vallorig)[2]))
+  for (vi in 1:(dim(vall)[1])) {
+    vall[vi, , ] <- valla[ , , vi]
+  }
+}
+
 lon <- get.var.ncdf(nc, 'lon')
 lat <- get.var.ncdf(nc, 'lat')
 close.ncdf(nc)
@@ -57,10 +94,10 @@ outputp2 <- matrix(NA, nrow=nrow(target2), ncol=dim(vall)[3])
 outputv1 <- matrix(NA, nrow=nrow(target1), ncol=dim(vall)[3])
 outputv2 <- matrix(NA, nrow=nrow(target2), ncol=dim(vall)[3])
 
-for (vi in 1:(dim(vall)[3])) {
+for (vi in 1:(dim(vall)[1])) {
   cat(sprintf('%s\n', vi))
   tabn <- tab
-  tabn[['v']] <- c(vall[ , , vi])[include]
+  tabn[['v']] <- c(vall[vi, , ])[include]
   tabn <- subset(tabn, !is.na(v))
   va <- variogram(v ~ orog, tabn, cutoff=cutoff)
   mg <- max(va[['gamma']])
