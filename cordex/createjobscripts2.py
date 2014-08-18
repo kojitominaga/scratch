@@ -34,14 +34,14 @@ for e in experiments:
     ncfiles = [f for f in allncfiles if not ('orog' in f) and e in f]
     ncpaths = [os.path.join(ncdir, f) for f in ncfiles]
     vs = [f.split('_')[0] for f in ncfiles]
-    tranges = [f.split('_')[-1] for f in ncfiles]
-    fnp1s = ['csv/%s_%s_pred_n1k.csv' % (v, trange) 
+    tranges = [f.split('_')[-1].split('.nc')[0] for f in ncfiles]
+    fnp1s = ['csv/%s_%s_%s_pred_n1k.csv' % (v, e, trange) 
              for v, trange in zip(vs, tranges)]
-    fnp2s = ['csv/%s_%s_pred_regin.csv' % (v, trange) 
+    fnp2s = ['csv/%s_%s_%s_pred_regin.csv' % (v, e, trange) 
              for v, trange in zip(vs, tranges)]
-    fnv1s = ['csv/%s_%s_var_n1k.csv' % (v, trange) 
+    fnv1s = ['csv/%s_%s_%s_var_n1k.csv' % (v, e, trange) 
              for v, trange in zip(vs, tranges)]
-    fnv2s = ['csv/%s_%s_var_regin.csv' % (v, trange) 
+    fnv2s = ['csv/%s_%s_%s_var_regin.csv' % (v, e, trange) 
              for v, trange in zip(vs, tranges)]
     commands = ['Rscript spinterp_cordex_custom_abel.R --args %s %s %s %s %s %s %s' % 
                 (s1, orogpath, s3, s4, s5, s6, s7) for s1, s3, s4, s5, s6, s7 in 
