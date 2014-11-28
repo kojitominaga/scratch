@@ -1,0 +1,125 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[margin=2cm]{geometry}
+% \usepackage{mdwlist}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+% \pagestyle{empty}
+\setlength{\tabcolsep}{0em}
+
+
+% \usepackage[bitstream-charter]{mathdesign}
+% \usepackage[T1]{fontenc}
+
+\usepackage[T1]{fontenc}
+\usepackage{fouriernc}
+
+% \usepackage{lmodern}
+% \renewcommand*\familydefault{\ttdefault} %% Only if the base font of the document is to be typewriter style
+% \usepackage[T1]{fontenc}
+
+% \usepackage{libertine}
+% \usepackage[T1]{fontenc}
+
+% \usepackage{DejaVuSansCondensed}
+% \renewcommand*\familydefault{\sfdefault} %% Only if the base font of the document is to be sans serif
+% \usepackage[T1]{fontenc}
+
+% \usepackage{libertine}
+% \renewcommand*\familydefault{\sfdefault}  %% Only if the base font of the document is to be sans serif
+% \usepackage[T1]{fontenc}
+
+% \usepackage[T1]{fontenc}
+% \renewcommand*\familydefault{\sfdefault}
+
+%\usepackage[colorlinks=true,backref=section]{hyperref}
+
+% \usepackage{hyperref}
+
+
+\usepackage{hyperref}
+% \renewcommand{\backrefsectionsname}{ \protect\\  \textit{Cited on 
+%     secrtion(s):}~}
+% \renewcommand{\backref}{\backrefsectionsname}
+
+% \let\BR@direct@oldBR@citex\BR@citex 
+% \renewcommand*{\BR@citex}{\phantomsection\BR@direct@oldBR@citex}
+
+% \RequirePackage{etoolbox}
+% \patchcmd{\Hy@backout}{Doc-Start}{\@currentHref}{}{\errmessage{I can't seem to patch backref}}
+% \makeatother
+
+\usepackage{multibib}
+\newcites{theses}{Theses}
+\newcites{invited}{Invited Talk}
+\newcites{articles}{Peer-reviewed Journal Articles}
+\newcites{conferences}{Conference and Seminar Presentations}
+\newcites{manuscripts}{Manuscripts in Preparation}
+
+% from http://texblog.org/2012/04/25/writing-a-cv-in-latex/
+\usepackage{array, xcolor}
+\definecolor{lightgray}{gray}{0.8}
+\newcolumntype{L}{>{\raggedleft}p{0.14\textwidth}}
+\newcolumntype{R}{p{0.8\textwidth}}
+\newcommand\VRule{\color{lightgray}\vrule width 2.0pt}
+
+\setlength{\tabcolsep}{5pt}
+\renewcommand{\arraystretch}{1.2}
+
+% \usepackage[hyperref=true,backref=true]{biblatex}
+% \renewcommand{\cite}{\phantomsection\cite}
+
+\begin{document}
+
+\fontencoding{T1}\selectfont
+
+
+\begin{center} {\LARGE \textbf{Koji Tominaga}}
+  \\
+  Centre for Ecological and Evolutionary Synthesis (CEES)\\
+  Department of Biosciences, University of Oslo\\
+  P.O. Box 1066 Blindern\ \ \textbullet \ \ 0316 Oslo\ \ \textbullet \
+  \ Norway
+  \\
+  koji.tominaga@ibv.uio.no \ \ \textbullet \ \ Information as of 23
+  November 2014 
+  \\
+  This document contains 7 pages
+\end{center}
+
+\hrule
+\vspace{-0.4em}
+
+
+
+\section*{Summary}
+I am an environmental scientist with a specialisation in massive
+computing, currently working as a researcher at postdoc level after my
+PhD completed in 2013.
+
+My application fields to date have been \textbf{bioinformatics},
+\textbf{climate change}, \textbf{anthropogenic pollution},
+\textbf{biogeochemistry}, and \textbf{freshwater systems}. My
+interests in computing and numerical methods include \textbf{machine
+  learning}, \textbf{parameter estimation}, \textbf{quantification of
+  modelling uncertainty} and \textbf{data visualisation}. Highlights
+in computing experiences:
+\begin{itemize}
+  \itemsep-0.1em
+\item Simultaneous control of \textbf{1000 computing nodes},
+\item \textbf{3 HPC platforms} (Notur/Norstore, Sharcnet, Amazon EC2),
+\item Large data and file management (terabytes), and
+\item Advanced level skills in \textbf{Unix,} \textbf{Python} and
+  \textbf{R}.
+\end{itemize}
+
+\input{topics}
+\input{education}
+\input{exchanges}
+\input{work}
+\input{publications}
+\input{achievements}
+\input{computing}
+\input{misc}
+
+\end{document}

@@ -13,19 +13,66 @@
   \textsc{Annotation:}\ #2\end{quotation}}
 \providecommand{\eprint}[2][]{\url{#2}}
 
-\bibitem{barton_bayesian_2013}
-Barton DN, Moe SJ, Engebretsen AM, Romstad E, \textbf{Tominaga K} (2013) Bayesian
-  networks for assessment of {WFD} compliance based on lake phytoplankton.
+\bibitem{tominaga_physical_2015}
+\textbf{Tominaga K}, Andersen T, Blumentrath S, Englund G, Finstad AG, Hessen DO, Laken
+  BA, Larsen S, Stordal F, Yang H (2015) Physical status of lakes in northern
+  europe for the next 100 years.
+\newblock Granada, Spain.
+\newblock The 2015 {ASLO} Aquatic Sciences Meeting: Global and Regional
+  Perspective -- North Meets South. Oral presentation. Presenting author.
+\bibAnnoteFile{tominaga_physical_2015}
+
+\bibitem{wojewodzic_seeking_2014-3}
+Wojewodzic MW, Becker D, \textbf{Tominaga K}, Zhou X, Zhao J, Shala N, Colbourne JK,
+  Hessen DO (2014) Seeking for transgenerational effects (maternal effects vs
+  epigenetics) of diet quality in clones - ecophysiological and {RNA}-seq
+  approaches.
+\newblock Lednice, Czech Republic.
+\newblock 10th Symposium on Cladocera. Oral presentation. Not presenting
+  author.
+\bibAnnoteFile{wojewodzic_seeking_2014-3}
+
+\bibitem{wojewodzic_seeking_2014-2}
+Wojewodzic MW, Becker D, \textbf{Tominaga K}, Zhou X, Zhao J, Shala N, Colbourne JK,
+  Hessen DO (2014) Seeking for transgenerational effects (maternal effects vs
+  epigenetics) of diet quality in clones - ecophysiological and {RNA}-seq
+  approaches.
+\newblock Camerino, Italy.
+\newblock First European Summer School on Nutrigenomics. Oral presentation. Not
+  presenting author.
+\bibAnnoteFile{wojewodzic_seeking_2014-2}
+
+\bibitem{wojewodzic_seeking_2014}
+Wojewodzic MW, Becker D, \textbf{Tominaga K}, Zhou X, Zhao J, Shala N, Colbourne JK,
+  Hessen DO (2014) Seeking for transgenerational effects of diet quality in
+  clones – ecophysiological and {RNA-seq} approaches.
 \newblock Oslo, Norway.
-\newblock Final {EUTROPIA} Conference. Oral presentation. Not presenter.
-\bibAnnoteFile{barton_bayesian_2013}
+\newblock {SocBiN} Bioinformatics. Oral presentation. Not presenting author.
+\bibAnnoteFile{wojewodzic_seeking_2014}
+
+\bibitem{wojewodzic_partitioning_2014}
+Wojewodzic MW, Becker D, \textbf{Tominaga K}, Zhou X, Zhao J, Shala N, Colbourne JK,
+  Hessen DO (2014) Partitioning of transgenerational effects (maternal versus
+  epigenetic) in a clonal model organism for biomedical research.
+\newblock Oslo, Norway.
+\newblock Oslo Epigenetics Symposium. Oral presentation. Not presenting author.
+\bibAnnoteFile{wojewodzic_partitioning_2014}
+
+\bibitem{wojewodzic_transgenerational_2014}
+Wojewodzic MW, Becker D, \textbf{Tominaga K}, Zhou X, Zhao J, Shala N, Colbourne JK,
+  Hessen DO (2014) Transgenerational effects of diet quality in \emph{Daphnia}
+  assessed by ecophysiological and transcriptomic analysis.
+\newblock Birmingham, {UK}.
+\newblock {EMBO} Conference: The mighty \emph{{Daphnia}}: Past, Present, and
+  Future. Poster presentation. Not presenting author.
+\bibAnnoteFile{wojewodzic_transgenerational_2014}
 
 \bibitem{couture_linking_2013}
 Couture RM, Shafei B, Markelov I, \textbf{Tominaga K}, Starrfelt J, Kaste {\O} (2013)
   Linking the benthic cycling of p to its surface water dynamics in lakes.
 \newblock Uppsala, Sweden.
 \newblock 7th International Phosphorus Workshop ({IPW}7). Poster presentation.
-  Not presenter.
+  Not presenting author.
 \bibAnnoteFile{couture_linking_2013}
 
 \bibitem{engebretsen_modelling_2013}
@@ -36,46 +83,57 @@ Engebretsen AM, \textbf{Tominaga K}, Barton DN, Andersen T, Starrfelt J, Kaste {
 \newblock Mili{\o}2015-konferensen {IV}. Oral presentation. Co-prenenter.
 \bibAnnoteFile{engebretsen_modelling_2013}
 
+\bibitem{tominaga_how_2013}
+\textbf{Tominaga K} (2013) How to make friends with environmental models: three points
+  of view.
+\newblock Oslo, Norway.
+\newblock Final {EUTROPIA} Conference. Oral presentation. Presenting author.
+\bibAnnoteFile{tominaga_how_2013}
+
+\bibitem{barton_bayesian_2013}
+Barton DN, Moe SJ, Engebretsen AM, Romstad E, \textbf{Tominaga K} (2013) Bayesian
+  networks for assessment of {WFD} compliance based on lake phytoplankton.
+\newblock Oslo, Norway.
+\newblock Final {EUTROPIA} Conference. Oral presentation. Not presenting
+  author.
+\bibAnnoteFile{barton_bayesian_2013}
+
 \bibitem{kaste_refresh_2013}
 Kaste {\O}, Couture RM, Starrfelt J, \textbf{Tominaga K} (2013) The {REFRESH} project:
-  Modelling's possible futures in the hob{\o}l river with the {INCA}-p model.
+  Modelling possible futures in the hob{\o}l river with the {INCA-P} model.
 \newblock Oslo, Norway.
-\newblock Final {EUTROPIA} Conference. Oral presentation. Not presenter.
+\newblock Final {EUTROPIA} Conference. Oral presentation. Not presenting
+  author.
 \bibAnnoteFile{kaste_refresh_2013}
 
 \bibitem{moe_bayesian_2013}
 Moe SJ, Barton DN, \textbf{Tominaga K} (2013) Bayesian networks for assessment of {WFD}
   compliance based on lake phytoplankton.
 \newblock Oslo, Norway.
-\newblock Final {EUTROPIA} Conference. Oral presentation. Not presenter.
+\newblock Final {EUTROPIA} Conference. Oral presentation. Not presenting
+  author.
 \bibAnnoteFile{moe_bayesian_2013}
-
-\bibitem{tominaga_how_2013}
-\textbf{Tominaga K} (2013) How to make friends with environmental models: three points
-  of view.
-\newblock Oslo, Norway.
-\newblock Final {EUTROPIA} Conference. Oral presentation. Presenter.
-\bibAnnoteFile{tominaga_how_2013}
 
 \bibitem{tominaga_simulating_2012}
 \textbf{Tominaga K} (2012) Simulating limnological responses to various runoff scenarios
   using {MyLake}.
 \newblock Oslo, Norway.
-\newblock {EUTROPIA} Mid-term Conference. Oral presentation. Presenter.
+\newblock {EUTROPIA} Mid-term Conference. Oral presentation. Presenting author.
 \bibAnnoteFile{tominaga_simulating_2012}
 
 \bibitem{tominaga_mylake_2012}
-\textbf{Tominaga K} (2012) {MyLake} on storefjorden and vestre vansj{\o}.
+\textbf{Tominaga K} (2012) {MyLake} on {Storefjorden} and {Vestre} {Vansj{\o}}.
 \newblock Frederikstad, Norway.
 \newblock {EUTROPIA}-{REFRESH} Modelling Workshop. Oral presentation.
-  Presenter.
+  Presenting author.
 \bibAnnoteFile{tominaga_mylake_2012}
 
 \bibitem{tominaga_future_2012}
 \textbf{Tominaga K}, Finstad AG, Kaste {\O}, Andersen T (2012) Future climate change
   impact on lakes in fennoscandia: A dynamic mechanistic approach.
 \newblock Otsu, Shiga, Japan.
-\newblock 2012 {ASLO} Aquatic Sciences Meeting. Oral presentation. Presenter.
+\newblock 2012 {ASLO} Aquatic Sciences Meeting. Oral presentation. Presenting
+  author.
 \bibAnnoteFile{tominaga_future_2012}
 
 \bibitem{tominaga_why_2011}
@@ -83,27 +141,28 @@ Moe SJ, Barton DN, \textbf{Tominaga K} (2013) Bayesian networks for assessment o
   general).
 \newblock S{\o}r Nesset, Norway.
 \newblock Bi-annual Meeting Workshop on Environmental and Analytical Chemistry.
-  Oral presentation. Presenter.
+  Oral presentation. Presenting author.
 \bibAnnoteFile{tominaga_why_2011}
 
 \bibitem{tominaga_ensemble_2010}
 \textbf{Tominaga K} (2010) Ensemble model framework for lake ecosystem modelling - case
   study from acidification modelling.
 \newblock Silkeborg, Denmark.
-\newblock Lake Ecosystem Modelling Workshop. Oral presentation. Presenter.
+\newblock Lake Ecosystem Modelling Workshop. Oral presentation. Presenting
+  author.
 \bibAnnoteFile{tominaga_ensemble_2010}
 
 \bibitem{tominaga_modelling_2009}
-\textbf{Tominaga K} (2009) Modelling eutrophiacation in lake vansj{\o}.
+\textbf{Tominaga K} (2009) Modelling eutrophiacation in {Lake} {Vansj{\o}}.
 \newblock Oslo, Norway.
-\newblock {MILJ{\O}}2015 {PhD} Seminar. Oral presentation. Presenter.
+\newblock {MILJ{\O}}2015 {PhD} Seminar. Oral presentation. Presenting author.
 \bibAnnoteFile{tominaga_modelling_2009}
 
 \bibitem{tominaga_modelling_2009-1}
-\textbf{Tominaga K} (2009) Modelling eutrophiacation in lake vansj{\o}.
+\textbf{Tominaga K} (2009) Modelling eutrophiacation in {Lake} {Vansj{\o}}.
 \newblock S{\o}r Nesset, Norway.
 \newblock Bi-annual Symposium on Environmental and Analytical Chemistry. Oral
-  presentation. Presenter.
+  presentation. Presenting author.
 \bibAnnoteFile{tominaga_modelling_2009-1}
 
 \bibitem{tominaga_predicting_2009}
@@ -112,7 +171,7 @@ Moe SJ, Barton DN, \textbf{Tominaga K} (2013) Bayesian networks for assessment o
   ensemble of acidification models at hubbard brook.
 \newblock Lincoln, New Hampshire, {USA}.
 \newblock 46th Annual Hubbard Brook Cooperators' Meeting. Oral presentation.
-  Presenter.
+  Presenting author.
 \bibAnnoteFile{tominaga_predicting_2009}
 
 \bibitem{tominaga_modelling_2009-2}
@@ -121,31 +180,32 @@ Moe SJ, Barton DN, \textbf{Tominaga K} (2013) Bayesian networks for assessment o
   recovery at long-term monitoring sites: a multi-model evaluation.
 \newblock Helsinki, Finland.
 \newblock 6th International Symposium on Ecosystem Behaviour {BIOGEOMON} 2009.
-  Poster presentation. Presenter.
+  Poster presentation. Presenting author.
 \bibAnnoteFile{tominaga_modelling_2009-2}
 
 \bibitem{tominaga_modelling_2008}
 \textbf{Tominaga K}, Aherne J, Watmough SA (2008) Modelling the chemistry of soil and
-  surface water at hubbard brook, new hampshire, {USA}.
+  surface water at {Hubbard} {Brook}, {New} {Hampshire}, {USA}.
 \newblock Gananoque, Ontario, Canada.
 \newblock 22nd Annual Gananoque Conference on Environmental Science and
-  Engineering. Oral presentation. Presenter.
+  Engineering. Oral presentation. Presenting author.
 \bibAnnoteFile{tominaga_modelling_2008}
 
 \bibitem{tominaga_evaluation_2008}
 \textbf{Tominaga K}, Aherne J, Watmough SA, Alveteg M, Cosby BJ, Driscoll CT, Posch M
-  (2008) Evaluation of process-oriented acidification models at hubbard brook.
+  (2008) Evaluation of process-oriented acidification models at {Hubbard}
+  {Brook}.
 \newblock Durham, New Hampshire, {USA}.
 \newblock Northeastern Ecosystem Research Cooperative Conference. Poster
-  presentation. Presenter.
+  presentation. Presenting author.
 \bibAnnoteFile{tominaga_evaluation_2008}
 
 \bibitem{tominaga_survival_2007}
 \textbf{Tominaga K}, Watmough SA (2007) Survival analysis of hardwood trees in southern
-  ontario.
+  {Ontario}.
 \newblock Gananoque, Ontario, Canada.
 \newblock 21st Annual Gananoque Conference on Environmental Science and
-  Engineering. Poster presentation. Presenter.
+  Engineering. Poster presentation. Presenting author.
 \bibAnnoteFile{tominaga_survival_2007}
 
 \end{thebibliography}

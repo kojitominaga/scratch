@@ -1,0 +1,43 @@
+\begin{thebibliography}{1}
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\bibAnnoteFile}[1]{%
+  \IfFileExists{#1}{\begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ \input{#1}\end{quotation}}{}}
+\providecommand{\bibAnnote}[2]{%
+  \begin{quotation}\noindent\textsc{Key:} #1\\
+  \textsc{Annotation:}\ #2\end{quotation}}
+\providecommand{\eprint}[2][]{\url{#2}}
+
+\bibitem{tominaga_melting}
+\textbf{Tominaga K}, Finstad AG, Kaste {\O}, Andersen T Melting of northern lakes : In
+  revision at PLOS ONE.
+\bibAnnoteFile{tominaga_melting}
+
+\bibitem{romarheim_natural}
+Romarheim AT, \textbf{Tominaga K}, Riise G, Andersen T (2014) Natural stochasticity vs.
+  management effort: use of year-to-year variance for disentangling
+  significance of two mutually confounding factors affecting water quality of a
+  norwegian cold dimictic lake.
+\newblock Hydrol Earth Syst Sci Discuss, under peer-review for Hydrol Earth
+  Syst Sci 11: 12489--12518.
+\bibAnnoteFile{romarheim_natural}
+
+\bibitem{couture_reconstructing}
+Couture RM, de~Wit HA, \textbf{Tominaga K}, Kiuru P, Markelov I Reconstructing past
+  oxygen dynamics in boreal lakes in response to long-term changes in climate,
+  ice phenology and doc inputs : In preparation for sumission to J. Geophys.
+  Res.: Biogeosciences.
+\bibAnnoteFile{couture_reconstructing}
+
+\bibitem{tominaga_calibration}
+\textbf{Tominaga K}, Engebretsen AM, Starrfelt J, Kaste {\O}, Vogt RD, Andersen T
+  Calibration uncertainty in sequential model application : In preparation for
+  sumission to PLOS ONE.
+\bibAnnoteFile{tominaga_calibration}
+
+\end{thebibliography}

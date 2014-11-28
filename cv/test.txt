@@ -1,0 +1,462 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+thesesTheses
+invitedInvited Talk
+articlesPeer-reviewed Journal Articles
+conferencesConference and Seminar Presentations
+manuscriptsManuscripts in Preparation
+
+
+
+
+L>p0.14
+Rp0.8
+
+
+5pt
+
+
+
+
+T1
+
+
+ Koji Tominaga
+  
+
+  Centre for Ecological and Evolutionary Synthesis (CEES)
+
+  Department of Biosciences, University of Oslo
+
+  P.O. Box 1066 Blindern    0316 Oslo  
+   Norway
+  
+
+  koji.tominaga@ibv.uio.no     Information as of 23
+  November 2014 
+  
+
+  This document contains 6 pages
+
+
+
+-0.4em
+
+
+
+Summary
+I am an environmental scientist with a specialisation in massive
+computing, currently working as a researcher at postdoc level after my
+PhD completed in 2013.
+
+My application fields to date have been bioinformatics,
+climate change, anthropogenic pollution,
+biogeochemistry, and freshwater systems. My
+interests in computing and numerical methods include machine
+  learning, parameter estimation, quantification of
+  modelling uncertainty and data visualisation. Highlights
+in computing experiences:
+
+  
+Simultaneous control of 1000 computing nodes,
+3 HPC platforms (Notur/Norstore, Sharcnet, Amazon EC2),
+Large data and file management (terabytes), and
+Advanced level skills in Unix, Python and
+  R.
+
+
+tominaga_objective_2008
+
+tominaga_lake_2013
+tominaga_uncertainty_2009
+tominaga_monitoring_2007
+
+tominaga_melting
+romarheim_natural
+couture_reconstructing
+tominaga_calibration
+
+couture_modelling_2014
+trolle_community-based_2012
+tominaga_predicting_2010
+mooij_challenges_2010
+tominaga_voyage_2009-1
+tominaga_predicting_2008
+
+tominaga_physical_2015
+wojewodzic_seeking_2014-3        
+wojewodzic_seeking_2014-2        
+wojewodzic_seeking_2014          
+wojewodzic_partitioning_2014     
+wojewodzic_transgenerational_2014
+
+couture_linking_2013
+engebretsen_modelling_2013
+tominaga_how_2013
+barton_bayesian_2013
+kaste_refresh_2013
+moe_bayesian_2013
+tominaga_simulating_2012
+tominaga_mylake_2012
+tominaga_future_2012
+tominaga_why_2011
+tominaga_ensemble_2010
+tominaga_modelling_2009
+tominaga_modelling_2009-1
+tominaga_predicting_2009
+tominaga_modelling_2009-2
+tominaga_modelling_2008
+tominaga_evaluation_2008
+tominaga_survival_2007
+
+Scientific topics
+
+  
+Bioinformatics
+  
+
+
+
+
+Big data and HPC
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Model uncertainty 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+Parameter estimation
+  
+
+
+
+
+
+
+
+
+
+
+
+Lakes 
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Eutrophication
+  
+
+
+
+
+
+
+
+
+
+
+Acidification  
+  
+
+
+
+
+
+
+
+
+Forest health
+  
+
+
+
+
+
+
+Survival analysis
+  
+
+
+Climate change impacts
+  
+
+
+
+
+
+
+
+  
+Education
+
+L!R  
+2009--2013 & PhD in Biology, University of Oslo
+
+2007--2009 & MSc in Environmental Science, Trent University 
+
+2003--2007 & BSc in Environmental Science, Trent University 
+
+
+
+Academic Exchanges
+L!R  
+Feb--Mar 2009 & Technische Universität München 
+
+Apr--Jun 2009 & Norwegian Institute for Water Research 
+
+
+
+Work Experiences
+L!R  
+2013--current & Researcher, University of Oslo 
+
+2010--2013 & Part-time Researcher, Norweigian Institute for Water Research  
+
+2006--2009 & Research Assistant, Trent University 
+
+2007--2008 & Teaching Assistant, Trent University 
+
+ &   4th year climate change course     2nd 
+ year energy science course 
+  
+2008 & Seminar Instructor, Trent University 
+
+ &   R for natural scientists at graduate level 
+  
+2006--2007 & Grader, Trent University 
+
+ &   2nd year statistics course 
+  
+2006--2007 & Technical Assistant, Kawartha World Issues Centre 
+
+
+
+
+
+Peer-review Contributions
+
+  
+2 times for Environmental Science and Technology 
+2 times for Science of the Total Environment 
+1 time for PLOS ONE 
+
+
+plos2009mod
+koji
+plos2009mod
+koji
+plos2009mod
+koji
+plos2009mod
+koji
+plos2009mod
+koji
+
+I have also participated in several other international and domestic
+conferences and meetings, including: 
+     
+University of Birmingham (November 2014)
+     
+International Centre for Theoretical Physics, Trieste, Italy
+(October--November 2014)
+     
+SYKE, Helsinki, Finland (May 2012)
+     
+EU WFD meeting, Sitges, Spain (March 2012)
+      
+Tianjin Academy of Environmental Sciences, Tianjin, China (September 2011)
+      
+RCEES, Chinese Academy of Sciences, Beijing, China (September 2011)
+      
+Instituto Superior Técnico, Lisbon, Portugal (April 2011)
+      
+Technische Universität München, Freising, Germany (March 2009) 
+      
+Trent University, Peterborough, Ontario, Canada (November and December
+2007, February, April and October 2008 and November 2009)
+      
+RIVM, Bilthoven, The Netherlands (May 2008)
+      
+Lund University, Lund, Sweden (May 2008)
+      
+Syracuse University, Syracuse, New York, USA (November 2007)
+      
+Hubbard Brook Experimental Forest, Lincoln, New Hampshire, USA (July 2007)
+      
+University of New Hampshire, Durham, New Hampshire, USA (October
+2006) 
+      
+Ontario Ministry of the Environment, Toronto, Ontario, Canada (October 2006)
+
+
+
+
+
+
+
+
+
+Achievements
+
+Biogeomon Symposium 2009, Finland
+L!R   
+2009 & Student scholarship 
+
+
+
+Research Council of Norway (Norges Forskningsråd)
+L!R   
+2009 & Norwegian Government Scholarship April-June 2009 
+
+
+
+German Academic Exchange Service (Deutscher Akademischer Austausch Dienst, DAAD)
+L!R    
+2009 & Short-term Study Scholarship February-March 2009 
+
+
+
+Northeastern Ecosystem Research Cooperative, USA
+L!R    
+2008 & Travel support for graduate students at the NERC Conference 
+
+
+
+Trent University (non-student), Canada
+L!R     
+2008 & Academic Innovation Fund. “Introductory seminar on R for biologists and environmental scientists” 
+
+
+
+Trent University (graduate)
+L!R    
+2007--2009 & Graduate Teaching Assistantship and Research Assistantship (declined for 2009) 
+
+2007--2009 & Research Fellowship Award 
+
+2007--2008 & Graduate Studies Bursary 
+
+
+
+At Trent University (undergraduate)
+L!R    
+2007 & President's Role  
+
+2007 & J.D. Page Scholarship in Environmental and Resource Studies (ERS) 
+ 
+2003--2007 & Dean's Role (4 times) 
+
+2003--2007 & Entrance Scholarship (automatically renewable) 
+
+2003--2007 & Trent International Program (TIP), Board of Governors Bursary (4 times) 
+
+2004--2007 & In-Course Scholarship (TIP, 3 times) 
+
+2004--2007 & Trent International Student Association Bursary (3 times) 
+
+2006 & J. Percy MacNaughton Prize (ERS) 
+
+2006 & Catherine Parr Traill College Principal's Prize 
+
+2006 & Honorarium, Kawartha World Issues Centre 
+
+2005 & Cyril and Jenny Carter Scholarship in Environmental Studies (ERS) 
+
+2004 & Graham Hartley Chemistry Prize (Chemistry Department) 
+
+
+
+Computing
+HPC and super computer facilities
+I have handled more than 1000 computing nodes at the same time, and have handled terabytes of data at the following facilities:
+
+  
+Notur Abel, Norway
+Amazon Elastic Computing Cloud, Ireland
+Shared Hierarchical Academic Research Computing Network (SHARCNET), Ontario, Canada
+
+
+Skills Listed by Familiarity
+Python, R, Unix, Linux, SSH, , Git, NetCDF, HDF5, GIS (GRASS, QGIS),
+Matlab/Octave, XML, HTML, SQL, Fortran, C, MPI, OpenMP, C++, HTTP. 
+
+Miscellaneous
+Natural Languages
+L!R  
+English & fluent 
+
+Japanese & native 
+
+Norwegian & elementary 
+
+Chinese & elementary 
+
+
+
+Travels
+L!R  
+As resident & Japan, Canada, Germany, Norway, Malaysia 
+
+Assignment & United States, Ireland, Sweden, Netherlands, Finland,
+Denmark, Portugal, Spain, China (Mainland), Italy, United Kingdom 
+
+As tourist & Singapore, Thailand, Laos, Myanmar, Czech Republic,
+Austria, France, Belgium, Indonesia, Qatar, China (Hong Kong and
+Macau), Australia, India
+
+
+
