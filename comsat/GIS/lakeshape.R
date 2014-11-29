@@ -21,4 +21,4 @@ writeOGR(spTransform(comsat, geographical), 'comsat.geojson', 'comsat', 'GeoJSON
 writeOGR(spTransform(comsat, geographical), 'comsat.kml', 'comsat', 'KML')
 # readOGR('comsat.geojson', 'OGRGeoJSON')
 
-
+writeOGR(spTransform(fennoscan, geographical), '200k.geojson', '200k', 'GeoJSON')
