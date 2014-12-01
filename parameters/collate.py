@@ -7,6 +7,7 @@ import pandas as pd
 import datetime
 import pytz
 import math
+import osgeo.ogr
 
 conn = sqlite3.connect(os.path.join('data', 'processed', 'laketemp.sqlite'))
 c = conn.cursor
@@ -28,9 +29,9 @@ depth real,
 temperature real)''')
 
 ## Atnsjoen
-ebh = 8376627
+ebi = 8376627
 conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
-             (u'Atnsjøen', ebh, 'NINA'))
+             (u'Atnsjøen', ebi, 'NINA'))
 ## Atnsjoen (high frequency)
 
 def logged2int(s):
@@ -91,7 +92,7 @@ for d in atna_dd:
     m = grouped.mean()
     for i, r in m.iterrows():
         conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                     (ebh, i.isoformat(), d, r['temperature']))
+                     (ebi, i.isoformat(), d, r['temperature']))
 
 ## Atnsjoen (low frequency)
 def conv_date(s):
@@ -110,15 +111,15 @@ data = pd.read_table(p, sep=',', skiprows=1, usecols=range(1,4),
                      converters={'date':conv_date})
 for i, r in data.iterrows():
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, r['date'], r['depth'], r['temperature']))
+                 (ebi, r['date'], r['depth'], r['temperature']))
 
 # todo remove the time after the logger came back to NINA building
 # todo time zone of the loggers?
 
 ## Årungen
-ebh = 2289199
+ebi = 2289199
 conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
-             (u'Årungen', ebh, 'UMB'))
+             (u'Årungen', ebi, 'UMB-Aleksandra'))
 def conv_datetimeAA(s):
     s1, s2 = s.split(' ')
     day, month, year = map(int, s1.split('/'))
@@ -144,26 +145,26 @@ grouped = data2.groupby(data2.index.date)
 m = grouped.mean()
 for i, r in m.iterrows():
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, i.isoformat(), 0.7, r['t0.7m']))
+                 (ebi, i.isoformat(), 0.7, r['t0.7m']))
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, i.isoformat(), 1.3, r['t1.3m']))
+                 (ebi, i.isoformat(), 1.3, r['t1.3m']))
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, i.isoformat(), 3.3, r['t3.3m']))
+                 (ebi, i.isoformat(), 3.3, r['t3.3m']))
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, i.isoformat(), 4.4, r['t4.4m']))
+                 (ebi, i.isoformat(), 4.4, r['t4.4m']))
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, i.isoformat(), 6.4, r['t6.4m']))
+                 (ebi, i.isoformat(), 6.4, r['t6.4m']))
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, i.isoformat(), 8.4, r['t8.4m']))
+                 (ebi, i.isoformat(), 8.4, r['t8.4m']))
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, i.isoformat(), 10.5, r['t10.5m']))
+                 (ebi, i.isoformat(), 10.5, r['t10.5m']))
     conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebh, i.isoformat(), 12.6, r['t12.6m']))
+                 (ebi, i.isoformat(), 12.6, r['t12.6m']))
 
 ## Vansjø
-ebh = 11110535
+ebi = 11110535
 conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
-             (u'Vansjø', ebh, 'EUTROPIA-Koji'))
+             (u'Vansjø', ebi, 'EUTROPIA-Koji'))
 def conv_datetimeVansjo(s):
     s1, s2 = s.split(' ')
     year, month, day = map(int, s1.split('-'))
@@ -206,8 +207,179 @@ for d, p in tuples:
     m = grouped.mean()
     for i, r in m.iterrows():
         conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                     (ebh, i.isoformat(), d, r['temperature']))
-                         
+                     (ebi, i.isoformat(), d, r['temperature']))
+
+## COMSAT lakes
+p1 = os.path.join('data', 'COMSAT', 'COMSAT 2011 lakes utf8.txt')
+def conv_datecomsat(s):
+    day, month, year = map(int, s.split('.'))
+    return(datetime.date(year, month, day))
+def conv_timecomsat(s):
+    hour, minute = map(int, s.split(':'))
+    return(datetime.time(hour, minute))
+def empty2none(s):
+    ret = None if s == '' else s
+    return(ret)
+lakemeta = pd.read_table(p1, sep='\t', skiprows=1, 
+                         names=['ID', 'Lake', 'Date', 'Time', 
+                                'Latitude', 'Longitude', 'Altitude', 
+                                'Area', 'NVEID', 'NVEREGINE', 
+                                'SMHIID', 'EUCD', 'VDRID'], 
+                         dtype={'ID':np.int16, 
+                                'Lake':str, 
+                                'Date':datetime.date, 
+                                'Time':datetime.time, 
+                                'Latitude':np.float64, 
+                                'Longitude':np.float64, 
+                                'Altitude':np.float64, 
+                                'Area':np.float64, 
+                                'NVEID':np.int64,
+                                'NVEREGINE':str,
+                                'SMHIID':str, 
+                                'EUCD':str, 
+                                'VDRID':str},
+                         converters={'Date':conv_datecomsat, 
+                                     'Time':conv_timecomsat, 
+                                     'NVEID':empty2none, 
+                                     'NVEREGINE':empty2none,
+                                     'SMHIID':empty2none, 
+                                     'EUCD':empty2none, 
+                                     'VDRID':empty2none})
+p2 = os.path.join('data', 'COMSAT', 'CTD', 'ctd.all.fixed.txt')
+def conv2_date(s):
+    s1, month, s3 = map(int, s.split('/'))
+    if s3 > 999:
+        year = s3 ; day = s1
+    else:
+        year = s1 ; day = s3
+    return datetime.date(year + 2000, month, day)
+def conv2_time(s):
+    hour, minute, second = s.split(':')
+    hour = int(hour)
+    minute = int(minute)
+    second, decimalsecond = map(int, second.split('.'))
+    microsecond = decimalsecond * 1000
+    return datetime.time(hour, minute, second, microsecond)
+ctd = pd.read_table(p2, sep=' ', skiprows=1, quotechar = '"', quoting=1,
+                    encoding='utf-8',
+                    names=['rownames', 'l', 'year', 'Lake', 'Date', 'Time', 'Cond', 
+                           'Temp', 'Pres', 'RTemp', 'PAR', 'RDO2',
+                           'TFlCa', 'TFlEa', 'TFlPa', 'Depth', 'Salin',
+                           'SpecCond', 'DensAnom', 'SoS', 'rdO2C'], 
+                    dtype={'rownames':np.int64, 
+                           'l':np.int64, 'year':np.int64, 'Lake':str, 
+                           'Date':datetime.date, 'Time':datetime.time,
+                           'Cond':np.float64, 'Temp':np.float64, 
+                           'Pres':np.float64, 'RTemp':np.float64, 
+                           'PAR':np.float64, 'RDO2':np.float64,
+                           'TFlCa':np.float64, 'TFlEa':np.float64, 
+                           'TFlPa':np.float64, 'Depth':np.float64, 
+                           'Salin':np.float64, 'SpecCond':np.float64, 
+                           'DensAnom':np.float64, 'SoS':np.float64, 
+                           'rdO2C':np.float64},
+                    na_values = ['Inf'],
+                    converters={'Date':conv2_date, 'Time':conv2_time})
+
+p3 = os.path.join('..', '..', '..', '..', 'GIS_DATA', 'fenoscand_lakes')
+p4 = 'ecco-biwa_lakes_v.0.1'
+datasource = osgeo.ogr.Open(p3)
+layer = datasource.GetLayerByName(p4)
+comsatgeom = set()
+feat = layer.GetNextFeature()
+fieldnames = feat.keys()
+print('it will take a few minute...')
+while feat is not None:
+    if feat.items()['cCOMSAT'] == 1:
+        comsatgeom.add(feat)
+        print('... found %s' % feat.items()['EBint'])
+    feat = layer.GetNextFeature()
+comsatgeom = list(comsatgeom)
+coords = [f.GetGeometryRef().GetGeometryRef(0).GetPoints() 
+          for f in comsatgeom]
+ebint = [f.items()['EBint'] for f in comsatgeom]
+vatnlnr = [f.items()['vatn_lnr'] for f in comsatgeom]
+altitude = [f.items()['vfp_mean'] for f in comsatgeom]
+meancoords = [np.array(c).mean(axis=0) for c in coords]
+# indices0 = []
+# indices1 = []
+lakemeta['ebint'] = np.repeat(0, len(lakemeta))
+for i, a in enumerate(meancoords):
+    flag = False
+    the_index = -1
+    longitude = a[0]
+    latitude = a[1]
+    diff = (lakemeta['Longitude'] - longitude) ** 2 + \
+           ((lakemeta['Latitude'] - latitude) * 2) ** 2
+    diff.sort()
+    # indices0.append(diff.index[0])
+    # indices1.append(diff.index[1])
+    altdiff = (lakemeta['Altitude'] - float(altitude[i])).abs()
+    altdiff.sort()
+    print(i, vatnlnr[i],
+          lakemeta.NVEID.ix[diff.index[0]], diff.index[0], 
+          lakemeta.NVEID.ix[diff.index[1]], diff.index[1], 
+          ebint[i])
+    if vatnlnr[i] == 374:
+            the_index = 48
+    elif not vatnlnr[i] == 0:
+        if vatnlnr[i] == 65804:
+            flag = True
+            vatnlnr[i] = 65803
+        if lakemeta.NVEID.ix[diff.index[0]] is not None:
+            if vatnlnr[i] == int(lakemeta.NVEID.ix[diff.index[0]]):
+                the_index = diff.index[0]
+        if lakemeta.NVEID.ix[diff.index[1]] is not None:
+            if vatnlnr[i] == int(lakemeta.NVEID.ix[diff.index[1]]):
+                the_index = diff.index[1]
+        if lakemeta.NVEID.ix[diff.index[2]] is not None:
+            if vatnlnr[i] == int(lakemeta.NVEID.ix[diff.index[2]]):
+                the_index = diff.index[2]
+        if lakemeta.NVEID.ix[diff.index[3]] is not None:
+            if vatnlnr[i] == int(lakemeta.NVEID.ix[diff.index[3]]):
+                the_index = diff.index[3]
+    else:
+        the_index_by_dist = diff.index[0]
+        # the_index_by_elev = altdiff.index[0]
+        # exception = [0, 7, 12, 16, 22, 24, 26, 28, 33, 35, 37, 39, 40, 44, 46, 
+        #              50, 51, 55, 60, 62, 64, 65, 66, 67, 69, 72, 74, 76, 77]
+        # if i in exception:
+        #     the_index = the_index_by_dist
+        # elif the_index_by_dist == the_index_by_elev:
+        #     the_index = the_index_by_dist
+        # else:
+        the_index = the_index_by_dist
+            # print(i, the_index_by_dist, the_index_by_elev, 
+            #       diff[diff.index[0]], diff[diff.index[1]], 
+            #       altdiff[altdiff.index[0]], altdiff[altdiff.index[1]])
+    if not flag:
+        lakemeta['ebint'].ix[the_index] = ebint[i]
+# do not know 58 and 59 and 60
+# do not know i = 60 
+# looks okay actually
+for i, r in lakemeta.iterrows():
+    comsatID = str(r['ID'])
+    if comsatID == '194':
+        print('skipping Sperillen, comsatID = 194, as there is no CTD data')
+        continue 
+    name = r['Lake']
+    date = r['Date']
+    ebi = r['ebint']
+    ctdsub = ctd[ctd['Lake'] == comsatID][['Date', 'Time', 'Temp', 'Depth']]
+    assert date == ctdsub['Date'].tolist()[0]
+    ctdsub = ctdsub[['Time', 'Temp', 'Depth']]
+    print(comsatID, name, date, ebi)
+    print(ctdsub)
+    for subi, subr in ctdsub.iterrows():
+        # time = subr['Time']
+        # dt = datetime.datetime(date.year, date.month, date.day, time.hour, 
+        #                        time.minute, time.second, time.microsecond, 
+        #                        pytz.timezone('Etc/GMT+2'))
+        conn.execute('insert into temperature values (?, ?, ?, ?)', 
+                     (ebi, date, subr['Depth'], subr['Temp']))
+    conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
+                 (name.decode('utf-8'), ebi, 'COMSAT'))
+    
+                      
 
 ## summary stats
 c = conn.execute('''select eb_int, count(), min(date), max(date) 
