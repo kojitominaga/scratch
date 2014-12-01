@@ -20,7 +20,10 @@ n_total integer,
 n_depths integer, 
 n_dates integer, 
 min_date integer, 
-max_date integer)''')
+max_date integer, 
+bath_NO integer, 
+bath_SE integer, 
+bath_NOSE integer)''')
 
 conn.execute('''create table temperature (
 eb_int integer, 
@@ -90,6 +93,7 @@ for d in atna_dd:
     data2.index = data2.index.tz_convert(pytz.timezone('Etc/GMT+1'))
     grouped = data2.groupby(data2.index.date)
     m = grouped.mean()
+    m = m[(m.index > datetime.date(2011, 5, 11)) & (m.index < datetime.date(2011, 10, 12))]
     for i, r in m.iterrows():
         conn.execute('insert into temperature values (?, ?, ?, ?)', 
                      (ebi, i.isoformat(), d, r['temperature']))
@@ -287,7 +291,7 @@ layer = datasource.GetLayerByName(p4)
 comsatgeom = set()
 feat = layer.GetNextFeature()
 fieldnames = feat.keys()
-print('it will take a few minute...')
+print('it will take a few minutes...')
 while feat is not None:
     if feat.items()['cCOMSAT'] == 1:
         comsatgeom.add(feat)
@@ -378,8 +382,30 @@ for i, r in lakemeta.iterrows():
                      (ebi, date, subr['Depth'], subr['Temp']))
     conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
                  (name.decode('utf-8'), ebi, 'COMSAT'))
-    
-                      
+
+## Langtjern NIVA
+p = os.path.join('data', 'Langtjern', 'buoy_export_to_text.txt')
+ebi = 8365569
+conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
+             (u'Langtjern', ebi, 'NIVA'))
+def conv_Ldate(s):
+    day, month, year = map(int, s.split('.'))
+    return(datetime.date(year, month, day))
+def conv_Ltime(s):
+    hour, minute = map(int, s.split(':'))
+    return(datetime.time(hour, minute))
+data = pd.read_table(p, sep='\t', skiprows=1, na_values='NaN', 
+                     names=['date', 'time', 'dyp1', 'dyp2', 'O2', 'temp'],
+                     dtype={'date':datetime.date, 'time':datetime.time, 
+                            'dyp1':np.float64, 'dyp2':np.float64, 
+                            'O2':np.float64, 'temp':np.float64}, 
+                     converters={'date':conv_Ldate, 'time':conv_Ltime})
+group = data.groupby(['dyp1', 'date'])
+m = group.mean()
+for i, r in m.iterrows():
+    if r['temp'] is not None:
+        conn.execute('insert into temperature values (?, ?, ?, ?)',
+                     (ebi, i[1], i[0], r['temp']))
 
 ## summary stats
 c = conn.execute('''select eb_int, count(), min(date), max(date) 
@@ -400,6 +426,26 @@ for eb_int in eb_int_list:
     conn.execute('''update lakes set n_depths = ?, n_dates = ?
                     where eb_int = ?''',
                  (n_depths, n_dates, eb_int))
-    
+p3 = os.path.join('..', '..', '..', '..', 'GIS_DATA', 'fenoscand_lakes')
+p4 = 'ecco-biwa_lakes_v.0.1'
+datasource = osgeo.ogr.Open(p3)
+layer = datasource.GetLayerByName(p4)
+bathkeys = set()
+feat = layer.GetNextFeature()
+fieldnames = feat.keys()
+print('it will take a few minutes...')
+while feat is not None:
+    if feat.items()['EBint'] in eb_int_list:
+        bathkeys.add((feat.items()['EBint'], 
+                      feat.items()['cBathNO'], 
+                      feat.items()['cBathSE'], 
+                      feat.items()['cBathNOSE']))
+        print('... found %s' % feat.items()['EBint'])
+    feat = layer.GetNextFeature()
+for ebi, bno, bse, bnose in bathkeys:
+    conn.execute('''update lakes set bath_NO = ?, bath_SE = ?, bath_NOSE = ?
+                    where eb_int = ?''',
+                 (bno, bse, bnose, ebi))
+
 conn.commit()
 conn.close()
