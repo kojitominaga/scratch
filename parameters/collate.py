@@ -45,12 +45,18 @@ def logged2int(s):
         ret = 2
     return(ret)
 
-def conv_intensity(s):
-    s = s.replace(',', '.').replace(' ', '')
-    ret = 0 if s == '0.0' else float(s)
+def conv_intensity(s, decimal=','):
+    if decimal == ',':
+        s = s.replace(',', '.').replace(' ', '')
+    elif decimal == '.':
+        s = s.replace(' ', '')
+    if s == '':
+        ret = None
+    else:
+        ret = 0 if s == '0.0' else float(s)
     return(ret)
 
-def conv_datetime(s):
+def conv_datetime(s, spl='.'):
     s1, s2, s3 = s.split(' ')
     if s3 == 'AM':
         add = 0
@@ -58,7 +64,7 @@ def conv_datetime(s):
         add = 12
     else:
         complain
-    day, month, year = s1.split('.')
+    day, month, year = s1.split(spl)
     hour, minute, second = s2.split(':')
     day = int(day)
     month = int(month)
@@ -97,6 +103,73 @@ for d in atna_dd:
     for i, r in m.iterrows():
         conn.execute('insert into temperature values (?, ?, ?, ?)', 
                      (ebi, i.isoformat(), d, r['temperature']))
+def NINA_log(p, conn, ebi, name, d, sep, ncol, skiprows, decimal, spl):
+    '''Assumes certain file format at p'''
+    data = pd.read_table(p, sep=sep, decimal=decimal, skiprows=skiprows,
+                         usecols=range(4),
+                         dtype={'no':np.int32, 
+                                'datetime':datetime.datetime, 
+                                'temperature':np.float64, 
+                                'intensity':np.float64, 
+                                'bad_battery':np.int8, 
+                                'good_battery':np.int8, 
+                                'end_of_file':np.int8, 
+                                'dummy':np.int8,
+                                'dummy2':np.int8},
+                         names=['no', 'datetime', 'temperature', 'intensity', 
+                                'bad_battery', 'good_battery', 'end_of_file', 
+                                'dummy', 'dummy2'][:ncol],
+                         converters={'datetime':lambda(s): conv_datetime(s, spl=spl), 
+                                     'intensity':lambda(s): conv_intensity(s, decimal=decimal),
+                                     'bad_battery':logged2int, 
+                                     'good_battery':logged2int, 
+                                     'end_of_file':logged2int, 
+                                     'dummy':logged2int,
+                                     'dummy':logged2int})
+    data2 = data.set_index('datetime')
+    data2.index = data2.index.tz_convert(pytz.timezone('Etc/GMT+1'))
+    grouped = data2.groupby(data2.index.date)
+    m = grouped.mean()
+    # m = m[(m.index > datetime.date(2011, 5, 11)) & (m.index < datetime.date(2011, 10, 12))]
+    print(name)
+    print(m)
+    for i, r in m.iterrows():
+        conn.execute('insert into temperature values (?, ?, ?, ?)', 
+                     (ebi, i.isoformat(), d, r['temperature']))
+    c = conn.execute('select * from lakes where eb_int = ?', (ebi, ))
+    if len(c.fetchall()) == 0:
+        conn.execute('''insert into lakes (name, eb_int, provider) 
+                        values (?, ?, ?)''', 
+                     (name, ebi, 'NINA'))
+NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
+                      'sjysjøen_sommer08.csv'), 
+         conn, 7053515, u'Sjysjøen', 2, ',', 9, 2, '.', '/')
+NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
+                      'søatn_sommer08_dyp2m.csv'), 
+         conn, 13371919, u'Søvatn', 2, ',', 9, 2, '.', '/')
+NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
+                      'søvatn_sommer08_dyp10m.csv'), 
+         conn, 13371919, u'Søvatn', 10, ',', 9, 2, '.', '/')
+NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
+                      'storvt_profundal.csv'), 
+         conn, 3321102, u'Stortvatnet', 10, ',', 9, 2, '.', '/')
+NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
+                      'storvatn_littoral.csv'), 
+         conn, 3321102, u'Stortvatnet', 2, ',', 9, 2, '.', '/')
+NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
+                      'Dragavatn_vinter.txt'), 
+         conn, 16599430, u'Dragavatn', 2, ';', 8, 1, ',', '.')
+NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
+                      'Gj+øvatnet_vinter.txt'), 
+         conn, 8340336, u'Gjøvatnet', 2, ';', 9, 1, ',', '.')
+NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
+                      'langvatn_sommer08_dyp10m.txt'), 
+         conn, 9581011, u'Langvatnet', 10, ';', 9, 1, ',', '.')
+NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
+                      's+øvatn_littora_vinter.txt'), 
+         conn, 13371919, u'Søvatn', 2, ';', 8, 1, ',', '.')
+
+
 
 ## Atnsjoen (low frequency)
 def conv_date(s):
