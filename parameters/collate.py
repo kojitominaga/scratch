@@ -10,12 +10,12 @@ import math
 import osgeo.ogr
 
 conn = sqlite3.connect(os.path.join('data', 'processed', 'laketemp.sqlite'))
-c = conn.cursor
 
 conn.execute('''create table lakes (
 name text, 
-provider text, 
-eb_int integer primary key, 
+provider_id integer, 
+eb_int integer, 
+station_id integer default 0, 
 n_total integer, 
 n_depths integer, 
 n_dates integer, 
@@ -23,18 +23,29 @@ min_date integer,
 max_date integer, 
 bath_NO integer, 
 bath_SE integer, 
-bath_NOSE integer)''')
+bath_NOSE integer, 
+primary key (provider_id, eb_int, station_id))''')
+
+conn.execute('''create table providers (
+provider_id integer primary key, 
+provider_name text)''')
 
 conn.execute('''create table temperature (
+provider_id integer, 
 eb_int integer, 
+station_id integer default 0, 
 date integer, 
 depth real, 
 temperature real)''')
 
 ## Atnsjoen
 ebi = 8376627
-conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
-             (u'Atnsjøen', ebi, 'NINA'))
+conn.execute('insert into providers (provider_name) values (?)', ('NINA',))
+c = conn.execute('select provider_id from providers where provider_name = ?', 
+                 ('NINA',))
+pr_id = c.fetchall()[0][0]
+conn.execute('insert into lakes (name, eb_int, provider_id) values (?, ?, ?)', 
+             (u'Atnsjøen', ebi, pr_id))
 ## Atnsjoen (high frequency)
 
 def logged2int(s):
@@ -101,9 +112,9 @@ for d in atna_dd:
     m = grouped.mean()
     m = m[(m.index > datetime.date(2011, 5, 11)) & (m.index < datetime.date(2011, 10, 12))]
     for i, r in m.iterrows():
-        conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                     (ebi, i.isoformat(), d, r['temperature']))
-def NINA_log(p, conn, ebi, name, d, sep, ncol, skiprows, decimal, spl):
+        conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                     (pr_id, ebi, 0, i.isoformat(), d, r['temperature']))
+def NINA_log(p, conn, pr_id, ebi, name, d, sep, ncol, skiprows, decimal, spl):
     '''Assumes certain file format at p'''
     data = pd.read_table(p, sep=sep, decimal=decimal, skiprows=skiprows,
                          usecols=range(4),
@@ -134,40 +145,56 @@ def NINA_log(p, conn, ebi, name, d, sep, ncol, skiprows, decimal, spl):
     print(name)
     print(m)
     for i, r in m.iterrows():
-        conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                     (ebi, i.isoformat(), d, r['temperature']))
+        conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                     (pr_id, ebi, 0, i.isoformat(), d, r['temperature']))
     c = conn.execute('select * from lakes where eb_int = ?', (ebi, ))
     if len(c.fetchall()) == 0:
-        conn.execute('''insert into lakes (name, eb_int, provider) 
+        c = conn.execute('select provider_id from providers where provider_name = ?', 
+                         ('NINA', ))
+        pr_id = c.fetchall()[0][0]
+        conn.execute('''insert into lakes (name, eb_int, provider_id) 
                         values (?, ?, ?)''', 
-                     (name, ebi, 'NINA'))
+                     (name, ebi, pr_id))
+
 NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
                       'sjysjøen_sommer08.csv'), 
-         conn, 7053515, u'Sjysjøen', 2, ',', 9, 2, '.', '/')
+         conn, pr_id, 7053515, u'Sjysjøen', 2, ',', 9, 2, '.', '/')
 NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
                       'søatn_sommer08_dyp2m.csv'), 
-         conn, 13371919, u'Søvatn', 2, ',', 9, 2, '.', '/')
+         conn, pr_id, 13371919, u'Søvatn', 2, ',', 9, 2, '.', '/')
 NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
                       'søvatn_sommer08_dyp10m.csv'), 
-         conn, 13371919, u'Søvatn', 10, ',', 9, 2, '.', '/')
+         conn, pr_id, 13371919, u'Søvatn', 10, ',', 9, 2, '.', '/')
 NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
                       'storvt_profundal.csv'), 
-         conn, 3321102, u'Stortvatnet', 10, ',', 9, 2, '.', '/')
+         conn, pr_id, 3321102, u'Stortvatnet', 10, ',', 9, 2, '.', '/')
 NINA_log(os.path.join('data', 'NINA data', 'temperaturdata', 'xl files',
                       'storvatn_littoral.csv'), 
-         conn, 3321102, u'Stortvatnet', 2, ',', 9, 2, '.', '/')
+         conn, pr_id, 3321102, u'Stortvatnet', 2, ',', 9, 2, '.', '/')
 NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
                       'Dragavatn_vinter.txt'), 
-         conn, 16599430, u'Dragavatn', 2, ';', 8, 1, ',', '.')
+         conn, pr_id, 16599430, u'Dragavatn', 2, ';', 8, 1, ',', '.')
 NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
                       'Gj+øvatnet_vinter.txt'), 
-         conn, 8340336, u'Gjøvatnet', 2, ';', 9, 1, ',', '.')
+         conn, pr_id, 8340336, u'Gjøvatnet', 2, ';', 9, 1, ',', '.')
 NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
                       'langvatn_sommer08_dyp10m.txt'), 
-         conn, 9581011, u'Langvatnet', 10, ';', 9, 1, ',', '.')
+         conn, pr_id, 9581011, u'Langvatnet', 10, ';', 9, 1, ',', '.')
 NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
                       's+øvatn_littora_vinter.txt'), 
-         conn, 13371919, u'Søvatn', 2, ';', 8, 1, ',', '.')
+         conn, pr_id, 13371919, u'Søvatn', 2, ';', 8, 1, ',', '.')
+NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
+                      'slipsiken_sommer08.txt'), 
+         conn, pr_id, 13669211, u'Slipstikken', 2, ';', 9, 1, ',', '.')
+NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
+                      'raurenjaure_sommer08.txt'), 
+         conn, pr_id, 11629064, u'Raurenjavre', 2, ';', 8, 1, ',', '.')
+NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
+                      'hoysjoen_sommer08_dyp2m.txt'), 
+         conn, pr_id, 15455774, u'Høysjøen', 2, ';', 8, 1, ',', '.')
+NINA_log(os.path.join('data', 'NINA data', 'D_temperatures',
+                      'hoysjoen_sommer08_dyp10.txt'), 
+         conn, pr_id, 15455774, u'Høysjøen', 2, ';', 8, 1, ',', '.')
 
 
 
@@ -187,16 +214,21 @@ data = pd.read_table(p, sep=',', skiprows=1, usecols=range(1,4),
                      names=['year', 'date', 'depth', 'temperature', 'season'],
                      converters={'date':conv_date})
 for i, r in data.iterrows():
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, r['date'], r['depth'], r['temperature']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, r['date'], r['depth'], r['temperature']))
 
 # todo remove the time after the logger came back to NINA building
 # todo time zone of the loggers?
 
 ## Årungen
 ebi = 2289199
-conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
-             (u'Årungen', ebi, 'UMB-Aleksandra'))
+conn.execute('insert into providers (provider_name) values (?)', 
+             ('UMB-Aleksandra', ))
+c = conn.execute('select provider_id from providers where provider_name = ?', 
+             ('UMB-Aleksandra', ))
+pr_id = c.fetchall()[0][0]
+conn.execute('insert into lakes (name, eb_int, provider_id) values (?, ?, ?)', 
+             (u'Årungen', ebi, pr_id))
 def conv_datetimeAA(s):
     s1, s2 = s.split(' ')
     day, month, year = map(int, s1.split('/'))
@@ -221,27 +253,32 @@ data2 = data.set_index('datetime')
 grouped = data2.groupby(data2.index.date)
 m = grouped.mean()
 for i, r in m.iterrows():
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, i.isoformat(), 0.7, r['t0.7m']))
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, i.isoformat(), 1.3, r['t1.3m']))
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, i.isoformat(), 3.3, r['t3.3m']))
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, i.isoformat(), 4.4, r['t4.4m']))
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, i.isoformat(), 6.4, r['t6.4m']))
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, i.isoformat(), 8.4, r['t8.4m']))
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, i.isoformat(), 10.5, r['t10.5m']))
-    conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                 (ebi, i.isoformat(), 12.6, r['t12.6m']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, i.isoformat(), 0.7, r['t0.7m']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, i.isoformat(), 1.3, r['t1.3m']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, i.isoformat(), 3.3, r['t3.3m']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, i.isoformat(), 4.4, r['t4.4m']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, i.isoformat(), 6.4, r['t6.4m']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, i.isoformat(), 8.4, r['t8.4m']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, i.isoformat(), 10.5, r['t10.5m']))
+    conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                 (pr_id, ebi, 0, i.isoformat(), 12.6, r['t12.6m']))
 
 ## Vansjø
 ebi = 11110535
-conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
-             (u'Vansjø', ebi, 'EUTROPIA-Koji'))
+conn.execute('insert into providers (provider_name) values (?)', 
+             ('EUTROPIA-Koji', ))
+c = conn.execute('select provider_id from providers where provider_name = ?', 
+                 ('EUTROPIA-Koji', ))
+pr_id = c.fetchall()[0][0]
+conn.execute('insert into lakes (name, eb_int, provider_id) values (?, ?, ?)', 
+             (u'Vansjø', ebi, pr_id))
 def conv_datetimeVansjo(s):
     s1, s2 = s.split(' ')
     year, month, day = map(int, s1.split('-'))
@@ -283,10 +320,11 @@ for d, p in tuples:
     grouped = data2.groupby(data2.index.date)
     m = grouped.mean()
     for i, r in m.iterrows():
-        conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                     (ebi, i.isoformat(), d, r['temperature']))
+        conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                     (pr_id, ebi, 0, i.isoformat(), d, r['temperature']))
 
 ## COMSAT lakes
+conn.execute('insert into providers (provider_name) values (?)', ('COMSAT', ))
 p1 = os.path.join('data', 'COMSAT', 'COMSAT 2011 lakes utf8.txt')
 def conv_datecomsat(s):
     day, month, year = map(int, s.split('.'))
@@ -433,6 +471,9 @@ for i, a in enumerate(meancoords):
 # do not know 58 and 59 and 60
 # do not know i = 60 
 # looks okay actually
+c = conn.execute('select provider_id from providers where provider_name = ?',
+                 ('COMSAT',))
+pr_id = c.fetchall()[0][0]
 for i, r in lakemeta.iterrows():
     comsatID = str(r['ID'])
     if comsatID == '194':
@@ -451,16 +492,20 @@ for i, r in lakemeta.iterrows():
         # dt = datetime.datetime(date.year, date.month, date.day, time.hour, 
         #                        time.minute, time.second, time.microsecond, 
         #                        pytz.timezone('Etc/GMT+2'))
-        conn.execute('insert into temperature values (?, ?, ?, ?)', 
-                     (ebi, date, subr['Depth'], subr['Temp']))
-    conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
-                 (name.decode('utf-8'), ebi, 'COMSAT'))
+        conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)', 
+                     (pr_id, ebi, 0, date, subr['Depth'], subr['Temp']))
+    conn.execute('insert into lakes (name, eb_int, provider_id) values (?, ?, ?)', 
+                 (name.decode('utf-8'), ebi, pr_id))
 
 ## Langtjern NIVA
 p = os.path.join('data', 'Langtjern', 'buoy_export_to_text.txt')
 ebi = 8365569
-conn.execute('insert into lakes (name, eb_int, provider) values (?, ?, ?)', 
-             (u'Langtjern', ebi, 'NIVA'))
+conn.execute('insert into providers (provider_name) values (?)', ('NIVA', ))
+c = conn.execute('select provider_id from providers where provider_name = ?', 
+                 ('NIVA', ))
+pr_id = c.fetchall()[0][0]
+conn.execute('insert into lakes (name, eb_int, provider_id) values (?, ?, ?)', 
+             (u'Langtjern', ebi, pr_id))
 def conv_Ldate(s):
     day, month, year = map(int, s.split('.'))
     return(datetime.date(year, month, day))
@@ -477,48 +522,8 @@ group = data.groupby(['dyp1', 'date'])
 m = group.mean()
 for i, r in m.iterrows():
     if r['temp'] is not None:
-        conn.execute('insert into temperature values (?, ?, ?, ?)',
-                     (ebi, i[1], i[0], r['temp']))
-
-## summary stats
-c = conn.execute('''select eb_int, count(), min(date), max(date) 
-from temperature group by eb_int''')
-for eb_int, count, min_date, max_date in c.fetchall():
-    conn.execute('''update lakes set n_total = ?, min_date = ?, max_date = ?
-                    where eb_int = ?''',
-                 (count, min_date, max_date, eb_int))
-c = conn.execute('select eb_int from lakes group by eb_int')
-eb_int_list = [e[0] for e in c.fetchall()]
-for eb_int in eb_int_list:
-    c = conn.execute('''select depth from temperature where eb_int = ? 
-                        group by depth''', (eb_int, ))
-    n_depths = len(c.fetchall())
-    c = conn.execute('''select date from temperature 
-                        where eb_int = ? group by date''', (eb_int, ))
-    n_dates = len(c.fetchall())
-    conn.execute('''update lakes set n_depths = ?, n_dates = ?
-                    where eb_int = ?''',
-                 (n_depths, n_dates, eb_int))
-p3 = os.path.join('..', '..', '..', '..', 'GIS_DATA', 'fenoscand_lakes')
-p4 = 'ecco-biwa_lakes_v.0.1'
-datasource = osgeo.ogr.Open(p3)
-layer = datasource.GetLayerByName(p4)
-bathkeys = set()
-feat = layer.GetNextFeature()
-fieldnames = feat.keys()
-print('it will take a few minutes...')
-while feat is not None:
-    if feat.items()['EBint'] in eb_int_list:
-        bathkeys.add((feat.items()['EBint'], 
-                      feat.items()['cBathNO'], 
-                      feat.items()['cBathSE'], 
-                      feat.items()['cBathNOSE']))
-        print('... found %s' % feat.items()['EBint'])
-    feat = layer.GetNextFeature()
-for ebi, bno, bse, bnose in bathkeys:
-    conn.execute('''update lakes set bath_NO = ?, bath_SE = ?, bath_NOSE = ?
-                    where eb_int = ?''',
-                 (bno, bse, bnose, ebi))
+        conn.execute('insert into temperature values (?, ?, ?, ?, ?, ?)',
+                     (pr_id, ebi, 0, i[1], i[0], r['temp']))
 
 conn.commit()
 conn.close()
