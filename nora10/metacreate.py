@@ -8,8 +8,8 @@ with open('locationsCOMSAT.csv') as f:
 cmda = 'python createjobscriptsnora10a.py'
 cmd = 'python createjobscriptsnora10.py'
 ncdir = '/work/users/kojito/nora10/nc'
-start = '2007'
-end = '2012' ## including the end
+start = '2011'
+end = '2011' ## including the end
 orog = '/work/users/kojito/nora10/nc/orog/NORA10_11km_orog_new3.nc'
 
 def customsubmit(varname, timeres, name, lat, lon, alt, initial = False):
@@ -24,14 +24,14 @@ def customsubmit(varname, timeres, name, lat, lon, alt, initial = False):
 for name, lat, lon, alt in g:
     # customsubmit('ta_2m', '1H', name, lat, lon, alt, initial=True)
     # customsubmit('pr', '1H', name, lat, lon, alt)
-    # customsubmit('wss_10m', '1H', name, lat, lon, alt)
+    customsubmit('wss_10m', '1H', name, lat, lon, alt)
     # customsubmit('hur_2m', '1H', name, lat, lon, alt)
     # customsubmit('ps', '3H', name, lat, lon, alt)
     # customsubmit('clt', '1H', name, lat, lon, alt)
     # customsubmit('albedo', '1H', name, lat, lon, alt)
     # customsubmit('rls', '1H', name, lat, lon, alt)
     # customsubmit('rss', '1H', name, lat, lon, alt)
-    customsubmit('ts_0m', '1H', name, lat, lon, alt)
+    # customsubmit('ts_0m', '1H', name, lat, lon, alt)
 
 
         
