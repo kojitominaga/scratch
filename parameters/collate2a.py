@@ -43,7 +43,10 @@ eblnr = []
 while feat is not None:
     vatn_lnr = feat.items()['vatn_lnr']
     if vatn_lnr > 1:
-        ebint = feat.items()['EBint']
+        if vatn_lnr == 118:
+            ebint = 1310457
+        else:
+            ebint = feat.items()['EBint']
         eblnr.append((vatn_lnr, ebint))
     feat = layer.GetNextFeature()
 eblnrdf = pd.DataFrame(eblnr, columns=['vatn_lnr', 'ebint'])                       
