@@ -57,3 +57,6 @@ emep/*.pdf
 lakes/v12-kojioctave
 parameters/*/*.pdf
 parameters/*/*.xlsx
+parameters/NVE_lakes.*
+parameters/pdfNVE.zip
+parameters/TempSentGlobal-Metadata-Template-InvestName-LakeName.xlsx

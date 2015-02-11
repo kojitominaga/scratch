@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import os
 import datetime
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 p1 = os.path.join('..', 'parameters', 'data', 'COMSAT', 
@@ -65,7 +67,12 @@ wind.index = [datetime.date(2011, 1, 1) + datetime.timedelta(d)
 
 wind.to_csv('Wind speed at COMSAT lakes 2011.csv')
 
-lakemeta['WindSpeed'] = np.repeat(np.nan, lakemeta.shape[0])
+lakemeta['WindSpeed_field_day'] = np.repeat(np.nan, lakemeta.shape[0])
+lakemeta['WindSpeed_mean_JA'] = np.repeat(np.nan, lakemeta.shape[0])
+lakemeta['WindSpeed_mean_annual'] = np.repeat(np.nan, lakemeta.shape[0])
+iJA = (wind.index >= datetime.date(2011, 7, 1)) & \
+      (wind.index <= datetime.date(2011, 8, 31))
+
 for i, r in lakemeta.iterrows():
     comsatID = r['ID']
     if comsatID == 194:
@@ -73,6 +80,35 @@ for i, r in lakemeta.iterrows():
         continue 
     name = r['Lake']
     date = r['Date']
-    lakemeta['WindSpeed'].ix[i] = wind.ix[date]['id%s' % comsatID]
-lakemeta.to_csv('Wind speed at COMSAT lakes field day.csv')
+    lakemeta['WindSpeed_field_day'].ix[i] = wind.ix[date]['id%s' % comsatID]
+    lakemeta['WindSpeed_mean_JA'].ix[i] = wind.ix[iJA]['id%s' % comsatID].mean()
+    lakemeta['WindSpeed_mean_annual'].ix[i] = wind['id%s' % comsatID].mean()
+lakemeta.to_csv('Wind speed at COMSAT lakes field day and JA.csv')
+
+
+sns.set_style('ticks')
+fig = plt.figure()
+# ax = fig.add_subplot(111)
+axx = pd.tools.plotting.scatter_matrix(lakemeta[['WindSpeed_field_day', 
+                                           'WindSpeed_mean_JA', 
+                                           'WindSpeed_mean_annual']], 
+                                       diagonal='kde')
+
+                                       # ax=ax)
+xy = [(0, 1), (0, 2), 
+      (1, 0), (1, 2), 
+      (2, 0), (2, 1)]
+for xi, yi in xy:
+    axx[xi][yi].plot([0.5, 5.3], [0.5, 5.3], 'b-')
+    axx[xi][yi].set_xlim([0.5, 5.3])
+    axx[xi][yi].set_ylim([0.5, 5.3])
+for xyi in range(3):
+    axx[xyi][xyi].set_xlim([0.5, 5.3])
+    axx[xyi][xyi].set_ylim([0, 1])
+        
+
+fig2 = plt.gcf()
+fig2.set_figheight(7)
+fig2.set_figwidth(7)
+fig2.savefig('wind speed comparison.pdf')
 
