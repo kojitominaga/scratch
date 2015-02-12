@@ -7,7 +7,7 @@ url2 = '_EUR-11_'
 # 0 reserved for NORA10
 scenarios = {1: (('historical', '19710101', '19751231'), 
                  ('historical', '19760101', '19801231')), 
-             2: (('historical', '20000101', '20051231'),
+             2: (('historical', '20010101', '20051231'),
                  ('rcp45', '20060101', '20101231')), 
              3: (('rcp45', '20310101', '20351231'),
                  ('rcp45', '20360101', '20401231')), 
@@ -35,7 +35,7 @@ urlsA = ['%s%s%s%s_%s_%s_day_%s-%s.h5.gz' %
          for m0, m1 in models.values() for s0, s1 in [scenarios[1]]
          for v in variables]
 urlsB = ['%s%s%s%s_%s_%s_day_%s-%s.h5.gz' % 
-         (url1, v, url2, m0, s0[0], m1, s1[1], s1[2])
+         (url1, v, url2, m0, s1[0], m1, s1[1], s1[2])
          for m0, m1 in models.values() for s0, s1 in [scenarios[1]]
          for v in variables]
 urls = urlsA + urlsB

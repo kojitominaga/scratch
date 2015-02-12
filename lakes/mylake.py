@@ -92,7 +92,7 @@ def take5(pdict, dates, eh):
     dates: see datesA and datesB
     eh: ebhex
     returns pandas.DataFrame'''
-    e = eh.strip('0x').strip('0')
+    e = eh.lstrip('0x').lstrip('0')
     df = pd.DataFrame(dates, columns = ['date'])
     df['clt'] = h5py.File(pdict['clt'], mode='r')[e][:] * 0.01
     df['hurs'] = h5py.File(pdict['hurs'], mode='r')[e][:]
@@ -184,26 +184,28 @@ def runlake(modelid, scenarioid, eh, depth, area, longitude, latitude):
     initp = os.path.join(outdir, 'Feb2015init')
     parp = os.path.join(outdir, 'Feb2015par')
     inputp = os.path.join(outdir, 'vanillainput')
-    mylakeinit(depth, area, initp)
-    mylakepar(longitude, latitude, parp)
-    mylakeinput(pA, pB, datesA, datesB, eh, inputp)
-    cmd = 'octave mylake.m %s %s %s %s %s %s' % (
-        initp, parp, inputp, y1A - 2, y2B, outdir)
-    print(cmd)
-    os.system(cmd)
-    for f in [initp, parp, inputp]:
-        os.system('bzip2 %s' % f)
-    expectedfiles = ['Feb2015init.bz2', 'Feb2015par.bz2', 'vanillainput.bz2', 
-                     'Tzt.csv.gz', 'Kzt.csv.gz', 'His.csv.gz', 'Qst.csv.gz']
-    flags = [os.path.exists(os.path.join(outdir, f)) for f in expectedfiles]
-    if all(flags):
-        with open(os.path.join(outdir, 'Feb2015COMPLETE'), 'w') as f:
-            f.write(datetime.datetime.now().isoformat())
-    ret = 0 if all(flags) else 100
+    if os.path.exists(os.path.join(outdir, 'Feb2015COMPLETE')):
+        print('lake %s is already completed' % eh)
+        ret = 0
+    else:
+        mylakeinit(depth, area, initp)
+        mylakepar(longitude, latitude, parp)
+        mylakeinput(pA, pB, datesA, datesB, eh, inputp)
+        cmd = 'octave mylake.m %s %s %s %s %s %s' % (
+            initp, parp, inputp, y1A - 2, y2B, outdir)
+        print(cmd)
+        os.system(cmd)
+        for f in [initp, parp, inputp]:
+            os.system('bzip2 %s' % f)
+        expectedfs = ['Feb2015init.bz2', 'Feb2015par.bz2',
+                      'vanillainput.bz2', 'Tzt.csv.gz', 
+                      'Kzt.csv.gz', 'His.csv.gz', 'Qst.csv.gz']
+        flags = [os.path.exists(os.path.join(outdir, f)) for f in expectedfs]
+        if all(flags):
+            with open(os.path.join(outdir, 'Feb2015COMPLETE'), 'w') as f:
+                f.write(datetime.datetime.now().isoformat())
+        ret = 0 if all(flags) else 100
     return ret
-              
-
-
 
 if __name__ == '__main__':
     # model = 'EUR-11_ICHEC-EC-EARTH_historical_r1i1p1_KNMI-RACMO22E_v1_day'
