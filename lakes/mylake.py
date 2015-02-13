@@ -143,8 +143,8 @@ def mylakeinput(pA, pB, datesA, datesB, eh, outpath):
 
 variables = ['clt', 'hurs', 'tas', 'rsds', 'ps', 'pr', 'sfcWind']
 models = {1: ('ICHEC-EC-EARTH', 'r1i1p1_KNMI-RACMO22E_v1_day'), 
-          2: ('ICHEC-EC-EARTH', 'r3i1p1_DMI-HIRHAM5_v1_day_'), 
-          3: ('MPI-M-MPI-ESM-LR', 'r1i1p1_CLMcom-CCLM4-8-17_v1_day_')}
+          2: ('ICHEC-EC-EARTH', 'r3i1p1_DMI-HIRHAM5_v1_day'), 
+          3: ('MPI-M-MPI-ESM-LR', 'r1i1p1_CLMcom-CCLM4-8-17_v1_day')}
 scenarios = {1: ('historical', 1971, 'historical', 1976), 
              2: ('historical', 2001, 'rcp45', 2006), 
              3: ('rcp45', 2031, 'rcp45', 2036), 

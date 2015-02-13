@@ -19,7 +19,8 @@ arg_list = argv();
 initfile = arg_list{1};
 parfile = arg_list{2}; 
 inputfile = arg_list{3};
-m_start = [str2num(arg_list{4}), 1, 1]; 
+m_start2 = [str2num(arg_list{4}) + 2, 1, 1]; 
+m_start = datevec(datenum(m_start2) - 365 - 365)(1:3)
 m_stop = [str2num(arg_list{5}), 12, 31]; 
 outdir = arg_list{6};
 
