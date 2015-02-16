@@ -13,19 +13,19 @@
   \textsc{Annotation:}\ #2\end{quotation}}
 \providecommand{\eprint}[2][]{\url{#2}}
 
-\bibitem{tominaga_melting}
-\textbf{Tominaga K}, Finstad AG, Kaste {\O}, Andersen T Melting of northern lakes : In
-  revision at PLOS ONE.
-\bibAnnoteFile{tominaga_melting}
-
 \bibitem{romarheim_natural}
 Romarheim AT, \textbf{Tominaga K}, Riise G, Andersen T (2014) Natural stochasticity vs.
   management effort: use of year-to-year variance for disentangling
   significance of two mutually confounding factors affecting water quality of a
-  norwegian cold dimictic lake.
+  {Norwegian} cold dimictic lake.
 \newblock Hydrol Earth Syst Sci Discuss, under peer-review for Hydrol Earth
   Syst Sci 11: 12489--12518.
 \bibAnnoteFile{romarheim_natural}
+
+\bibitem{tominaga_melting}
+\textbf{Tominaga K}, Finstad AG, Kaste {\O}, Andersen T Melting of northern lakes : In
+  preparation.
+\bibAnnoteFile{tominaga_melting}
 
 \bibitem{couture_reconstructing}
 Couture RM, de~Wit HA, \textbf{Tominaga K}, Kiuru P, Markelov I Reconstructing past
@@ -39,5 +39,11 @@ Couture RM, de~Wit HA, \textbf{Tominaga K}, Kiuru P, Markelov I Reconstructing p
   Calibration uncertainty in sequential model application : In preparation for
   sumission to PLOS ONE.
 \bibAnnoteFile{tominaga_calibration}
+
+\bibitem{yang_greenhouse}
+Yang H, Andersen T, Dörsch P, \textbf{Tominaga K}, Thrane JE, Hessen DO Greenhouse gas
+  metabolism in boreal lakes : In preparation for submission to Glob. Change
+  Biol.
+\bibAnnoteFile{yang_greenhouse}
 
 \end{thebibliography}
