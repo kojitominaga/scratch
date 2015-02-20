@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 lakes = pd.read_table('Feb2015GranadaList.csv', sep=',')
-f = open('listtodownload', 'w')
+f = open('listtodownloadCOMPLETE', 'w')
 
 for i, v in lakes['ebhex'].iteritems():
     hex = v.lstrip('0x')
@@ -17,20 +17,20 @@ for i, v in lakes['ebhex'].iteritems():
     for subd in subds:
         p = os.path.join(d, subd, 'Feb2015COMPLETE')
         f.write(p) ; f.write('\n')
-        p = os.path.join(d, subd, 'vanillainput.bz2')
-        f.write(p) ; f.write('\n')
-        p = os.path.join(d, subd, 'Feb2015par.bz2')
-        f.write(p) ; f.write('\n')
-        p = os.path.join(d, subd, 'Feb2015init.bz2')
-        f.write(p) ; f.write('\n')
-        p = os.path.join(d, subd, 'Tzt.csv.gz')
-        f.write(p) ; f.write('\n')
-        p = os.path.join(d, subd, 'Kzt.csv.gz')
-        f.write(p) ; f.write('\n')
-        p = os.path.join(d, subd, 'His.csv.gz')
-        f.write(p) ; f.write('\n')
-        p = os.path.join(d, subd, 'Qst.csv.gz')
-        f.write(p) ; f.write('\n')
+        # p = os.path.join(d, subd, 'vanillainput.bz2')
+        # f.write(p) ; f.write('\n')
+        # p = os.path.join(d, subd, 'Feb2015par.bz2')
+        # f.write(p) ; f.write('\n')
+        # p = os.path.join(d, subd, 'Feb2015init.bz2')
+        # f.write(p) ; f.write('\n')
+        # p = os.path.join(d, subd, 'Tzt.csv.gz')
+        # f.write(p) ; f.write('\n')
+        # p = os.path.join(d, subd, 'Kzt.csv.gz')
+        # f.write(p) ; f.write('\n')
+        # p = os.path.join(d, subd, 'His.csv.gz')
+        # f.write(p) ; f.write('\n')
+        # p = os.path.join(d, subd, 'Qst.csv.gz')
+        # f.write(p) ; f.write('\n')
 f.close()
 
 
