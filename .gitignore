@@ -60,3 +60,4 @@ parameters/*/*.xlsx
 parameters/NVE_lakes.*
 parameters/pdfNVE.zip
 parameters/TempSentGlobal-Metadata-Template-InvestName-LakeName.xlsx
+lakes/*.xlsx
