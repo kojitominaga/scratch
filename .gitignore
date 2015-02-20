@@ -61,4 +61,4 @@ parameters/NVE_lakes.*
 parameters/pdfNVE.zip
 parameters/TempSentGlobal-Metadata-Template-InvestName-LakeName.xlsx
 lakes/*.xlsx
-scratch/smallhelps/help Hong Norway/vatn_lnr_0003.shp.xml
+scratch/smallhelps/*/vatn_lnr_0003.shp.xml
