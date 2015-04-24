@@ -62,3 +62,5 @@ parameters/pdfNVE.zip
 parameters/TempSentGlobal-Metadata-Template-InvestName-LakeName.xlsx
 lakes/*.xlsx
 scratch/smallhelps/*/vatn_lnr_0003.shp.xml
+nora10/makedaily/*.nc
+nora10/makedaily/*.nc.gz
