@@ -2,7 +2,14 @@ import netCDF4
 import numpy as np
 import sys
 
-vdict = {'ta_2m': 'tas'}
+vdict = {'ta_2m': 'tas', 
+         'hur_2m': 'hurs', 
+         'wss_10m': 'sfcWind', 
+         'clt': 'clt', 
+         'pr': 'pr', 
+         'ps': 'ps', 
+         'rls': 'rls', 
+         'rss': 'rss'}
 fourdimensional = ('ta_2m', 'ts_0m', 'wss_10m', 'hur_2m')
 
 def makedaily(ncf, ncforog):
@@ -11,8 +18,9 @@ def makedaily(ncf, ncforog):
     vn0 = '_'.join(ncf.split('_')[3:-1])   # ta_2m
     vn = vdict[vn0]                        # tas
     timeres = ncf.split('_')[1]            # 1H
-    ncfout = ncf.replace(timeres, '24H')   # NORA10_24H_11km_ta_2m_2012.nc
     year = ncf.strip('.nc').split('_')[-1] # 2012 (string)
+    ncfout = ncf.replace(timeres, 'DM').replace(vn0, vn)
+    # NORA10_DM_11km_tas_2012.nc
     
     print('opening %s for reading' % ncf)
     print('opening %s for reading' % ncforog)
@@ -26,8 +34,8 @@ def makedaily(ncf, ncforog):
         nhours, height, yy, xx = v.shape
     else: 
         nhours, yy, xx = v.shape
-    npd = int(timeres.replace('H', '')) # number of data timings per day
-    ndays = nhours / (24 / npd)
+    npd = 24 / int(timeres.replace('H', '')) # number of data timings per day
+    ndays = nhours / npd
     
     print('copying root NetCDF attributes')
     for ncattr in r.ncattrs():
