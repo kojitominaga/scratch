@@ -1,0 +1,41 @@
+default values are np.nan or false
+
+I. Use calendar year. Determine the warmest day of year maxdoy. 
+
+Is the year, ice-covered whole year?
+  [true] maxdoy = np.nan 
+  [false] maxdoy identified
+
+Set alwayswarm = True if min(temperature) > 3.98
+
+II. Warm stratification. This will work on each calendar year, but worked around maxdoy. 
+
+Is it ice-covered whole year? (maxdoy = np.nan?)
+  [true] no stratification [AMICTIC]
+  [false] keep going
+
+Is the maximum temperature < 3.98?
+  [true] no stratification [COLD MONOMICTIC]
+  [false] keep going
+
+Set warm = True
+
+Get the spring and autumn mixing day of year by checking temperature (phspr and phaut). If first year of the decade and already warmer than 3.98 on 1st January, record np.nan for spring mixing day of year. Likewise, the last year still not cold enough record np.nan for the autumn mixing day of year. Do the same for all years where alwayswarm = true.  
+
+(Spring and autumn mixing days of year == np.nan means, if warm, value clipped, if alwayswarm, values clipped, and if cold nonexistent.)
+
+II-a. Now look at the period between phspr and phaut. Treat as 1 or 365 for first year spring and last year autumn, resp. if warm. Treat as 1 or 365 for all years where alwayswarm.
+
+Check for intermediate stratification. Exists?
+  [true] keep going
+  [false] [CONTINUOUS COLD POLYMICTIC. assert not alwayswarm]
+
+Does it persists throughout the summer?
+  [true] [DIMICTIC 
+          or CONTINUOUS WARM POLYMICTIC assert alwayswarm
+          or WARM MONOMICTIC if warm assert no ice?]
+  [false] [DISCONTINUOUS COLD POLYMICTIC 
+           or DICSCONTINUOUS WARM POLYMICTIC if warm]
+
+
+

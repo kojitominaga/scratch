@@ -1,0 +1,10 @@
+cat_id, cat_longname, cat_shortname
+0, unknown, unknown
+1, amictic, amic
+2, cold monomictic, cmono
+3, continuous cold polymictic, contcp
+4, discontinuous cold polymictic, disccp
+5, dimictic, dimic
+6, continuous warm polymictic, contwp
+7, discontinuous warm polymictic, discwp
+8, warm monomictic, wmono

@@ -1,0 +1,29 @@
+,y0,y1,rcm,category,cat_id,frequency
+0,2001,2010,DMI-HIRHAM5, amictic,1,3076
+1,2001,2010,DMI-HIRHAM5, cold monomictic,2,580
+2,2001,2010,DMI-HIRHAM5, continuous cold polymictic,3,3700
+3,2001,2010,DMI-HIRHAM5, discontinuous cold polymictic,4,43903
+4,2001,2010,DMI-HIRHAM5, dimictic,5,34632
+5,2001,2010,DMI-HIRHAM5, discontinuous warm polymictic,7,198
+6,2001,2010,DMI-HIRHAM5, warm monomictic,8,1
+7,2031,2040,DMI-HIRHAM5, amictic,1,1509
+8,2031,2040,DMI-HIRHAM5, cold monomictic,2,472
+9,2031,2040,DMI-HIRHAM5, continuous cold polymictic,3,3009
+10,2031,2040,DMI-HIRHAM5, discontinuous cold polymictic,4,44961
+11,2031,2040,DMI-HIRHAM5, dimictic,5,35910
+12,2031,2040,DMI-HIRHAM5, discontinuous warm polymictic,7,228
+13,2031,2040,DMI-HIRHAM5, warm monomictic,8,1
+14,2061,2070,DMI-HIRHAM5, amictic,1,474
+15,2061,2070,DMI-HIRHAM5, cold monomictic,2,170
+16,2061,2070,DMI-HIRHAM5, continuous cold polymictic,3,1393
+17,2061,2070,DMI-HIRHAM5, discontinuous cold polymictic,4,43600
+18,2061,2070,DMI-HIRHAM5, dimictic,5,39244
+19,2061,2070,DMI-HIRHAM5, discontinuous warm polymictic,7,1069
+20,2061,2070,DMI-HIRHAM5, warm monomictic,8,140
+21,2091,2100,DMI-HIRHAM5, amictic,1,108
+22,2091,2100,DMI-HIRHAM5, cold monomictic,2,49
+23,2091,2100,DMI-HIRHAM5, continuous cold polymictic,3,583
+24,2091,2100,DMI-HIRHAM5, discontinuous cold polymictic,4,41008
+25,2091,2100,DMI-HIRHAM5, dimictic,5,40575
+26,2091,2100,DMI-HIRHAM5, discontinuous warm polymictic,7,2627
+27,2091,2100,DMI-HIRHAM5, warm monomictic,8,1140

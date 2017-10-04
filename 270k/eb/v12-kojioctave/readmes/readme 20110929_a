@@ -1,0 +1,1 @@
+works with Octave (3.2.3) with the 'io' package (1.0.9-1build1) and the 'statistics' package (1.0.9-1). The newer versions, especially the io package have an updated xlsread function, which then requires some API for reading (or connecting) to .xls files. 
