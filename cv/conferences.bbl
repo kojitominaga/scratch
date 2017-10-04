@@ -13,6 +13,24 @@
   \textsc{Annotation:}\ #2\end{quotation}}
 \providecommand{\eprint}[2][]{\url{#2}}
 
+\bibitem{joehnk_integrated_2015}
+Joehnk KD, Stepanenko V, Bueche T, Gal G, Goyette S, Janssen A, Lindgren E,
+  MacIntyre S, Perroud M, Thiery W, Toffolon M, \textbf{Tominaga K}, Lijuan W (2015)
+  Integrated modelling of lakes in the climate system: A summary.
+\newblock Évora, Portugal.
+\newblock Lake 2015: Parameterization of Lakes in Numerical Weather Prediction
+  and Climate Modelling. Oral presentation. Not presenting author.
+\bibAnnoteFile{joehnk_integrated_2015}
+
+\bibitem{couture_modelling_2015}
+Couture RM, de~Wit HA, \textbf{Tominaga K}, Kiuru P, Markelov I (2015) Modelling the
+  impact of increasing dissolved organic carbon load on seasonal anoxia in a
+  boreal humic lake.
+\newblock Montréal, Canada.
+\newblock 2015 Joint Assembly AGU-GAC-MAC-CGU. Oral presentation. Not
+  presenting author.
+\bibAnnoteFile{couture_modelling_2015}
+
 \bibitem{tominaga_physical_2015}
 \textbf{Tominaga K}, Andersen T, Blumentrath S, Englund G, Finstad AG, Hessen DO, Laken
   BA, Larsen S, Stordal F, Yang H (2015) Physical status of lakes in northern
@@ -21,6 +39,14 @@
 \newblock The 2015 {ASLO} Aquatic Sciences Meeting: Global and Regional
   Perspective -- North Meets South. Oral presentation. Presenting author.
 \bibAnnoteFile{tominaga_physical_2015}
+
+\bibitem{larsen_dom_2015}
+Larsen S, Finstad AG, \textbf{Tominaga K}, Hessen DO, Andersen T, de~Wit H (2015) {DOM}
+  under changing climatic conditions.
+\newblock Granada, Spain.
+\newblock The 2015 {ASLO} Aquatic Sciences Meeting: Global and Regional
+  Perspective -- North Meets South. Oral presentation. Not presenting author.
+\bibAnnoteFile{larsen_dom_2015}
 
 \bibitem{wojewodzic_seeking_2014-3}
 Wojewodzic MW, Becker D, \textbf{Tominaga K}, Zhou X, Zhao J, Shala N, Colbourne JK,

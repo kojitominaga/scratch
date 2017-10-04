@@ -13,6 +13,26 @@
   \textsc{Annotation:}\ #2\end{quotation}}
 \providecommand{\eprint}[2][]{\url{#2}}
 
+\bibitem{couture_oxygen_2015}
+Couture RM, de~Wit HA, \textbf{Tominaga K}, Kiuru P, Markelov I (2015) Oxygen dynamics
+  in a boreal lake responds to long-term changes in climate, ice phenology, and
+  {DOC} inputs.
+\newblock J Geophys Res Biogeosci : 2015JG003065.
+\bibAnnoteFile{couture_oxygen_2015}
+
+\bibitem{yang_greenhouse_2015}
+Yang H, Andersen T, Dörsch P, \textbf{Tominaga K}, Thrane JE, Hessen DO (2015)
+  Greenhouse gas metabolism in nordic boreal lakes.
+\newblock Biogeochemistry : 1--15.
+\bibAnnoteFile{yang_greenhouse_2015}
+
+\bibitem{romarheim_importance_2015}
+Romarheim AT, \textbf{Tominaga K}, Riise G, Andersen T (2015) The importance of
+  year-to-year variation in meteorological and runoff forcing for water quality
+  of a temperate, dimictic lake.
+\newblock Hydrol Earth Syst Sci 19: 2649--2662.
+\bibAnnoteFile{romarheim_importance_2015}
+
 \bibitem{couture_modelling_2014}
 Couture RM, \textbf{Tominaga K}, Starrfelt J, Moe SJ, Kaste {\O}, Wright RF (2014)
   Modelling phosphorus loading and algal blooms in a nordic agricultural
