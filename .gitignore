@@ -1,4 +1,5 @@
 *.csv.gz
+cv/*
 nora10/mylake/png/*
 *.nc
 txt.bz2
