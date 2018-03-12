@@ -8,7 +8,6 @@
 
 # Taylor diagrams
 ![](test.png)
-![](test3.png)
 
 # Detailed comparisons
 ![](png/air\ temperature\ \(degree\ C\)i1a.png)
@@ -74,6 +73,3 @@
 ![](png/wind\ speed\ \(m\ s-1\)i3bo.png)
 ![](png/wind\ speed\ \(m\ s-1\)i3cn.png)
 ![](png/wind\ speed\ \(m\ s-1\)i3co.png)
-
-
-

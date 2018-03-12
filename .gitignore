@@ -16,7 +16,6 @@ co2/phreeqc-2.18.3/*
 *.pyc
 *.txt.gz
 */test*.csv
-cordex/*/*/png/*.png
 smallhelps/*/SwedishBathymetry/*/*
 nora10/stationcomparison/*/*/Dognverdier_(for_dognintervall).txt
 nora10/stationcomparison/*/*/*.txt.gz
